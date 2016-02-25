@@ -9,7 +9,7 @@ public class Logic {
 		// TODO Auto-generated method stub
 	Parser parser = new Parser();
 	Storage storage = new Storage();
-	Arraylist<Task> list = new Arraylist();
+	Arraylist<Task> list = new Arraylist();  
 	}
 
 }
