@@ -3,9 +3,17 @@ import java.util.Date;
 
 public class Task implements Comparable<Task>{
 
-	private static final String TIME_FORMAT = "H:mm dd MMM yyyy";
+	public static final int DEFAULT_PRIORITY_LEVEL = 0;
+	public static final Date DEFAULT_DATE_VALUE = new Date(0);
 
-	private static final String FIELD_SEPARATOR = ",";
+	private static final String TIME_FORMAT = "H:mm dd MMM yyyy";
+	public static final String FIELD_SEPARATOR = ",";
+	
+	private static final String STRING_EMPTY = "";
+	
+	private static final String STRING_HIGH_PRIORITY = "high";
+	private static final String STRING_MEDIUM_PRIORITY = "medium";
+	private static final String STRING_LOW_PRIORITY = "low";
 	
 	private String description;
 	private Date startTime, endTime;
@@ -14,17 +22,17 @@ public class Task implements Comparable<Task>{
 
 	public Task(String description) {
 		this.description = description;
-		this.startTime = new Date(0);
-		this.endTime = new Date(0);
-		this.priority = 0;
+		this.startTime = DEFAULT_DATE_VALUE;
+		this.endTime = DEFAULT_DATE_VALUE;
+		this.priority = DEFAULT_PRIORITY_LEVEL;
 		this.done = false;
 	}
 
 	public Task(String description, String endTime) throws Exception {
 		this.description = description;
-		this.startTime = new Date(0);
+		this.startTime = DEFAULT_DATE_VALUE;
 		this.endTime = convertStringToDate(endTime);
-		this.priority = 0;
+		this.priority = DEFAULT_PRIORITY_LEVEL;
 		this.done = false;
 	}
 
@@ -32,7 +40,7 @@ public class Task implements Comparable<Task>{
 		this.description = description;
 		this.startTime = convertStringToDate(startTime);
 		this.endTime = convertStringToDate(endTime);
-		this.priority = 0;
+		this.priority = DEFAULT_PRIORITY_LEVEL;
 		this.done = false;
 	}
 
@@ -43,7 +51,7 @@ public class Task implements Comparable<Task>{
     }
 
     public String convertDateToString(Date date) {
-        String timeString = "";
+        String timeString = STRING_EMPTY;
         SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT);
         timeString = formatter.format(date);
         return timeString;
@@ -77,8 +85,17 @@ public class Task implements Comparable<Task>{
 		return priority;
 	}
 
-	public void setPriority(int priority) {
-		this.priority = priority;
+	public void setPriority(String priorityLevel) throws Exception {
+		switch(priorityLevel.toLowerCase()) {
+			case STRING_HIGH_PRIORITY :
+				this.priority = 3;
+			case STRING_MEDIUM_PRIORITY :
+				this.priority = 2;
+			case STRING_LOW_PRIORITY :
+				this.priority = 1;
+			default :
+				throw new Exception();
+		}
 	}
 
 	public boolean isDone() {
@@ -105,6 +122,30 @@ public class Task implements Comparable<Task>{
 
 	@Override
 	public String toString() {
-		return description + FIELD_SEPARATOR + startTime + FIELD_SEPARATOR + endTime + FIELD_SEPARATOR + priority + FIELD_SEPARATOR + done;
+		String startTimeString = STRING_EMPTY;
+		String endTimeString = STRING_EMPTY;
+		String priorityLevel = STRING_EMPTY;
+		String status = STRING_EMPTY;
+		
+		if (this.startTime != DEFAULT_DATE_VALUE) {
+			startTimeString = convertDateToString(this.startTime);
+		}
+		if (this.endTime != DEFAULT_DATE_VALUE) {
+			endTimeString = convertDateToString(this.endTime);
+		}
+		switch(this.priority) {
+			case 3 :
+				priorityLevel = STRING_HIGH_PRIORITY;
+			case 2 :
+				priorityLevel = STRING_MEDIUM_PRIORITY;
+			case 1 : 
+				priorityLevel = STRING_LOW_PRIORITY;
+			default :
+				priorityLevel = STRING_EMPTY;
+		}
+		if (this.isDone()) {
+			status = "done";
+		}
+		return description + FIELD_SEPARATOR + startTimeString + FIELD_SEPARATOR + endTimeString + FIELD_SEPARATOR + priorityLevel + FIELD_SEPARATOR + status;
 	}
 }

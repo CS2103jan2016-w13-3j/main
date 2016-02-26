@@ -37,7 +37,7 @@ public class Storage {
 	private File storage, todo, todoBackup;
 	private ArrayList<Task> tasks;
 	
-	Storage() {
+	public Storage() {
 		new File(DIRECTORY_STORAGE).mkdirs();
 		this.storage = new File(DIRECTORY_STORAGE+FILENAME_STORAGE);
 		this.tasks = new ArrayList<Task>();
@@ -67,7 +67,7 @@ public class Storage {
 		}
 	}
 	
-	private static void writeToFile(File file, String content) throws Exception {
+	private void writeToFile(File file, String content) throws Exception {
 		FileWriter fileWriter = new FileWriter(file, true);
 		fileWriter.write(content);
 		fileWriter.write(CHARACTER_NEW_LINE);
