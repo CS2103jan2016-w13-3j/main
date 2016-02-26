@@ -97,23 +97,28 @@ public class Logic {
 	}
 	
 	private static String executeAddCommand(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
+		Task taskToAdd = parser.parseAddCommand(userCommand);
+		return storage.addTask(taskToAdd);
 	}
 	
 	private static String executeViewCommand(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
+		String keyWord = parser.removeFirstWord();
+		list = storage.load(keyWord);
+		return convertListToString(list);
 	}
 	
 	private static String executeEditCommand(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
+		Task updatedContent = parser.parseEditCommand(userCommand);
+		int index = 0 // just a buffer, need to find out how to parse edit command and get index
+		Task originalTask = list.get(index);
+		return storage.editTask(originalTask, updatedContent);
 	}
 	
 	private static String executeDeleteCommand(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
+		int indexToDelete = parser.removeFirstWord(userCommand);
+		Task taskToDelete = list.get(indexToDelete - 1);
+		list.remove(indexToDelete - 1);
+		return storage.deleteTask(taskToDelete);
 	}
 	
 	private static String executeSearchCommand(String userCommand) {
@@ -127,8 +132,8 @@ public class Logic {
 	}
 	
 	private static String executeSetLocationCommand(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
+		String directoryPath = parser.parseSetLocationCommand(userCommand);
+		return storage.setLocation(directoryPath);
 	}
 	
 	private static String executeMarkCommand(String userCommand) {
@@ -146,7 +151,11 @@ public class Logic {
 	}
 	
 	private static String convertListToString(ArrayList<Task> list){
-		return "";
+		String convertedList;
+		for (int i = 0; i < list.size(); i++) {
+			Task taskToPrint = list.get(i);
+			convertedList += (i+1) +". " + taskToPrint.toString() + "\n";
+		}
 	}
 	
 }
