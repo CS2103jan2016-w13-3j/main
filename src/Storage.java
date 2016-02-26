@@ -131,16 +131,46 @@ public class Storage {
 		todoBackup = new File(getLocation()+FILENAME_TODO_BACKUP);
 	}
 
-	private void addTaskToList(Task task) {
+	private void addTaskToList(Task task) throws Exception {
 		updateTaskList();
 		tasks.add(task);
 		Collections.sort(tasks);
 	}
 	
-	private void updateTaskList() {
+	private void updateTaskList() throws Exception {
 		if(!isEmptyFile(todo)) {
 			if(tasks.size() == SIZE_EMPTY) {
-				tasks = load(STRING_EMPTY);
+				createTaskList();
+			}
+		}
+	}
+
+	private void createTaskList() throws Exception {
+		ArrayList<String> lines = readFile(todo);
+		for (int i = 0; i < lines.size(); i++) {
+			String[] fields = lines.get(i).split(Task.FIELD_SEPARATOR);
+			
+			String description = fields[Task.ARRAY_POSITION_FOR_DESCRIPTION];
+			String startTimeString = fields[Task.ARRAY_POSITION_FOR_START_TIME];
+			String endTimeString = fields[Task.ARRAY_POSITION_FOR_END_TIME];
+			String priorityLevel = fields[Task.ARRAY_POSITION_FOR_PRIORITY];
+			String status = fields[Task.ARRAY_POSITION_FOR_STATUS];
+			
+			Task task = new Task();
+			if (description != STRING_EMPTY) {
+				task.setDescription(description);
+			}
+			if (startTimeString != STRING_EMPTY) {
+				task.setStartTime(startTimeString);
+			}
+			if (endTimeString != STRING_EMPTY) {
+				task.setEndTime(endTimeString);
+			}
+			if (priorityLevel != STRING_EMPTY) {
+				task.setPriority(priorityLevel);
+			}
+			if (status != STRING_EMPTY) {
+				task.setDone(true);
 			}
 		}
 	}
@@ -207,13 +237,13 @@ public class Storage {
 		}
 	}
 	
-	private void removeTaskFromList(Task task) {
+	private void removeTaskFromList(Task task) throws Exception {
 		updateTaskList();
 		tasks.remove(task);
 		Collections.sort(tasks);
 	}
 	
-	public ArrayList<Task> load(String taskType) {
+	public ArrayList<Task> load(String taskType) throws Exception {
 		setupFiles();
 		updateTaskList();
 		switch(taskType) {
@@ -312,7 +342,7 @@ public class Storage {
 		return completedTasks;
 	}
 	
-	public ArrayList<Task> searchTasks(String keyword) {
+	public ArrayList<Task> searchTasks(String keyword) throws Exception {
 		switch(keyword) {
 			case STRING_EMPTY :
 				return loadTasks();
