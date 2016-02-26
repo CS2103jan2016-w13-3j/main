@@ -23,7 +23,7 @@ public class Storage {
 	private static final String STRING_TASK_TYPE_OVERDUE = "overdue";
 	private static final String STRING_TASK_TYPE_DONE = "done";
 
-	private static final int SIZE_EMPTY_FILE = 0;
+	private static final int SIZE_EMPTY = 0;
 	private static final int INDEX_START_FOR_ARRAY = 0;
 	
 	private static final String MESSAGE_LOCATION_SET = "Storage location of task data is set sucessfully.";
@@ -40,6 +40,10 @@ public class Storage {
 	Storage() {
 		new File(DIRECTORY_STORAGE).mkdirs();
 		this.storage = new File(DIRECTORY_STORAGE+FILENAME_STORAGE);
+		this.tasks = new ArrayList<Task>();
+		if(isLocationSet()) {
+			setupFiles();
+		}
 	}
 	
 	public boolean isLocationSet() {
@@ -47,7 +51,7 @@ public class Storage {
 	}
 	
 	private boolean isEmptyFile(File file) {
-		return file.length() == SIZE_EMPTY_FILE;
+		return file.length() == SIZE_EMPTY;
 	}
 	
 	public String setLocation(String location) {
@@ -107,15 +111,7 @@ public class Storage {
 		if(!isLocationSet()) {
 			return MESSAGE_LOCATION_NOT_SET;
 		} else { 
-			todo = new File(getLocation()+FILENAME_TODO);
-			todoBackup = new File(getLocation()+FILENAME_TODO_BACKUP);
-			
-			if(isEmptyFile(todo)) {
-				tasks = new ArrayList<Task>();
-			} else {
-				tasks = load(STRING_EMPTY);
-			}
-			
+			setupFiles();					
 			try {
 				createBackup(todo, todoBackup);
 				addTaskToList(task);
@@ -127,9 +123,23 @@ public class Storage {
 		}
 	}
 
+	private void setupFiles() {
+		todo = new File(getLocation()+FILENAME_TODO);
+		todoBackup = new File(getLocation()+FILENAME_TODO_BACKUP);
+	}
+
 	private void addTaskToList(Task task) {
+		updateTaskList();
 		tasks.add(task);
 		Collections.sort(tasks);
+	}
+	
+	private void updateTaskList() {
+		if(!isEmptyFile(todo)) {
+			if(tasks.size() == SIZE_EMPTY) {
+				tasks = load(STRING_EMPTY);
+			}
+		}
 	}
 
 	private void createBackup(File file, File backupFile) throws Exception {
@@ -150,27 +160,38 @@ public class Storage {
 	}
 	
 	public String editTask(Task task, Task editedTask) {
+		if(!isLocationSet()) {
+			return MESSAGE_LOCATION_NOT_SET;
+		} else { 
+			setupFiles();
+		}
 		return null;
-		
 	}
 	
 	public String deleteTask(Task task) {
-		try {
-			createBackup(todo, todoBackup);
-			removeTaskFromList(task);
-			writeToFile(tasks);
-			return String.format(MESSAGE_DELETED, task.toString());
-		} catch (Exception e) {
-			return getErrorMessage(e);
+		if(!isLocationSet()) {
+			return MESSAGE_LOCATION_NOT_SET;
+		} else { 
+			setupFiles();
+			try {
+				createBackup(todo, todoBackup);
+				removeTaskFromList(task);
+				writeToFile(tasks);
+				return String.format(MESSAGE_DELETED, task.toString());
+			} catch (Exception e) {
+				return getErrorMessage(e);
+			}
 		}
 	}
 	
 	private void removeTaskFromList(Task task) {
+		updateTaskList();
 		tasks.remove(task);
 		Collections.sort(tasks);
 	}
 	
 	public ArrayList<Task> load(String taskType) {
+		updateTaskList();
 		switch(taskType) {
 			case STRING_EMPTY :
 				return loadTasks();
@@ -220,7 +241,19 @@ public class Storage {
 	}
 	
 	public ArrayList<Task> searchTasks(String keyword) {
-		return null;
+		switch(keyword) {
+			case STRING_EMPTY :
+				return loadTasks();
+			default :
+				ArrayList<Task> filteredTasks = new ArrayList<Task>();
+				updateTaskList();
+				for (int i = 0; i < tasks.size(); i++) {
+					if (tasks.get(i).toString().contains(keyword)) {
+						filteredTasks.add(tasks.get(i));
+					}
+				}
+				return filteredTasks;
+		}
 	}
 	
 	public String markTaskDone(Task task) {
