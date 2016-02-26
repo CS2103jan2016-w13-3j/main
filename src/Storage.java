@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 public class Storage {
 	private static final String DIRECTORY_STORAGE = "C:\\Users\\Public\\SimplyAmzing";
@@ -33,6 +34,8 @@ public class Storage {
 	private static final String MESSAGE_RESTORED = "System is successfully restored to previous state.";
 	private static final String MESSAGE_INVALID_TASK_TYPE = "Unrecognized task type";
 	private static final String MESSAGE_DELETED = "%1$s is deleted successfully.";
+	private static final String MESSAGE_MARKED_DONE = "%1$s is marked as done successfully.";
+	private static final String MESSAGE_UPDATED = "%1$s is updated successfully.";
 	
 	private File storage, todo, todoBackup;
 	private ArrayList<Task> tasks;
@@ -116,7 +119,7 @@ public class Storage {
 				createBackup(todo, todoBackup);
 				addTaskToList(task);
 				writeToFile(tasks);
-				return String.format(MESSAGE_ADDED, task.toString());
+				return String.format(MESSAGE_ADDED, task.toFilteredString());
 			} catch (Exception e) {
 				return getErrorMessage(e);
 			}
@@ -164,8 +167,28 @@ public class Storage {
 			return MESSAGE_LOCATION_NOT_SET;
 		} else { 
 			setupFiles();
+			try {
+				createBackup(todo, todoBackup);
+				removeTaskFromList(task);
+				if (!task.getDescription().matches(editedTask.getDescription())) {
+					task.setDescription(editedTask.getDescription());
+				}
+				if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0) {
+					task.setStartTime(editedTask.getStartTime());
+				}
+				if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0) {
+					task.setEndTime(editedTask.getEndTime());
+				}
+				if (task.getPriority() != editedTask.getPriority()) {
+					task.setPriority(editedTask.getPriority());;
+				}
+				addTaskToList(task);
+				writeToFile(tasks);
+				return String.format(MESSAGE_UPDATED, task.toFilteredString());
+			} catch (Exception e) {
+				return getErrorMessage(e);
+			}
 		}
-		return null;
 	}
 	
 	public String deleteTask(Task task) {
@@ -177,7 +200,7 @@ public class Storage {
 				createBackup(todo, todoBackup);
 				removeTaskFromList(task);
 				writeToFile(tasks);
-				return String.format(MESSAGE_DELETED, task.toString());
+				return String.format(MESSAGE_DELETED, task.toFilteredString());
 			} catch (Exception e) {
 				return getErrorMessage(e);
 			}
@@ -191,6 +214,7 @@ public class Storage {
 	}
 	
 	public ArrayList<Task> load(String taskType) {
+		setupFiles();
 		updateTaskList();
 		switch(taskType) {
 			case STRING_EMPTY :
@@ -212,32 +236,80 @@ public class Storage {
 	}
 	
 	private ArrayList<Task> loadTasks() {
-		return null;
-		
+		ArrayList<Task> currentTasks = new ArrayList<Task>();
+		for (int i = 0; i < tasks.size(); i++) {
+			Task task = tasks.get(i);
+			Date now = new Date();
+			Date endTime = task.getEndTime();
+			if (!task.isDone() && (endTime.after(now) || endTime == Task.DEFAULT_DATE_VALUE)) {
+				currentTasks.add(task);
+			}
+		}
+		return currentTasks;
 	}
 	
 	private ArrayList<Task> loadEvents() {
-		return null;
-		
+		ArrayList<Task> currentEvents = new ArrayList<Task>();
+		for (int i = 0; i < tasks.size(); i++) {
+			Task task = tasks.get(i);
+			Date now = new Date();
+			Date startTime = task.getStartTime();
+			Date endTime = task.getEndTime();
+			if (!task.isDone() && (endTime.after(now) && startTime != Task.DEFAULT_DATE_VALUE)) {
+				currentEvents.add(task);
+			}
+		}
+		return currentEvents;
 	}
 	
 	private ArrayList<Task> loadDeadlines() {
-		return null;
-		
+		ArrayList<Task> currentDeadlines = new ArrayList<Task>();
+		for (int i = 0; i < tasks.size(); i++) {
+			Task task = tasks.get(i);
+			Date now = new Date();
+			Date endTime = task.getEndTime();
+			if (!task.isDone() && endTime.after(now)) {
+				currentDeadlines.add(task);
+			}
+		}
+		return currentDeadlines;
 	}
 	
 	private ArrayList<Task> loadFloatingTasks() {
-		return null;
-		
+		ArrayList<Task> currentFloatingTasks = new ArrayList<Task>();
+		for (int i = 0; i < tasks.size(); i++) {
+			Task task = tasks.get(i);
+			Date startTime = task.getStartTime();
+			Date endTime = task.getEndTime();
+			if (!task.isDone() && (startTime == Task.DEFAULT_DATE_VALUE && endTime == Task.DEFAULT_DATE_VALUE)) {
+				currentFloatingTasks.add(task);
+			}
+		}
+		return currentFloatingTasks;
 	}
 	
 	private ArrayList<Task> loadOverdueTasks() {
-		return null;
+		ArrayList<Task> overdueTasks = new ArrayList<Task>();
+		for (int i = 0; i < tasks.size(); i++) {
+			Task task = tasks.get(i);
+			Date now = new Date();
+			Date endTime = task.getEndTime();
+			if (!task.isDone() && (endTime.before(now) && endTime != Task.DEFAULT_DATE_VALUE)) {
+				overdueTasks.add(task);
+			}
+		}
+		return overdueTasks;		
 	}
 	
 	private ArrayList<Task> loadCompletedTasks() {
-		return null;
-		
+		ArrayList<Task> completedTasks = new ArrayList<Task>();
+		for (int i = 0; i < tasks.size(); i++) {
+			Task task = tasks.get(i);
+			if (task.isDone()) {
+				completedTasks.add(task);
+			}
+		}
+		return completedTasks;
 	}
 	
 	public ArrayList<Task> searchTasks(String keyword) {
@@ -257,10 +329,21 @@ public class Storage {
 	}
 	
 	public String markTaskDone(Task task) {
-		return null;
+		setupFiles();
+		try {
+			createBackup(todo, todoBackup);
+			removeTaskFromList(task);
+			task.setDone(true);
+			addTaskToList(task);
+			writeToFile(tasks);
+			return String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
+		} catch (Exception e) {
+			return getErrorMessage(e);
+		}
 	}
 	
 	public String restore() {
+		setupFiles();
 		try {
 			cleanFile(todo);
 			Files.copy(todoBackup.toPath(), todo.toPath());
