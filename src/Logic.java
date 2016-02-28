@@ -8,10 +8,12 @@ public class Logic {
 	private static ArrayList<Task> list;
 	public static Logic logicObject;
 	private static Scanner sc;
+	private static String previousCommand;
 	
+	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
 	
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command entered. Please enter \"help\" to view command format";
-	
+	private static final String MESSAGE_INPUT_LOCATION = "Directory location not set, please input directory location before running the program"; 
 	
 	enum CommandType {
 		ADD_TASK, VIEW_LIST, DELETE_TASK,INVALID,
@@ -30,17 +32,30 @@ public class Logic {
 		Parser parser = new Parser();
 		Storage storage = new Storage();
 		ArrayList<Task> searchResult = new ArrayList();
+		previousCommand = "";
 		sc = new Scanner(System.in);
 	}
 	
 	private static void runProgram(){
 		while (true){
+			bootstrap();
 			String userCommand = getUserCommand();
 			String commandWord = parser.getFirstWord(userCommand);
 			CommandType cType = getCommandType(commandWord);
 			String feedback = executeCommand(cType, userCommand);
 			displayFeedback(feedback);
+			previousCommand = commandWord;
 		}
+	}
+
+	private static void bootstrap() {
+		Boolean isLocationSet = storage.isLocationSet();
+		if (isLocationSet == true) {
+			return;
+		} else{
+			displayFeedback(MESSAGE_INPUT_LOCATION);
+		}
+		
 	}
 
 	public static String getUserCommand(){
@@ -108,19 +123,30 @@ public class Logic {
 	}
 	
 	private static String executeEditCommand(String userCommand) {
-		Task updatedContent = parser.parseEditCommand(userCommand);
-		int index = 0 // just a buffer, need to find out how to parse edit command and get index
+		if(checkListShown() == false) {
+			return ERROR_DISPLAY_LIST_BEFORE_EDIT;
+		}
+		
+		String inputText = parser.removeFirstWord(userCommand);
+		int index = Integer.parseInt(parser.getFirstWord(inputText));
+		String fieldValues = parser.removeFirstWord(inputText);
+		Task updatedContent = parser.parseEditCommand(fieldValues);
 		Task originalTask = list.get(index);
 		return storage.editTask(originalTask, updatedContent);
 	}
 	
 	private static String executeDeleteCommand(String userCommand) {
+		
+		if(checkListShown() == false) {
+			return ERROR_DISPLAY_LIST_BEFORE_EDIT;
+		}
+		
 		int indexToDelete = parser.removeFirstWord(userCommand);
 		Task taskToDelete = list.get(indexToDelete - 1);
 		list.remove(indexToDelete - 1);
 		return storage.deleteTask(taskToDelete);
 	}
-	
+
 	private static String executeSearchCommand(String userCommand) {
 		// TODO Auto-generated method stub
 		return null;
@@ -148,6 +174,14 @@ public class Logic {
 
 	public static void displayFeedback(String feedback){
 		System.out.println(feedback);
+	}
+	
+	private static boolean checkListShown() {
+		if (previousCommand.toLowerCase().equals("search") || previousCommand.toLowerCase().equals("view")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	private static String convertListToString(ArrayList<Task> list){
