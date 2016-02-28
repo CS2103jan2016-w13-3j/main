@@ -148,8 +148,10 @@ public class Logic {
 	}
 
 	private static String executeSearchCommand(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
+		String keyword = parser.removeFirstWord(userCommand);
+		list = storage.searchTasks(keyword);
+		String listInStringFormat = convertListToString(list);
+		return listInStringFormat;
 	}
 	
 	private static String executeUndoCommand(String userCommand) {
