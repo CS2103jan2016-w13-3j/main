@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Parser {
 
@@ -46,6 +43,8 @@ public class Parser {
 		case COMMAND_HELP:
 			return "";
 		case COMMAND_UNDO:
+			return "";
+		case COMMAND_CLEAR:
 			return "";
 		case COMMAND_SET_LOCATION:
 			return theRestText;
