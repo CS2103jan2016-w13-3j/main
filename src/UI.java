@@ -6,12 +6,8 @@ import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.SystemColor;
 import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
 import java.awt.Font;
-import javax.swing.JScrollBar;
 import javax.swing.JSeparator;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -19,12 +15,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JScrollPane;
 
 public class UI {
-
-	private final static String STRING_EMPTY = "";
-	
-	private static JFrame frame;
-	private static JScrollPane scrollPane;
-	private static JScrollBar scrollBar;
+	private JFrame frame;
 	private static JTextField txtCommand;
 	private static JTextPane textPane;
 	private static Logic logic;
@@ -39,7 +30,7 @@ public class UI {
 					UI window = new UI();
 					window.frame.setVisible(true);
 					logic = new Logic();
-					executeUserCommand(textPane);
+					executeUserCommand();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -69,19 +60,6 @@ public class UI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 57, 664, 311);
-		frame.getContentPane().add(scrollPane);
-		
-		textPane = new JTextPane();
-		textPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		scrollPane.setViewportView(textPane);
-		textPane.setToolTipText("Feedback text will be shown here.");
-		
-		scrollBar = new JScrollBar();
-		scrollBar.setBounds(634, 57, 17, 311);
-		frame.getContentPane().add(scrollBar);
-		
 		txtCommand = new JTextField();
 		txtCommand.addMouseListener(new MouseAdapter() {
 			@Override
@@ -110,23 +88,32 @@ public class UI {
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(10, 44, 664, 2);
 		frame.getContentPane().add(separator_1);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 57, 664, 311);
+		frame.getContentPane().add(scrollPane);
+		
+		textPane = new JTextPane();
+		textPane.setForeground(Color.RED);
+		textPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		textPane.setEditable(false);
+		textPane.setBounds(10, 57, 664, 311);
+		scrollPane.setViewportView(textPane);
 	}
 
-	private static void executeUserCommand(final JTextPane textPane) {
+	private static void executeUserCommand() {
 		txtCommand.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					String feedback = logic.bootstrap();
+					String feedback = null;
 					
-					if(feedback.matches(STRING_EMPTY)) {
-						try {
-							feedback = logic.executeCommand(txtCommand.getText());
-						} catch (Exception e1) {
-							feedback = getErrorMessage(e1);
-						}
+					try {
+						feedback = logic.executeCommand(txtCommand.getText());
+						textPane.setForeground(Color.BLUE);
+					} catch (Exception e1) {
+						feedback = getErrorMessage(e1);
 					}
-			
 					textPane.setText(feedback);
 					txtCommand.setText("");
 				}

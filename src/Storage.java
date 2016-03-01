@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -16,8 +17,9 @@ public class Storage {
 	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
 	
 	private static final String CHARACTER_NEW_LINE = "\n";
-	
+	private static final String CHARACTER_SPACE = " ";
 	private static final String STRING_EMPTY = "";
+	
 	private static final String STRING_TASK_TYPE_EVENT = "events";
 	private static final String STRING_TASK_TYPE_DEADLINE = "deadlines";
 	private static final String STRING_TASK_TYPE_FLOATING = "tasks";
@@ -89,9 +91,7 @@ public class Storage {
 		ArrayList<String> lines = new ArrayList<String>();
 			
 		while ((line = bufferedReader.readLine()) != null) {	
-			if (line != STRING_EMPTY) {
-				lines.add(line);
-			}
+			lines.add(line);
 		}
 		bufferedReader.close();
 		return lines;	 
@@ -100,20 +100,37 @@ public class Storage {
 	public String addTask(Task task) throws Exception {
 		if(!isLocationSet()) {
 			return MESSAGE_LOCATION_NOT_SET;
-		} else { 
-			setupFiles();					
-			createBackup(todo, todoBackup);
+		} else { 					
+			createBackup();
 			addTaskToList(task);
 			writeToFile(tasks);
 			return String.format(MESSAGE_ADDED, task.toFilteredString());
 		}
 	}
+	
+	private void createBackup() throws Exception {
+		setupFiles();
+		if(!isEmptyFile(todo)) {
+			Files.copy(todo.toPath(), todoBackup.toPath(), REPLACE_EXISTING);
+		}
+	}
 
 	private void setupFiles() throws Exception {
 		todo = new File(getLocation()+FILENAME_TODO);
+		if(!todo.exists()) {
+			todo.createNewFile();
+		}
 		todoBackup = new File(getLocation()+FILENAME_TODO_BACKUP);
+		if(!todoBackup.exists()) {
+			todoBackup.createNewFile();
+		}
 	}
 
+	private void cleanFile(File file) throws Exception {
+		FileOutputStream writer = new FileOutputStream(file);
+		writer.close();
+	}
+	
 	private void addTaskToList(Task task) throws Exception {
 		updateTaskList();
 		tasks.add(task);
@@ -140,40 +157,29 @@ public class Storage {
 			String status = fields[Task.ARRAY_POSITION_FOR_STATUS];
 			
 			Task task = new Task();
-			if (description != STRING_EMPTY) {
+			if (!description.matches(CHARACTER_SPACE)) {
 				task.setDescription(description);
 			}
-			if (startTimeString != STRING_EMPTY) {
+			if (!startTimeString.matches(CHARACTER_SPACE)) {
 				task.setStartTime(startTimeString);
 			}
-			if (endTimeString != STRING_EMPTY) {
+			if (!endTimeString.matches(CHARACTER_SPACE)) {
 				task.setEndTime(endTimeString);
 			}
-			if (priorityLevel != STRING_EMPTY) {
+			if (!priorityLevel.matches(CHARACTER_SPACE)) {
 				task.setPriority(priorityLevel);
 			}
-			if (status != STRING_EMPTY) {
+			if (!status.matches(CHARACTER_SPACE)) {
 				task.setDone(true);
 			}
+			tasks.add(task);
 		}
-	}
-
-	private void createBackup(File file, File backupFile) throws Exception {
-		if (!isEmptyFile(todoBackup)) {
-			cleanFile(todoBackup);
-		}
-		if (!isEmptyFile(todo)) {
-			Files.copy(file.toPath(), backupFile.toPath());
-		}
-	}
-	
-	private void cleanFile(File file) throws Exception {
-		FileOutputStream writer = new FileOutputStream(file);
-		writer.close();
 	}
 	
 	private void writeToFile(ArrayList<Task> tasks) throws Exception {
-		cleanFile(todo);
+		if (!isEmptyFile(todo)) { 
+			cleanFile(todo);
+		}
 		for (int i = 0; i < tasks.size(); i++) {
 			writeToFile(todo, tasks.get(i).toString());
 		}	
@@ -183,20 +189,21 @@ public class Storage {
 		if(!isLocationSet()) {
 			return MESSAGE_LOCATION_NOT_SET;
 		} else { 
-			setupFiles();
-			createBackup(todo, todoBackup);
+			createBackup();
 			removeTaskFromList(task);
-			if (!task.getDescription().matches(editedTask.getDescription())) {
+			if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
 				task.setDescription(editedTask.getDescription());
 			}
-			if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0) {
+			if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 && editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
 				task.setStartTime(editedTask.getStartTime());
 			}
-			if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0) {
+			if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 && editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
 				task.setEndTime(editedTask.getEndTime());
 			}
 			if (task.getPriority() != editedTask.getPriority()) {
-				task.setPriority(editedTask.getPriority());;
+				if (editedTask.getPriority() > 2) {
+					task.setPriority(editedTask.getPriority());
+				}
 			}
 			addTaskToList(task);
 			writeToFile(tasks);
@@ -208,8 +215,7 @@ public class Storage {
 		if(!isLocationSet()) {
 			return MESSAGE_LOCATION_NOT_SET;
 		} else { 
-			setupFiles();
-			createBackup(todo, todoBackup);
+			createBackup();
 			removeTaskFromList(task);
 			writeToFile(tasks);
 			return String.format(MESSAGE_DELETED, task.toFilteredString());
@@ -276,8 +282,9 @@ public class Storage {
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
 			Date now = new Date();
+			Date startTime = task.getStartTime();
 			Date endTime = task.getEndTime();
-			if (!task.isDone() && endTime.after(now)) {
+			if (!task.isDone() && endTime.after(now) && startTime == Task.DEFAULT_DATE_VALUE) {
 				currentDeadlines.add(task);
 			}
 		}
@@ -290,7 +297,7 @@ public class Storage {
 			Task task = tasks.get(i);
 			Date startTime = task.getStartTime();
 			Date endTime = task.getEndTime();
-			if (!task.isDone() && (startTime == Task.DEFAULT_DATE_VALUE && endTime == Task.DEFAULT_DATE_VALUE)) {
+			if (!task.isDone() && startTime == Task.DEFAULT_DATE_VALUE && endTime == Task.DEFAULT_DATE_VALUE) {
 				currentFloatingTasks.add(task);
 			}
 		}
@@ -323,7 +330,7 @@ public class Storage {
 	
 	public ArrayList<Task> searchTasks(String keyword) throws Exception {
 		switch(keyword) {
-			case STRING_EMPTY :
+			case CHARACTER_SPACE :
 				return loadTasks();
 			default :
 				ArrayList<Task> filteredTasks = new ArrayList<Task>();
@@ -338,8 +345,7 @@ public class Storage {
 	}
 	
 	public String markTaskDone(Task task) throws Exception {
-		setupFiles();
-		createBackup(todo, todoBackup);
+		createBackup();
 		removeTaskFromList(task);
 		task.setDone(true);
 		addTaskToList(task);
@@ -349,8 +355,13 @@ public class Storage {
 	
 	public String restore() throws Exception {
 		setupFiles();
-		cleanFile(todo);
-		Files.copy(todoBackup.toPath(), todo.toPath());
+		
+		if(!isEmptyFile(todoBackup) || !isEmptyFile(todo)) {
+			cleanFile(todo);
+			Files.copy(todoBackup.toPath(), todo.toPath(), REPLACE_EXISTING);
+			tasks = new ArrayList<Task>();
+			updateTaskList();
+		}
 		return MESSAGE_RESTORED;
 	}
 }

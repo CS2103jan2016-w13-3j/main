@@ -3,13 +3,15 @@ import java.util.Date;
 
 public class Task implements Comparable<Task>{
 
-	public static final int DEFAULT_PRIORITY_LEVEL = 0;
+	private static final int DEFAULT_PRIORITY_LEVEL_EVENT = 2;
+	private static final int DEFAULT_PRIORITY_LEVEL_DEADLINE = 1;
+	public static final int DEFAULT_PRIORITY_LEVEL_FLOATING_TASK = 0;
 	public static final Date DEFAULT_DATE_VALUE = new Date(0);
 
 	private static final String TIME_FORMAT = "H:mm dd MMM yyyy";
 	public static final String FIELD_SEPARATOR = ",";
 	
-	private static final String STRING_EMPTY = "";
+	private static final String CHARACTER_SPACE = " ";
 	
 	private static final String STRING_HIGH_PRIORITY = "high";
 	private static final String STRING_MEDIUM_PRIORITY = "medium";
@@ -21,16 +23,18 @@ public class Task implements Comparable<Task>{
 	public static final int ARRAY_POSITION_FOR_PRIORITY = 3;
 	public static final int ARRAY_POSITION_FOR_STATUS = 4;
 	
+	private static final String MESSAGE_INVALID_PRIORITY_LEVEL = "Priority level can be only high, medium or low.";
+	
 	private String description;
 	private Date startTime, endTime;
 	private int priority;
 	private boolean done; 
 
 	public Task() {
-		this.description = STRING_EMPTY;
+		this.description = CHARACTER_SPACE;
 		this.startTime = DEFAULT_DATE_VALUE;
 		this.endTime = DEFAULT_DATE_VALUE;
-		this.priority = DEFAULT_PRIORITY_LEVEL;
+		this.priority = DEFAULT_PRIORITY_LEVEL_FLOATING_TASK;
 		this.done = false;
 	}
 	
@@ -38,7 +42,7 @@ public class Task implements Comparable<Task>{
 		this.description = description;
 		this.startTime = DEFAULT_DATE_VALUE;
 		this.endTime = DEFAULT_DATE_VALUE;
-		this.priority = DEFAULT_PRIORITY_LEVEL;
+		this.priority = DEFAULT_PRIORITY_LEVEL_FLOATING_TASK;
 		this.done = false;
 	}
 
@@ -46,7 +50,7 @@ public class Task implements Comparable<Task>{
 		this.description = description;
 		this.startTime = DEFAULT_DATE_VALUE;
 		this.endTime = convertStringToDate(endTime);
-		this.priority = DEFAULT_PRIORITY_LEVEL;
+		this.priority = DEFAULT_PRIORITY_LEVEL_DEADLINE;
 		this.done = false;
 	}
 
@@ -54,7 +58,7 @@ public class Task implements Comparable<Task>{
 		this.description = description;
 		this.startTime = convertStringToDate(startTime);
 		this.endTime = convertStringToDate(endTime);
-		this.priority = DEFAULT_PRIORITY_LEVEL;
+		this.priority = DEFAULT_PRIORITY_LEVEL_EVENT;
 		this.done = false;
 	}
 
@@ -64,8 +68,8 @@ public class Task implements Comparable<Task>{
         return date;
     }
 
-    public String convertDateToString(Date date) {
-        String timeString = STRING_EMPTY;
+    public static String convertDateToString(Date date) {
+        String timeString = CHARACTER_SPACE;
         SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT);
         timeString = formatter.format(date);
         return timeString;
@@ -85,6 +89,9 @@ public class Task implements Comparable<Task>{
 
 	public void setStartTime(String startTime) throws Exception {
 		this.startTime = convertStringToDate(startTime);
+		if (this.priority < DEFAULT_PRIORITY_LEVEL_EVENT) {
+			this.priority++;
+		}
 	}
 	
 	public void setStartTime(Date startTime) {
@@ -97,6 +104,9 @@ public class Task implements Comparable<Task>{
 
 	public void setEndTime(String endTime) throws Exception {
 		this.endTime = convertStringToDate(endTime);
+		if (this.priority < DEFAULT_PRIORITY_LEVEL_DEADLINE) {
+			this.priority++;
+		}
 	}
 
 	public void setEndTime(Date endTime) {
@@ -110,13 +120,16 @@ public class Task implements Comparable<Task>{
 	public void setPriority(String priorityLevel) throws Exception {
 		switch(priorityLevel.toLowerCase()) {
 			case STRING_HIGH_PRIORITY :
-				this.priority = 3;
+				this.priority = 5;
+				break;
 			case STRING_MEDIUM_PRIORITY :
-				this.priority = 2;
+				this.priority = 4;
+				break;
 			case STRING_LOW_PRIORITY :
-				this.priority = 1;
+				this.priority = 3;
+				break;
 			default :
-				throw new Exception();
+				throw new Exception(MESSAGE_INVALID_PRIORITY_LEVEL);
 		}
 	}
 
@@ -135,8 +148,8 @@ public class Task implements Comparable<Task>{
 	@Override
 	public int compareTo(Task task) {
 		if(task.getPriority() == this.priority) {
-			if(task.getEndTime() == this.endTime) {
-				if(task.getStartTime() == this.startTime) {
+			if(task.getEndTime().compareTo(this.endTime) == 0) {
+				if(task.getStartTime().compareTo(this.startTime) == 0) {
 					return this.description.compareToIgnoreCase(task.getDescription());
 				}
 				return this.startTime.compareTo(task.getStartTime());
@@ -148,10 +161,10 @@ public class Task implements Comparable<Task>{
 
 	@Override
 	public String toString() {
-		String startTimeString = STRING_EMPTY;
-		String endTimeString = STRING_EMPTY;
-		String priorityLevel = STRING_EMPTY;
-		String status = STRING_EMPTY;
+		String startTimeString = CHARACTER_SPACE;
+		String endTimeString = CHARACTER_SPACE;
+		String priorityLevel = CHARACTER_SPACE;
+		String status = CHARACTER_SPACE;
 		
 		if (this.startTime != DEFAULT_DATE_VALUE) {
 			startTimeString = convertDateToString(this.startTime);
@@ -160,26 +173,30 @@ public class Task implements Comparable<Task>{
 			endTimeString = convertDateToString(this.endTime);
 		}
 		switch(this.priority) {
-			case 3 :
+			case 5 :
 				priorityLevel = STRING_HIGH_PRIORITY;
-			case 2 :
+				break;
+			case 4 :
 				priorityLevel = STRING_MEDIUM_PRIORITY;
-			case 1 : 
+				break;
+			case 3 : 
 				priorityLevel = STRING_LOW_PRIORITY;
+				break;
 			default :
-				priorityLevel = STRING_EMPTY;
+				priorityLevel = CHARACTER_SPACE;
+				break;
 		}
 		if (this.isDone()) {
 			status = "done";
 		}
-		return description + FIELD_SEPARATOR + startTimeString + FIELD_SEPARATOR + endTimeString + FIELD_SEPARATOR + priorityLevel + FIELD_SEPARATOR + status;
+		return this.description + FIELD_SEPARATOR + startTimeString + FIELD_SEPARATOR + endTimeString + FIELD_SEPARATOR + priorityLevel + FIELD_SEPARATOR + status;
 	}
 	
 	public String toFilteredString() {
 		String[] fields = this.toString().split(FIELD_SEPARATOR);
 		String filteredString = "Task[";
 		for (int i = 0; i < ARRAY_POSITION_FOR_STATUS; i++) {
-			if (fields[ARRAY_POSITION_FOR_START_TIME] != STRING_EMPTY) {
+			if (!fields[ARRAY_POSITION_FOR_START_TIME].matches(CHARACTER_SPACE)) {
 				if (i == ARRAY_POSITION_FOR_START_TIME) {
 					filteredString += " from ";
 				}
@@ -187,18 +204,18 @@ public class Task implements Comparable<Task>{
 					filteredString += " to ";
 				}
 			} else {
-				if (fields[ARRAY_POSITION_FOR_END_TIME] != STRING_EMPTY) {
-					if (i == ARRAY_POSITION_FOR_START_TIME && fields[i] != STRING_EMPTY) {
+				if (!fields[ARRAY_POSITION_FOR_END_TIME].matches(CHARACTER_SPACE)) {
+					if (i == ARRAY_POSITION_FOR_END_TIME) {
 						filteredString += " by ";
 					}
 				} else {
-					if (i == ARRAY_POSITION_FOR_PRIORITY && fields[i] != STRING_EMPTY) {
-						filteredString += " with " + fields[i] + "priority";
+					if (i == ARRAY_POSITION_FOR_PRIORITY && !fields[i].matches(CHARACTER_SPACE)) {
+						filteredString += " with " + fields[i] + " priority";
 					}
 				}
 			}
 			if (i != ARRAY_POSITION_FOR_PRIORITY) {
-				filteredString += fields[i];
+				filteredString += fields[i].trim();
 			}
 		}
 		return filteredString+"]";
