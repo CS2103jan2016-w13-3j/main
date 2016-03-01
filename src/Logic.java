@@ -148,8 +148,10 @@ public class Logic {
 	}
 
 	private static String executeSearchCommand(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
+		String keyword = parser.removeFirstWord(userCommand);
+		list = storage.searchTasks(keyword);
+		String listInStringFormat = convertListToString(list);
+		return listInStringFormat;
 	}
 	
 	private static String executeUndoCommand(String userCommand) {
@@ -163,8 +165,12 @@ public class Logic {
 	}
 	
 	private static String executeMarkCommand(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
+		if(checkListShown() == false) {
+			return ERROR_DISPLAY_LIST_BEFORE_EDIT;
+		}
+		int indexToMark = parser.removeFirstWord(userCommand);
+		Task taskToMark = list.get(indexToMark -1);
+		return storage.markTaskDone(taskToMark);
 	}
 	
 	private static String executeHelpCommand(String userCommand) {
