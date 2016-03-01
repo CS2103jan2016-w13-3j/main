@@ -44,9 +44,6 @@ public class Storage {
 		new File(DIRECTORY_STORAGE).mkdirs();
 		this.storage = new File(DIRECTORY_STORAGE+FILENAME_STORAGE);
 		this.tasks = new ArrayList<Task>();
-		if(isLocationSet()) {
-			setupFiles();
-		}
 	}
 	
 	public boolean isLocationSet() {
@@ -57,16 +54,12 @@ public class Storage {
 		return file.length() == SIZE_EMPTY;
 	}
 	
-	public String setLocation(String location) {
+	public String setLocation(String location) throws Exception {
 		if(!new File(location).isDirectory()) {
 			return MESSAGE_NOT_DIRECTORY;
 		} else {	
-			try {
-				writeToFile(storage, location);
-				return MESSAGE_LOCATION_SET;
-			} catch (Exception e) {
-				return getErrorMessage(e);
-			} 
+			writeToFile(storage, location);
+			return MESSAGE_LOCATION_SET;
 		}
 	}
 	
@@ -77,20 +70,14 @@ public class Storage {
 		fileWriter.close();	
 	}
 	
-	private String getErrorMessage(Exception e) {
-		return e.getMessage();
-	}
 	
-	public String getLocation() {
+	
+	public String getLocation() throws Exception {
 		if(!isLocationSet()) {
 			return MESSAGE_LOCATION_NOT_SET;
 		} else { 
-			try {
-				String location = readFile(storage).get(INDEX_START_FOR_ARRAY);
-				return location;
-			} catch (Exception e) {
-				return getErrorMessage(e);
-			}
+			String location = readFile(storage).get(INDEX_START_FOR_ARRAY);
+			return location;
 		}
 	}
 	
@@ -110,23 +97,19 @@ public class Storage {
 		return lines;	 
 	}
 	
-	public String addTask(Task task) {
+	public String addTask(Task task) throws Exception {
 		if(!isLocationSet()) {
 			return MESSAGE_LOCATION_NOT_SET;
 		} else { 
 			setupFiles();					
-			try {
-				createBackup(todo, todoBackup);
-				addTaskToList(task);
-				writeToFile(tasks);
-				return String.format(MESSAGE_ADDED, task.toFilteredString());
-			} catch (Exception e) {
-				return getErrorMessage(e);
-			}
+			createBackup(todo, todoBackup);
+			addTaskToList(task);
+			writeToFile(tasks);
+			return String.format(MESSAGE_ADDED, task.toFilteredString());
 		}
 	}
 
-	private void setupFiles() {
+	private void setupFiles() throws Exception {
 		todo = new File(getLocation()+FILENAME_TODO);
 		todoBackup = new File(getLocation()+FILENAME_TODO_BACKUP);
 	}
@@ -192,48 +175,40 @@ public class Storage {
 		}	
 	}
 	
-	public String editTask(Task task, Task editedTask) {
+	public String editTask(Task task, Task editedTask) throws Exception {
 		if(!isLocationSet()) {
 			return MESSAGE_LOCATION_NOT_SET;
 		} else { 
 			setupFiles();
-			try {
-				createBackup(todo, todoBackup);
-				removeTaskFromList(task);
-				if (!task.getDescription().matches(editedTask.getDescription())) {
-					task.setDescription(editedTask.getDescription());
-				}
-				if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0) {
-					task.setStartTime(editedTask.getStartTime());
-				}
-				if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0) {
-					task.setEndTime(editedTask.getEndTime());
-				}
-				if (task.getPriority() != editedTask.getPriority()) {
-					task.setPriority(editedTask.getPriority());;
-				}
-				addTaskToList(task);
-				writeToFile(tasks);
-				return String.format(MESSAGE_UPDATED, task.toFilteredString());
-			} catch (Exception e) {
-				return getErrorMessage(e);
+			createBackup(todo, todoBackup);
+			removeTaskFromList(task);
+			if (!task.getDescription().matches(editedTask.getDescription())) {
+				task.setDescription(editedTask.getDescription());
 			}
+			if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0) {
+				task.setStartTime(editedTask.getStartTime());
+			}
+			if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0) {
+				task.setEndTime(editedTask.getEndTime());
+			}
+			if (task.getPriority() != editedTask.getPriority()) {
+				task.setPriority(editedTask.getPriority());;
+			}
+			addTaskToList(task);
+			writeToFile(tasks);
+			return String.format(MESSAGE_UPDATED, task.toFilteredString());
 		}
 	}
 	
-	public String deleteTask(Task task) {
+	public String deleteTask(Task task) throws Exception {
 		if(!isLocationSet()) {
 			return MESSAGE_LOCATION_NOT_SET;
 		} else { 
 			setupFiles();
-			try {
-				createBackup(todo, todoBackup);
-				removeTaskFromList(task);
-				writeToFile(tasks);
-				return String.format(MESSAGE_DELETED, task.toFilteredString());
-			} catch (Exception e) {
-				return getErrorMessage(e);
-			}
+			createBackup(todo, todoBackup);
+			removeTaskFromList(task);
+			writeToFile(tasks);
+			return String.format(MESSAGE_DELETED, task.toFilteredString());
 		}
 	}
 	
@@ -358,28 +333,20 @@ public class Storage {
 		}
 	}
 	
-	public String markTaskDone(Task task) {
+	public String markTaskDone(Task task) throws Exception {
 		setupFiles();
-		try {
-			createBackup(todo, todoBackup);
-			removeTaskFromList(task);
-			task.setDone(true);
-			addTaskToList(task);
-			writeToFile(tasks);
-			return String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
-		} catch (Exception e) {
-			return getErrorMessage(e);
-		}
+		createBackup(todo, todoBackup);
+		removeTaskFromList(task);
+		task.setDone(true);
+		addTaskToList(task);
+		writeToFile(tasks);
+		return String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
 	}
 	
-	public String restore() {
+	public String restore() throws Exception {
 		setupFiles();
-		try {
-			cleanFile(todo);
-			Files.copy(todoBackup.toPath(), todo.toPath());
-			return MESSAGE_RESTORED;
-		} catch (Exception e) {
-			return getErrorMessage(e);
-		}
+		cleanFile(todo);
+		Files.copy(todoBackup.toPath(), todo.toPath());
+		return MESSAGE_RESTORED;
 	}
 }
