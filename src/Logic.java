@@ -10,6 +10,8 @@ public class Logic {
 	private static Scanner sc;
 	private static String previousCommand;
 	
+	private static final String EMPTY_STRING = "";
+	
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
 	
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command entered. Please enter \"help\" to view command format";
@@ -22,7 +24,7 @@ public class Logic {
 		;
 	};
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		logicObject = new Logic();
 		runProgram();
@@ -36,7 +38,7 @@ public class Logic {
 		sc = new Scanner(System.in);
 	}
 	
-	private static void runProgram(){
+	private static void runProgram() throws Exception{
 		while (true){
 			bootstrap();
 			String userCommand = getUserCommand();
@@ -86,7 +88,7 @@ public class Logic {
 		}
 	}
 	
-	public static String executeCommand(CommandType comType, String userCommand) {
+	public static String executeCommand(CommandType comType, String userCommand) throws Exception {
 		switch (comType) {
 			case ADD_TASK :
 				return executeAddCommand(userCommand);
@@ -111,18 +113,18 @@ public class Logic {
 		}
 	}
 	
-	private static String executeAddCommand(String userCommand) {
+	private static String executeAddCommand(String userCommand) throws Exception {
 		Task taskToAdd = parser.parseAddCommand(userCommand);
 		return storage.addTask(taskToAdd);
 	}
 	
-	private static String executeViewCommand(String userCommand) {
-		String keyWord = parser.removeFirstWord();
+	private static String executeViewCommand(String userCommand) throws Exception {
+		String keyWord = parser.removeFirstWord(userCommand);
 		list = storage.load(keyWord);
 		return convertListToString(list);
 	}
 	
-	private static String executeEditCommand(String userCommand) {
+	private static String executeEditCommand(String userCommand) throws Exception {
 		if(checkListShown() == false) {
 			return ERROR_DISPLAY_LIST_BEFORE_EDIT;
 		}
@@ -141,13 +143,13 @@ public class Logic {
 			return ERROR_DISPLAY_LIST_BEFORE_EDIT;
 		}
 		
-		int indexToDelete = parser.removeFirstWord(userCommand);
+		int indexToDelete = Integer.parseInt(parser.removeFirstWord(userCommand));
 		Task taskToDelete = list.get(indexToDelete - 1);
 		list.remove(indexToDelete - 1);
 		return storage.deleteTask(taskToDelete);
 	}
 
-	private static String executeSearchCommand(String userCommand) {
+	private static String executeSearchCommand(String userCommand) throws Exception {
 		String keyword = parser.removeFirstWord(userCommand);
 		list = storage.searchTasks(keyword);
 		String listInStringFormat = convertListToString(list);
@@ -168,7 +170,7 @@ public class Logic {
 		if(checkListShown() == false) {
 			return ERROR_DISPLAY_LIST_BEFORE_EDIT;
 		}
-		int indexToMark = parser.removeFirstWord(userCommand);
+		int indexToMark = Integer.parseInt(parser.removeFirstWord(userCommand));
 		Task taskToMark = list.get(indexToMark -1);
 		return storage.markTaskDone(taskToMark);
 	}
@@ -191,11 +193,12 @@ public class Logic {
 	}
 	
 	private static String convertListToString(ArrayList<Task> list){
-		String convertedList;
+		String convertedList = EMPTY_STRING;
 		for (int i = 0; i < list.size(); i++) {
 			Task taskToPrint = list.get(i);
 			convertedList += (i+1) +". " + taskToPrint.toString() + "\n";
 		}
+		return convertedList;
 	}
 	
 }
