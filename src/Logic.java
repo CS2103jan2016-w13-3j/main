@@ -7,6 +7,7 @@ public class Logic {
 	private static Storage storage;
 	private static ArrayList<Task> list;
 	public static Logic logicObject;
+	private static Scanner sc;
 	private static String previousCommand;
 	
 	private static final String EMPTY_STRING = "";
@@ -26,6 +27,7 @@ public class Logic {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		logicObject = new Logic();
+		runProgram();
 	}
 	
 	public Logic(){
@@ -33,16 +35,33 @@ public class Logic {
 		storage = new Storage();
 		list = new ArrayList();
 		previousCommand = "";
+		sc = new Scanner(System.in);
 	}
 	
-	public String bootstrap() {
+	private static void runProgram() throws Exception{
+		while (true){
+			bootstrap();
+			String userCommand = getUserCommand();
+			String commandWord = parser.getFirstWord(userCommand);
+			CommandType cType = getCommandType(commandWord);
+			String feedback = executeCommand(cType, userCommand);
+			displayFeedback(feedback);
+			previousCommand = commandWord;
+		}
+	}
+
+	private static void bootstrap() {
 		Boolean isLocationSet = storage.isLocationSet();
 		if (isLocationSet == true) {
-			return EMPTY_STRING;
+			return;
 		} else{
-			return MESSAGE_INPUT_LOCATION;
+			displayFeedback(MESSAGE_INPUT_LOCATION);
 		}
 		
+	}
+
+	public static String getUserCommand(){
+		return sc.nextLine();
 	}
 	
 	private static CommandType getCommandType(String commandWord) {
@@ -69,43 +88,29 @@ public class Logic {
 		}
 	}
 	
-	public String executeCommand(String userCommand) throws Exception {
-		String commandWord = parser.getFirstWord(userCommand);
-		CommandType cType = getCommandType(commandWord);
-		String feedback = EMPTY_STRING;
-		switch (cType) {
+	public static String executeCommand(CommandType comType, String userCommand) throws Exception {
+		switch (comType) {
 			case ADD_TASK :
-				feedback = executeAddCommand(userCommand);
-				break;
+				return executeAddCommand(userCommand);
 			case DELETE_TASK :
-				feedback = executeDeleteCommand(userCommand);
-				break;
+				return executeDeleteCommand(userCommand);
 			case VIEW_LIST :
-				feedback = executeViewCommand(userCommand);
-				break;
+				return executeViewCommand(userCommand);
 			case EDIT_TASK :
-				feedback = executeEditCommand(userCommand);
-				break;
+				return executeEditCommand(userCommand);
 			case SEARCH_KEYWORD :
-				feedback = executeSearchCommand(userCommand);
-				break;
+				return executeSearchCommand(userCommand);
 			case UNDO_LAST :
-				feedback = executeUndoCommand(userCommand);
-				break;
+				return executeUndoCommand(userCommand);
 			case SET_LOCATION :
-				feedback =  executeSetLocationCommand(userCommand);
-				break;
+				return executeSetLocationCommand(userCommand);
 			case MARK_TASK :
-				feedback = executeMarkCommand(userCommand);
-				break;
+				return executeMarkCommand(userCommand);
 			case HELP :
-				feedback =  executeHelpCommand(userCommand);
-				break;
+				return executeHelpCommand(userCommand);
 			default:
-				feedback =  MESSAGE_INVALID_COMMAND;
+				return MESSAGE_INVALID_COMMAND;
 		}
-		previousCommand = commandWord;
-		return feedback;
 	}
 	
 	private static String executeAddCommand(String userCommand) throws Exception {
@@ -157,7 +162,7 @@ public class Logic {
 	}
 	
 	private static String executeSetLocationCommand(String userCommand) throws Exception {
-		String directoryPath = parser.removeFirstWord(userCommand);
+		String directoryPath = parser.parseSetLocationCommand(userCommand);
 		return storage.setLocation(directoryPath);
 	}
 	
@@ -173,6 +178,10 @@ public class Logic {
 	private static String executeHelpCommand(String userCommand) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public static void displayFeedback(String feedback){
+		System.out.println(feedback);
 	}
 	
 	private static boolean checkListShown() {
