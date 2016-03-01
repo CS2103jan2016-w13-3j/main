@@ -14,7 +14,7 @@ public class Parser {
 	private static final String COMMAND_INVALID = "the command is invalid";
 	private String userInput = "";
 	private String operation = "";
-	private String theRestText = " ";
+	private String theRestText = "";
 
 	public Parser() {
 		this.userInput = "";
