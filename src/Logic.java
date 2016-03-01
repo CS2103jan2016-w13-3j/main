@@ -7,7 +7,6 @@ public class Logic {
 	private static Storage storage;
 	private static ArrayList<Task> list;
 	public static Logic logicObject;
-	private static Scanner sc;
 	private static String previousCommand;
 	
 	private static final String EMPTY_STRING = "";
@@ -27,7 +26,6 @@ public class Logic {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		logicObject = new Logic();
-		runProgram();
 	}
 	
 	public Logic(){
@@ -35,33 +33,16 @@ public class Logic {
 		Storage storage = new Storage();
 		ArrayList<Task> searchResult = new ArrayList();
 		previousCommand = "";
-		sc = new Scanner(System.in);
 	}
 	
-	private static void runProgram() throws Exception{
-		while (true){
-			bootstrap();
-			String userCommand = getUserCommand();
-			String commandWord = parser.getFirstWord(userCommand);
-			CommandType cType = getCommandType(commandWord);
-			String feedback = executeCommand(cType, userCommand);
-			displayFeedback(feedback);
-			previousCommand = commandWord;
-		}
-	}
-
-	private static void bootstrap() {
+	private static String bootstrap() {
 		Boolean isLocationSet = storage.isLocationSet();
 		if (isLocationSet == true) {
-			return;
+			return EMPTY_STRING;
 		} else{
-			displayFeedback(MESSAGE_INPUT_LOCATION);
+			return MESSAGE_INPUT_LOCATION;
 		}
 		
-	}
-
-	public static String getUserCommand(){
-		return sc.nextLine();
 	}
 	
 	private static CommandType getCommandType(String commandWord) {
@@ -88,8 +69,12 @@ public class Logic {
 		}
 	}
 	
-	public static String executeCommand(CommandType comType, String userCommand) throws Exception {
-		switch (comType) {
+	public static String executeCommand(String userCommand) throws Exception {
+		String commandWord = parser.getFirstWord(userCommand);
+		CommandType cType = getCommandType(commandWord);
+		previousCommand = commandWord;
+		
+		switch (cType) {
 			case ADD_TASK :
 				return executeAddCommand(userCommand);
 			case DELETE_TASK :
@@ -178,10 +163,6 @@ public class Logic {
 	private static String executeHelpCommand(String userCommand) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public static void displayFeedback(String feedback){
-		System.out.println(feedback);
 	}
 	
 	private static boolean checkListShown() {
