@@ -33,7 +33,7 @@ public class Logic {
 	public Logic(){
 		parser = new Parser();
 		storage = new Storage();
-		searchResult = new ArrayList();
+		list = new ArrayList();
 		previousCommand = "";
 		sc = new Scanner(System.in);
 	}
