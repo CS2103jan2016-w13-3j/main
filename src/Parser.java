@@ -65,14 +65,10 @@ public class Parser {
 
 	public Task parseAddCommand(String userCommand) throws Exception {
 		operation = userCommand.trim().split("\\s+")[0];
-		theRestText = userCommand.replace(operation, "").trim();
-		String description = theRestText.trim().split("\\s+")[0];
+		theRestText = removeFirstWord(userCommand);
+		String description = theRestText.trim().split("\\s+")[1];
 		
-		Task task = new Task();
-		task.setDescription(description);
-		task.setStartTime("16:00 Jan 20 2016");
-		task.setEndTime("20:00 Jan 20 2016");
-		task.setDone(false);		
+		Task task = new Task(description);	
 		return task;
 	}
 
