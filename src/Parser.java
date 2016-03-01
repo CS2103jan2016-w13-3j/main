@@ -64,11 +64,37 @@ public class Parser {
 	}
 
 	public Task parseAddCommand(String userCommand) throws Exception {
-		operation = userCommand.trim().split("\\s+")[0];
+		Task task = new Task();
 		theRestText = removeFirstWord(userCommand);
-		String description = theRestText.trim().split("\\s+")[1];
 		
-		Task task = new Task(description);	
+		if (!theRestText.contains("from") && !theRestText.contains("by")){
+			
+			task.setDescription(theRestText);
+		}
+		else if (theRestText.contains("by")){
+			//String description1 = theRestText.trim().substring(0,theRestText.lastIndexOf("by")-1);
+			//String endTime1 = theRestText.replace(description1, "").trim().substring(theRestText.lastIndexOf("by")+3);
+			
+			String[] text = theRestText.split("by");
+			String description  = text[0].trim();
+			String endTime = text[1].trim();
+			task.setDescription(description);
+			task.setEndTime(endTime);
+		}else {
+			String[] text = theRestText.split("from");
+			String description  = text[0].trim();
+			String[] text1 = text[1].split("to");
+			String startTime = text1[0].trim();
+			String endTime = text1[1].trim();
+			
+			//String description1 = theRestText.trim().substring(0,theRestText.lastIndexOf("from")-1);
+			//String startime1 = theRestText.trim().substring(theRestText.lastIndexOf("from")+4,theRestText.lastIndexOf("from")-1);
+			task.setDescription(description);
+			task.setStartTime(startTime);
+			task.setEndTime(endTime);
+		}
+		
+		
 		return task;
 	}
 
