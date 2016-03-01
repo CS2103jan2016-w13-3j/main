@@ -159,8 +159,12 @@ public class Storage {
 	}
 
 	private void createBackup(File file, File backupFile) throws Exception {
-		cleanFile(todoBackup);
-		Files.copy(file.toPath(), backupFile.toPath());
+		if (!isEmptyFile(todoBackup)) {
+			cleanFile(todoBackup);
+		}
+		if (!isEmptyFile(todo)) {
+			Files.copy(file.toPath(), backupFile.toPath());
+		}
 	}
 	
 	private void cleanFile(File file) throws Exception {
