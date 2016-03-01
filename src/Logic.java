@@ -72,30 +72,40 @@ public class Logic {
 	public static String executeCommand(String userCommand) throws Exception {
 		String commandWord = parser.getFirstWord(userCommand);
 		CommandType cType = getCommandType(commandWord);
-		previousCommand = commandWord;
-		
+		String feedback = EMPTY_STRING;
 		switch (cType) {
 			case ADD_TASK :
-				return executeAddCommand(userCommand);
+				feedback = executeAddCommand(userCommand);
+				break;
 			case DELETE_TASK :
-				return executeDeleteCommand(userCommand);
+				feedback = executeDeleteCommand(userCommand);
+				break;
 			case VIEW_LIST :
-				return executeViewCommand(userCommand);
+				feedback = executeViewCommand(userCommand);
+				break;
 			case EDIT_TASK :
-				return executeEditCommand(userCommand);
+				feedback = executeEditCommand(userCommand);
+				break;
 			case SEARCH_KEYWORD :
-				return executeSearchCommand(userCommand);
+				feedback = executeSearchCommand(userCommand);
+				break;
 			case UNDO_LAST :
-				return executeUndoCommand(userCommand);
+				feedback = executeUndoCommand(userCommand);
+				break;
 			case SET_LOCATION :
-				return executeSetLocationCommand(userCommand);
+				feedback =  executeSetLocationCommand(userCommand);
+				break;
 			case MARK_TASK :
-				return executeMarkCommand(userCommand);
+				feedback = executeMarkCommand(userCommand);
+				break;
 			case HELP :
-				return executeHelpCommand(userCommand);
+				feedback =  executeHelpCommand(userCommand);
+				break;
 			default:
-				return MESSAGE_INVALID_COMMAND;
+				feedback =  MESSAGE_INVALID_COMMAND;
 		}
+		previousCommand = commandWord;
+		return feedback;
 	}
 	
 	private static String executeAddCommand(String userCommand) throws Exception {
@@ -122,7 +132,7 @@ public class Logic {
 		return storage.editTask(originalTask, updatedContent);
 	}
 	
-	private static String executeDeleteCommand(String userCommand) {
+	private static String executeDeleteCommand(String userCommand) throws Exception {
 		
 		if(checkListShown() == false) {
 			return ERROR_DISPLAY_LIST_BEFORE_EDIT;
@@ -146,12 +156,12 @@ public class Logic {
 		return null;
 	}
 	
-	private static String executeSetLocationCommand(String userCommand) {
+	private static String executeSetLocationCommand(String userCommand) throws Exception {
 		String directoryPath = parser.parseSetLocationCommand(userCommand);
 		return storage.setLocation(directoryPath);
 	}
 	
-	private static String executeMarkCommand(String userCommand) {
+	private static String executeMarkCommand(String userCommand) throws Exception {
 		if(checkListShown() == false) {
 			return ERROR_DISPLAY_LIST_BEFORE_EDIT;
 		}
