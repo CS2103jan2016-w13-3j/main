@@ -29,13 +29,13 @@ public class Logic {
 	}
 	
 	public Logic(){
-		Parser parser = new Parser();
-		Storage storage = new Storage();
-		ArrayList<Task> searchResult = new ArrayList();
+		parser = new Parser();
+		storage = new Storage();
+		list = new ArrayList();
 		previousCommand = "";
 	}
 	
-	private static String bootstrap() {
+	public String bootstrap() {
 		Boolean isLocationSet = storage.isLocationSet();
 		if (isLocationSet == true) {
 			return EMPTY_STRING;
@@ -69,7 +69,7 @@ public class Logic {
 		}
 	}
 	
-	public static String executeCommand(String userCommand) throws Exception {
+	public String executeCommand(String userCommand) throws Exception {
 		String commandWord = parser.getFirstWord(userCommand);
 		CommandType cType = getCommandType(commandWord);
 		String feedback = EMPTY_STRING;
@@ -157,7 +157,7 @@ public class Logic {
 	}
 	
 	private static String executeSetLocationCommand(String userCommand) throws Exception {
-		String directoryPath = parser.parseSetLocationCommand(userCommand);
+		String directoryPath = parser.removeFirstWord(userCommand);
 		return storage.setLocation(directoryPath);
 	}
 	

@@ -20,8 +20,14 @@ import javax.swing.JScrollPane;
 
 public class UI {
 
-	private JFrame frame;
-	private JTextField txtCommand;
+	private final static String STRING_EMPTY = "";
+	
+	private static JFrame frame;
+	private static JScrollPane scrollPane;
+	private static JScrollBar scrollBar;
+	private static JTextField txtCommand;
+	private static JTextPane textPane;
+	private static Logic logic;
 
 	/**
 	 * Launch the application.
@@ -32,11 +38,17 @@ public class UI {
 				try {
 					UI window = new UI();
 					window.frame.setVisible(true);
+					logic = new Logic();
+					executeUserCommand(textPane);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
+	}
+	
+	private static String getErrorMessage(Exception e) {
+		return e.getMessage();
 	}
 
 	/**
@@ -57,16 +69,16 @@ public class UI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 57, 664, 311);
 		frame.getContentPane().add(scrollPane);
 		
-		final JTextPane textPane = new JTextPane();
+		textPane = new JTextPane();
 		textPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		scrollPane.setViewportView(textPane);
 		textPane.setToolTipText("Feedback text will be shown here.");
 		
-		JScrollBar scrollBar = new JScrollBar();
+		scrollBar = new JScrollBar();
 		scrollBar.setBounds(634, 57, 17, 311);
 		frame.getContentPane().add(scrollBar);
 		
@@ -78,15 +90,6 @@ public class UI {
 			}
 		});
 		txtCommand.setText("Type your command here.");
-		txtCommand.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					textPane.setText("Command: "+txtCommand.getText()+System.lineSeparator());
-					txtCommand.setText("");
-				}
-			}
-		});
 		txtCommand.setToolTipText("Type your command here.");
 		txtCommand.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtCommand.setBounds(10, 392, 664, 33);
@@ -107,5 +110,27 @@ public class UI {
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(10, 44, 664, 2);
 		frame.getContentPane().add(separator_1);
+	}
+
+	private static void executeUserCommand(final JTextPane textPane) {
+		txtCommand.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					String feedback = logic.bootstrap();
+					
+					if(feedback.matches(STRING_EMPTY)) {
+						try {
+							feedback = logic.executeCommand(txtCommand.getText());
+						} catch (Exception e1) {
+							feedback = getErrorMessage(e1);
+						}
+					}
+			
+					textPane.setText(feedback);
+					txtCommand.setText("");
+				}
+			}
+		});
 	}
 }
