@@ -1,10 +1,6 @@
 package Storage;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
@@ -19,7 +15,6 @@ public class Storage {
 	private static final String FILENAME_TODO = "\\todo.txt";
 	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
 	
-	private static final String CHARACTER_NEW_LINE = "\n";
 	private static final String CHARACTER_SPACE = " ";
 	private static final String STRING_EMPTY = "";
 	
@@ -63,19 +58,11 @@ public class Storage {
 		if(!new File(location).isDirectory()) {
 			return MESSAGE_NOT_DIRECTORY;
 		} else {	
-			writeToFile(storage, location);
+			WriteManager writeManager = new WriteManager();
+			writeManager.writeToFile(storage, location);
 			return MESSAGE_LOCATION_SET;
 		}
 	}
-	
-	private void writeToFile(File file, String content) throws Exception {
-		FileWriter fileWriter = new FileWriter(file, true);
-		fileWriter.write(content);
-		fileWriter.write(CHARACTER_NEW_LINE);
-		fileWriter.close();	
-	}
-	
-	
 	
 	public String getLocation() throws Exception {
 		if(!isLocationSet()) {
@@ -172,7 +159,8 @@ public class Storage {
 			cleanFile(todo);
 		}
 		for (int i = 0; i < tasks.size(); i++) {
-			writeToFile(todo, tasks.get(i).toString());
+			WriteManager writeManager = new WriteManager();
+			writeManager.writeToFile(todo, tasks.get(i).toString());
 		}	
 	}
 	
