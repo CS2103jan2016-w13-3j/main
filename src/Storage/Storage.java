@@ -28,11 +28,11 @@ public class Storage {
 	private static final int INDEX_START_FOR_ARRAY = 0;
 	
 	private static final String MESSAGE_LOCATION_SET = "Storage location of task data is set sucessfully.";
-	private static final String MESSAGE_LOCATION_NOT_SET = "Storage location of task data has not been set yet.";
-	private static final String MESSAGE_NOT_DIRECTORY = "Provided storage location is not a valid directory";
+	private static final String MESSAGE_LOCATION_NOT_SET = "Storage location of task data is not set yet.\nPlease enter \"location <directory>\" to input the directory location.";
+	private static final String MESSAGE_NOT_DIRECTORY = "Provided storage location is not a valid directory.";
 	private static final String MESSAGE_ADDED = "%1$s is added successfully.";
 	private static final String MESSAGE_RESTORED = "System is successfully restored to previous state.";
-	private static final String MESSAGE_INVALID_TASK_TYPE = "Unrecognized task type";
+	private static final String MESSAGE_INVALID_TASK_TYPE = "Unrecognized task type!";
 	private static final String MESSAGE_DELETED = "%1$s is deleted successfully.";
 	private static final String MESSAGE_MARKED_DONE = "%1$s is marked as done successfully.";
 	private static final String MESSAGE_UPDATED = "%1$s is updated successfully.";
@@ -56,7 +56,7 @@ public class Storage {
 	
 	public String setLocation(String location) throws Exception {
 		if(!new File(location).isDirectory()) {
-			return MESSAGE_NOT_DIRECTORY;
+			throw new Exception(MESSAGE_NOT_DIRECTORY);
 		} else {	
 			WriteManager writeManager = new WriteManager();
 			writeManager.writeToFile(storage, location);
@@ -66,7 +66,7 @@ public class Storage {
 	
 	public String getLocation() throws Exception {
 		if(!isLocationSet()) {
-			return MESSAGE_LOCATION_NOT_SET;
+			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
 			ReadManager readManager = new ReadManager();
 			String location = readManager.readFile(storage).get(INDEX_START_FOR_ARRAY);
@@ -76,7 +76,7 @@ public class Storage {
 	
 	public String addTask(Task task) throws Exception {
 		if(!isLocationSet()) {
-			return MESSAGE_LOCATION_NOT_SET;
+			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 					
 			createBackup();
 			addTaskToList(task);
@@ -166,7 +166,7 @@ public class Storage {
 	
 	public String editTask(Task task, Task editedTask) throws Exception {
 		if(!isLocationSet()) {
-			return MESSAGE_LOCATION_NOT_SET;
+			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
 			createBackup();
 			removeTaskFromList(task);
@@ -192,7 +192,7 @@ public class Storage {
 	
 	public String deleteTask(Task task) throws Exception {
 		if(!isLocationSet()) {
-			return MESSAGE_LOCATION_NOT_SET;
+			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
 			createBackup();
 			removeTaskFromList(task);
@@ -208,24 +208,28 @@ public class Storage {
 	}
 	
 	public ArrayList<Task> load(String taskType) throws Exception {
-		setupFiles();
-		updateTaskList();
-		switch(taskType) {
-			case STRING_EMPTY :
-				return loadTasks();
-			case STRING_TASK_TYPE_EVENT :
-				return loadEvents();
-			case STRING_TASK_TYPE_DEADLINE :
-				return loadDeadlines();
-			case STRING_TASK_TYPE_FLOATING :
-				return loadFloatingTasks();
-			case STRING_TASK_TYPE_OVERDUE :
-				return loadOverdueTasks();
-			case STRING_TASK_TYPE_DONE :
-				return loadCompletedTasks();
-			default :
-				//throw an error if the task type is not recognized
-				throw new Error(MESSAGE_INVALID_TASK_TYPE);
+		if(!isLocationSet()) {
+			throw new Exception(MESSAGE_LOCATION_NOT_SET);
+		} else {
+			setupFiles();
+			updateTaskList();
+			switch(taskType) {
+				case STRING_EMPTY :
+					return loadTasks();
+				case STRING_TASK_TYPE_EVENT :
+					return loadEvents();
+				case STRING_TASK_TYPE_DEADLINE :
+					return loadDeadlines();
+				case STRING_TASK_TYPE_FLOATING :
+					return loadFloatingTasks();
+				case STRING_TASK_TYPE_OVERDUE :
+					return loadOverdueTasks();
+				case STRING_TASK_TYPE_DONE :
+					return loadCompletedTasks();
+				default :
+					//throw an error if the task type is not recognized
+					throw new Error(MESSAGE_INVALID_TASK_TYPE);
+			}
 		}
 	}
 	
@@ -308,39 +312,51 @@ public class Storage {
 	}
 	
 	public ArrayList<Task> searchTasks(String keyword) throws Exception {
-		switch(keyword) {
-			case CHARACTER_SPACE :
-				return loadTasks();
-			default :
-				ArrayList<Task> filteredTasks = new ArrayList<Task>();
-				updateTaskList();
-				for (int i = 0; i < tasks.size(); i++) {
-					if (tasks.get(i).toString().contains(keyword)) {
-						filteredTasks.add(tasks.get(i));
+		if(!isLocationSet()) {
+			throw new Exception(MESSAGE_LOCATION_NOT_SET);
+		} else {
+			switch(keyword) {
+				case CHARACTER_SPACE :
+					return loadTasks();
+				default :
+					ArrayList<Task> filteredTasks = new ArrayList<Task>();
+					updateTaskList();
+					for (int i = 0; i < tasks.size(); i++) {
+						if (tasks.get(i).toString().contains(keyword)) {
+							filteredTasks.add(tasks.get(i));
+						}
 					}
-				}
-				return filteredTasks;
+					return filteredTasks;
+			}
 		}
 	}
 	
 	public String markTaskDone(Task task) throws Exception {
-		createBackup();
-		removeTaskFromList(task);
-		task.setDone(true);
-		addTaskToList(task);
-		writeToFile(tasks);
-		return String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
+		if(!isLocationSet()) {
+			throw new Exception(MESSAGE_LOCATION_NOT_SET);
+		} else {
+			createBackup();
+			removeTaskFromList(task);
+			task.setDone(true);
+			addTaskToList(task);
+			writeToFile(tasks);
+			return String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
+		}
 	}
 	
 	public String restore() throws Exception {
-		setupFiles();
-		
-		if(!isEmptyFile(todoBackup) || !isEmptyFile(todo)) {
-			cleanFile(todo);
-			Files.copy(todoBackup.toPath(), todo.toPath(), REPLACE_EXISTING);
-			tasks = new ArrayList<Task>();
-			updateTaskList();
+		if(!isLocationSet()) {
+			throw new Exception(MESSAGE_LOCATION_NOT_SET);
+		} else {
+			setupFiles();
+			
+			if(!isEmptyFile(todoBackup) || !isEmptyFile(todo)) {
+				cleanFile(todo);
+				Files.copy(todoBackup.toPath(), todo.toPath(), REPLACE_EXISTING);
+				tasks = new ArrayList<Task>();
+				updateTaskList();
+			}
+			return MESSAGE_RESTORED;
 		}
-		return MESSAGE_RESTORED;
 	}
 }
