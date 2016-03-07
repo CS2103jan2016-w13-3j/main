@@ -1,3 +1,4 @@
+package UI;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -6,6 +7,9 @@ import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.SystemColor;
 import javax.swing.JTextPane;
+
+import Logic.Logic;
+
 import java.awt.Font;
 import javax.swing.JSeparator;
 import java.awt.event.KeyAdapter;

@@ -1,3 +1,4 @@
+package Storage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +10,8 @@ import static java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+
+import Data.Task;
 
 public class Storage {
 	private static final String DIRECTORY_STORAGE = "C:\\Users\\Public\\SimplyAmzing";
