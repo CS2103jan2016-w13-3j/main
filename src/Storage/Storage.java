@@ -1,6 +1,5 @@
 package Storage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
@@ -40,22 +39,21 @@ public class Storage {
 	private File storage, todo, todoBackup;
 	private ArrayList<Task> tasks;
 	
+	private FileManager fileManager;
+	
 	public Storage() {
-		new File(DIRECTORY_STORAGE).mkdirs();
-		this.storage = new File(DIRECTORY_STORAGE+FILENAME_STORAGE);
-		this.tasks = new ArrayList<Task>();
+		fileManager = new FileManager();
+		fileManager.createDirectory(DIRECTORY_STORAGE);
+		storage = fileManager.setupFile((DIRECTORY_STORAGE+FILENAME_STORAGE));
+		tasks = new ArrayList<Task>();
 	}
 	
 	public boolean isLocationSet() {
-		return !isEmptyFile(storage);
-	}
-	
-	private boolean isEmptyFile(File file) {
-		return file.length() == SIZE_EMPTY;
+		return !fileManager.isEmptyFile(storage);
 	}
 	
 	public String setLocation(String location) throws Exception {
-		if(!new File(location).isDirectory()) {
+		if(!fileManager.isDirectory(location)) {
 			throw new Exception(MESSAGE_NOT_DIRECTORY);
 		} else {	
 			WriteManager writeManager = new WriteManager();
@@ -77,37 +75,22 @@ public class Storage {
 	public String addTask(Task task) throws Exception {
 		if(!isLocationSet()) {
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
-		} else { 					
-			createBackup();
+		} else { 	
+			setupFiles();
+			fileManager.createBackup(todo, todoBackup);
 			addTaskToList(task);
-			writeToFile(tasks);
+			fileManager.writeToFile(tasks, todo);
 			return String.format(MESSAGE_ADDED, task.toFilteredString());
-		}
-	}
-	
-	private void createBackup() throws Exception {
-		setupFiles();
-		if(!isEmptyFile(todo)) {
-			Files.copy(todo.toPath(), todoBackup.toPath(), REPLACE_EXISTING);
 		}
 	}
 
 	private void setupFiles() throws Exception {
-		todo = new File(getLocation()+FILENAME_TODO);
-		if(!todo.exists()) {
-			todo.createNewFile();
-		}
-		todoBackup = new File(getLocation()+FILENAME_TODO_BACKUP);
-		if(!todoBackup.exists()) {
-			todoBackup.createNewFile();
-		}
+		todo = fileManager.setupFile(getLocation()+FILENAME_TODO);
+		fileManager.createFileIfNotExist(todo);
+		todoBackup = fileManager.setupFile(getLocation()+FILENAME_TODO_BACKUP);
+		fileManager.createFileIfNotExist(todoBackup);
 	}
 
-	private void cleanFile(File file) throws Exception {
-		FileOutputStream writer = new FileOutputStream(file);
-		writer.close();
-	}
-	
 	private void addTaskToList(Task task) throws Exception {
 		updateTaskList();
 		tasks.add(task);
@@ -115,7 +98,7 @@ public class Storage {
 	}
 	
 	private void updateTaskList() throws Exception {
-		if(!isEmptyFile(todo)) {
+		if(!fileManager.isEmptyFile(todo)) {
 			if(tasks.size() == SIZE_EMPTY) {
 				createTaskList();
 			}
@@ -154,21 +137,12 @@ public class Storage {
 		}
 	}
 	
-	private void writeToFile(ArrayList<Task> tasks) throws Exception {
-		if (!isEmptyFile(todo)) { 
-			cleanFile(todo);
-		}
-		for (int i = 0; i < tasks.size(); i++) {
-			WriteManager writeManager = new WriteManager();
-			writeManager.writeToFile(todo, tasks.get(i).toString());
-		}	
-	}
-	
 	public String editTask(Task task, Task editedTask) throws Exception {
 		if(!isLocationSet()) {
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
-			createBackup();
+			setupFiles();
+			fileManager.createBackup(todo, todoBackup);
 			removeTaskFromList(task);
 			if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
 				task.setDescription(editedTask.getDescription());
@@ -185,7 +159,7 @@ public class Storage {
 				}
 			}
 			addTaskToList(task);
-			writeToFile(tasks);
+			fileManager.writeToFile(tasks, todo);
 			return String.format(MESSAGE_UPDATED, task.toFilteredString());
 		}
 	}
@@ -194,9 +168,10 @@ public class Storage {
 		if(!isLocationSet()) {
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
-			createBackup();
+			setupFiles();
+			fileManager.createBackup(todo, todoBackup);
 			removeTaskFromList(task);
-			writeToFile(tasks);
+			fileManager.writeToFile(tasks, todo);
 			return String.format(MESSAGE_DELETED, task.toFilteredString());
 		}
 	}
@@ -335,11 +310,12 @@ public class Storage {
 		if(!isLocationSet()) {
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else {
-			createBackup();
+			setupFiles();
+			fileManager.createBackup(todo, todoBackup);
 			removeTaskFromList(task);
 			task.setDone(true);
 			addTaskToList(task);
-			writeToFile(tasks);
+			fileManager.writeToFile(tasks, todo);
 			return String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
 		}
 	}
@@ -350,8 +326,8 @@ public class Storage {
 		} else {
 			setupFiles();
 			
-			if(!isEmptyFile(todoBackup) || !isEmptyFile(todo)) {
-				cleanFile(todo);
+			if(!fileManager.isEmptyFile(todoBackup) || !fileManager.isEmptyFile(todo)) {
+				fileManager.cleanFile(todo);
 				Files.copy(todoBackup.toPath(), todo.toPath(), REPLACE_EXISTING);
 				tasks = new ArrayList<Task>();
 				updateTaskList();
