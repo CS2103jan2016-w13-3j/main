@@ -1,15 +1,16 @@
 package Logic;
-import java.util.ArrayList;
 
-import Data.Task;
 import Parser.Parser;
+import Data.Task;
 import Storage.Storage;
+import java.util.ArrayList;
 
 public class Logic {
 	
 	private static Parser parser;
 	private static Storage storage;
 	private static ArrayList<Task> list;
+	private static AddHandler addHandler;
 	private static String previousCommand;
 	
 	private static final String STRING_EMPTY = "";
@@ -31,6 +32,7 @@ public class Logic {
 		parser = new Parser();
 		storage = new Storage();
 		list = new ArrayList<Task>();
+		addHandler = new AddHandler();
 		previousCommand = "";
 	}
 	
@@ -104,9 +106,14 @@ public class Logic {
 	}
 	
 	private static String executeAddCommand(String userCommand) throws Exception {
-		String userCommandWithoutCommandType = parser.removeFirstWord(userCommand);
-		Task taskToAdd = parser.parseAddCommand(userCommandWithoutCommandType);
-		return storage.addTask(taskToAdd);
+		String taskContent = parser.removeFirstWord(userCommand);
+		addHandler.setContent(taskContent);
+		
+		if(addHandler.checkContentValid() == false) {
+			return MESSAGE_INVALID_COMMAND;
+		} else {
+			return addHandler.addTask();
+		}
 	}
 	
 	private static String executeViewCommand(String userCommand) throws Exception {
