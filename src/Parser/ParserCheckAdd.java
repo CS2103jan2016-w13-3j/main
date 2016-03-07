@@ -61,6 +61,10 @@ public class ParserCheckAdd {
 					return false;
 				}
 			}
+		}else{
+			if(taskInfo.equals(EMPTY_STRING)){
+				return false;
+			}
 		}
 		return true;
 	}

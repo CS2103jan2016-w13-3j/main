@@ -17,10 +17,7 @@ public class Parser {
 	
 	private static final String STRING_EMPTY = "";
 	private static final String CHARACTER_FIELD_VALUE_SEPARATOR = ":";
-	private static final String CHARACTER_SPACE = "\\s";
-	
-	p
-	
+	private static final String CHARACTER_SPACE = "\\s";	
 
 	public Parser() {
 		
