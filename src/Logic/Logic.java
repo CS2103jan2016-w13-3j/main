@@ -12,12 +12,14 @@ public class Logic {
 	private static ArrayList<Task> list;
 	private static AddHandler addHandler;
 	private static DeleteHandler delHandler;
+	private static ViewHandler viewHandler;
 	private static String previousCommand;
 	
 	private static final String STRING_EMPTY = "";
 	
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
 	private static final String ERROR_INVALID_INDEX = "Error: Invalid index entered";
+	private static final String ERROR_INVALID_KEYWORD = "Error: Keyword given is invalid";
 	
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command entered. Please enter \"help\" to view command format";
 	private static final String MESSAGE_INPUT_LOCATION = "Directory location not set, please input directory location before running the program";
@@ -36,6 +38,7 @@ public class Logic {
 		list = new ArrayList<Task>();
 		addHandler = new AddHandler();
 		delHandler = new DeleteHandler();
+		viewHandler = new ViewHandler();
 		previousCommand = "";
 	}
 	
@@ -121,8 +124,14 @@ public class Logic {
 	
 	private static String executeViewCommand(String userCommand) throws Exception {
 		String keyWord = parser.removeFirstWord(userCommand);
-		list = storage.load(keyWord);
-		return convertListToString(list);
+		viewHandler.setKeyword(keyWord);
+		
+		if(viewHandler.checkKeywordValid() == false) {
+			return ERROR_INVALID_KEYWORD;
+		} else {
+			list = viewHandler.getList();
+			return convertListToString(list);	
+		}
 	}
 	
 	private static String executeEditCommand(String userCommand) throws Exception {
