@@ -19,13 +19,7 @@ public class Parser {
 	private static final String CHARACTER_FIELD_VALUE_SEPARATOR = ":";
 	private static final String CHARACTER_SPACE = "\\s";
 	
-	private static final String KEYWORD_SCHEDULE_TO = "to";
-	private static final String KEYWORD_SCHEDULE_FROM = "from";
-	private static final String KEYWORD_DEADLINE = "by";
-	private static final String KEYWORD_PRIORITY = "priority";
-	
-	
-	private static final String[] KEYWORDS = {KEYWORD_PRIORITY,KEYWORD_DEADLINE, KEYWORD_SCHEDULE_FROM, KEYWORD_SCHEDULE_TO};
+	p
 	
 
 	public Parser() {

@@ -63,7 +63,7 @@ public class Task implements Comparable<Task>{
 		this.done = false;
 	}
 
-	public Date convertStringToDate(String timeString) throws Exception {
+	public static Date convertStringToDate(String timeString) throws Exception {
         SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT);
         Date date = formatter.parse(timeString);
         return date;
