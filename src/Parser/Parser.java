@@ -24,11 +24,9 @@ public class Parser {
 	private static final String KEYWORD_DEADLINE = "by";
 	private static final String KEYWORD_PRIORITY = "priority";
 	
-	private static String firstWord= "";
-	private static String = "";
 	
 	private static final String[] KEYWORDS = {KEYWORD_PRIORITY,KEYWORD_DEADLINE, KEYWORD_SCHEDULE_FROM, KEYWORD_SCHEDULE_TO};
-	private static final String MESSAGE_INVALID_FORMAT = "The command is invalid";
+	
 
 	public Parser() {
 		
@@ -41,53 +39,23 @@ public class Parser {
 	public String getFirstWord(String userCommand) {
 		return userCommand.trim().split(CHARACTER_SPACE)[0];
 	}
-
+    
 	public Task parseAddCommand(String taskInfo) throws Exception {
-		Task task = new Task();
-		
-		if (taskInfo.contains("from") && taskInfo.contains("to")) {	// For events
-			String description  = taskInfo.trim().split("from")[0].trim();
-			String startTime = taskInfo.trim().split("from")[1].trim().split("to")[0].trim();
-			String endTime = taskInfo.trim().split("from")[1].trim().split("to")[1].trim();
-			task.setDescription(description);
-			task.setStartTime(startTime);
-			task.setEndTime(endTime);
-		} else if (taskInfo.contains("by")) { // For deadlines
-			String description  = taskInfo.trim().split("by")[0].trim();
-			String endTime = taskInfo.trim().split("by")[1].trim();
-			task.setDescription(description);
-			task.setEndTime(endTime);
-		} else {
-			task.setDescription(taskInfo.trim());
-		}
-		return task;
-	}
-
+	    ParserAdd parserAdd = new ParserAdd();
+	    return parserAdd.parseAddCommand(taskInfo);
+	    
+	}	
 	public Task parseEditCommand(String taskInfo) throws Exception {
-		Task task = new Task();
-		String[] fieldValuePairs = taskInfo.split(",");
-		for (int i = 0; i < fieldValuePairs.length; i++) {
-			String field = getFirstWord(fieldValuePairs[i]);
-			String value = removeFirstWord(fieldValuePairs[i]);
-			
-			switch(field.toLowerCase()) {
-				case "description" :
-					task.setDescription(value);
-					break;
-				case "starttime" :
-					task.setStartTime(value);
-					break;
-				case "endtime" :
-					task.setEndTime(value);
-					break;
-				case "priority" :
-					task.setPriority(value);
-					break;
-				default :
-					throw new Exception(MESSAGE_INVALID_FORMAT);
-			}
-		}
-		return task;
+		ParserEdit parserEdit = new ParserEdit();
+		Parser parser = new Parser();
+	    return parserEdit.parserEditCommand(parser,taskInfo);
 	}
-
+	public boolean parserCheckAddCommand(String taskInfo) throws Exception{
+		ParserCheckAdd parserAdd = new ParserCheckAdd();
+		return parserAdd.isAddingValid(taskInfo);
+	}
+	public boolean parserCheckEditCommand(String taskInfo) throws Exception{
+		ParserCheckEdit parserEdit = new ParserCheckEdit();
+		return parserEdit.isEditingValid(taskInfo);
+	}
 }
