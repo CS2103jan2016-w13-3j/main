@@ -5,12 +5,9 @@ import Storage.Storage;
 import Data.Task;
 
 public class ViewHandler {
-	Storage storage;
 	ArrayList<Task> list;
 	String keyWord;
-	public ViewHandler(){
-		storage = new Storage();
-	}
+	
 	public void setKeyword(String keyWord) {
 		this.keyWord = keyWord;
 	}
@@ -33,7 +30,7 @@ public class ViewHandler {
 		}
 	}
 
-	public ArrayList<Task> getList() throws Exception {
+	public ArrayList<Task> getList(Storage storage) throws Exception {
 		list = storage.load(keyWord);
 		return list;
 	}

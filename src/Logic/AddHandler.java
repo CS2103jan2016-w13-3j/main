@@ -7,23 +7,19 @@ import Storage.Storage;
 
 public class AddHandler {
 	public static String command;
-	public static Parser parser;
-	public static Storage storage;
 	public static Boolean isContentValid;
 	
 	public AddHandler(){
-		parser = new Parser();
-		storage = new Storage();
 		isContentValid = false;
 	}
-	public boolean checkContentValid() throws Exception{
+	public boolean checkContentValid(Parser parser) throws Exception{
 		 isContentValid = parser.parserCheckAddCommand(command);
 		 return isContentValid;
 	}
 	public void setContent(String taskContent) {
 		command = taskContent;
 	}
-	public String addTask() throws Exception {
+	public String addTask(Parser parser, Storage storage) throws Exception {
 		Task taskToAdd = parser.parseAddCommand(command);;
 		return storage.addTask(taskToAdd);
 	}

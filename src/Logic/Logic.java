@@ -118,10 +118,10 @@ public class Logic {
 		String taskContent = parser.removeFirstWord(userCommand);
 		addHandler.setContent(taskContent);
 		
-		if(addHandler.checkContentValid() == false) {
+		if(addHandler.checkContentValid(parser) == false) {
 			return MESSAGE_INVALID_COMMAND;
 		} else {
-			return addHandler.addTask();
+			return addHandler.addTask(parser, storage);
 		}
 	}
 	
@@ -132,7 +132,7 @@ public class Logic {
 		if(viewHandler.checkKeywordValid() == false) {
 			return ERROR_INVALID_KEYWORD;
 		} else {
-			list = viewHandler.getList();
+			list = viewHandler.getList(storage);
 			return convertListToString(list);	
 		}
 	}
@@ -143,17 +143,17 @@ public class Logic {
 		}
 		editHandler.setList(list);
 		String commandContent = parser.removeFirstWord(userCommand);
-		editHandler.setIndex(commandContent);
+		editHandler.setIndex(commandContent, parser);
 		
 		if (editHandler.checkIndexValid() == false) {
 			return ERROR_INVALID_INDEX;
 		} else{
-			editHandler.setFieldValues(commandContent);
+			editHandler.setFieldValues(commandContent, parser);
 			
-			if (editHandler.checkFieldValid() == false) {
+			if (editHandler.checkFieldValid(parser) == false) {
 				return ERROR_INVALID_FIELD_VALUES;
 			} else{
-				return editHandler.editTask();
+				return editHandler.editTask(parser, storage);
 			}
 		}
 	}
@@ -169,8 +169,7 @@ public class Logic {
 		if(delHandler.checkIndexValid() == false) {
 			return ERROR_INVALID_INDEX;
 		} else {
-			String feedback = delHandler.deleteTask();
-			list = delHandler.getList();
+			String feedback = delHandler.deleteTask(storage);
 			return feedback;	
 		}
 	}
