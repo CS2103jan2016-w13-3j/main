@@ -1,5 +1,5 @@
 package Parser;
-import data package Task;
+import Data.Task;
 
 public class Parser {
 
@@ -25,7 +25,7 @@ public class Parser {
 	private static final String KEYWORD_PRIORITY = "priority";
 	
 	private static String firstWord= "";
-	private static String firstWord= "";
+	private static String = "";
 	
 	private static final String[] KEYWORDS = {KEYWORD_PRIORITY,KEYWORD_DEADLINE, KEYWORD_SCHEDULE_FROM, KEYWORD_SCHEDULE_TO};
 	private static final String MESSAGE_INVALID_FORMAT = "The command is invalid";
