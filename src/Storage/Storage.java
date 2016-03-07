@@ -56,8 +56,7 @@ public class Storage {
 		if(!fileManager.isDirectory(location)) {
 			throw new Exception(MESSAGE_NOT_DIRECTORY);
 		} else {	
-			WriteManager writeManager = new WriteManager();
-			writeManager.writeToFile(storage, location);
+			fileManager.writeToFile(storage, location);
 			return MESSAGE_LOCATION_SET;
 		}
 	}
