@@ -37,7 +37,7 @@ public class FileManager {
 	}
 	
 	public void writeToFile(ArrayList<Task> tasks, File file) throws Exception {
-		if (isEmptyFile(file)) { 
+		if (!isEmptyFile(file)) { 
 			cleanFile(file);
 		}
 		for (int i = 0; i < tasks.size(); i++) {
@@ -56,7 +56,7 @@ public class FileManager {
 	}
 	
 	public void createBackup(File file, File backupFile) throws Exception {
-		if(isEmptyFile(file)) {
+		if(!isEmptyFile(file)) {
 			Files.copy(file.toPath(), backupFile.toPath(), REPLACE_EXISTING);
 		}
 	}
