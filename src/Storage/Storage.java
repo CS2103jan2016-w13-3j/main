@@ -81,23 +81,10 @@ public class Storage {
 		if(!isLocationSet()) {
 			return MESSAGE_LOCATION_NOT_SET;
 		} else { 
-			String location = readFile(storage).get(INDEX_START_FOR_ARRAY);
+			ReadManager readManager = new ReadManager();
+			String location = readManager.readFile(storage).get(INDEX_START_FOR_ARRAY);
 			return location;
 		}
-	}
-	
-	private ArrayList<String> readFile(File file) throws Exception {
-		FileInputStream fileInputStream = new FileInputStream(file);
-		InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-		String line = null;
-		ArrayList<String> lines = new ArrayList<String>();
-			
-		while ((line = bufferedReader.readLine()) != null) {	
-			lines.add(line);
-		}
-		bufferedReader.close();
-		return lines;	 
 	}
 	
 	public String addTask(Task task) throws Exception {
@@ -149,7 +136,8 @@ public class Storage {
 	}
 
 	private void createTaskList() throws Exception {
-		ArrayList<String> lines = readFile(todo);
+		ReadManager readManger = new ReadManager();
+		ArrayList<String> lines = readManger.readFile(todo);
 		for (int i = 0; i < lines.size(); i++) {
 			String[] fields = lines.get(i).split(Task.FIELD_SEPARATOR);
 			
