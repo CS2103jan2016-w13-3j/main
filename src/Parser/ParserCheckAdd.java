@@ -1,9 +1,8 @@
 package Parser;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import Data.Task;
 
 public class ParserCheckAdd {
 	private static final String KEYWORD_SCHEDULE_TO = "to";
@@ -30,14 +29,19 @@ public class ParserCheckAdd {
 			 }
 			 else if(!startTime.equals(EMPTY_STRING) &&!endTime.equals(EMPTY_STRING)){
 				 try {
-			            DateFormat df = new SimpleDateFormat(TIME_FORMAT);
-			            DateFormat tf = new SimpleDateFormat(TIME_FORMAT);
-			            df.setLenient(false);
-			            df.parse(startTime);
-			            tf.setLenient(false);
-			            tf.parse(endTime);
+					    SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);		         
+			            sdf.setLenient(false);
+			            Date startingDate = sdf.parse(startTime);
+			            Date endingDate = sdf.parse(endTime);
+			            Date todayDate = sdf.parse(sdf.format(new Date() ));
 			            
-			            
+			            if(startingDate.after(endingDate)){
+			            	return false;
+			            }
+			            else if(startingDate.after(endingDate) || startingDate.before(todayDate)){
+			            	return false;
+			            }
+		
 			            return true;
 			        } catch (ParseException e) {
 			            return false;
