@@ -13,6 +13,7 @@ public class Logic {
 	private static AddHandler addHandler;
 	private static DeleteHandler delHandler;
 	private static ViewHandler viewHandler;
+	private static EditHandler editHandler;
 	private static String previousCommand;
 	
 	private static final String STRING_EMPTY = "";
@@ -20,6 +21,7 @@ public class Logic {
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
 	private static final String ERROR_INVALID_INDEX = "Error: Invalid index entered";
 	private static final String ERROR_INVALID_KEYWORD = "Error: Keyword given is invalid";
+	private static final String ERROR_INVALID_FIELD_VALUES = "Error: Field Values given are invalid";
 	
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command entered. Please enter \"help\" to view command format";
 	private static final String MESSAGE_INPUT_LOCATION = "Directory location not set, please input directory location before running the program";
@@ -39,6 +41,7 @@ public class Logic {
 		addHandler = new AddHandler();
 		delHandler = new DeleteHandler();
 		viewHandler = new ViewHandler();
+		editHandler = new EditHandler();
 		previousCommand = "";
 	}
 	
@@ -138,12 +141,21 @@ public class Logic {
 		if (isListShown() == false) {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
-		String userCommandWithoutCommandType = parser.removeFirstWord(userCommand);
-		int index = Integer.parseInt(parser.getFirstWord(userCommandWithoutCommandType));
-		String fieldValues = parser.removeFirstWord(userCommandWithoutCommandType);
-		Task updatedContent = parser.parseEditCommand(fieldValues);
-		Task originalTask = list.get(index - 1);
-		return storage.editTask(originalTask, updatedContent);
+		editHandler.setList(list);
+		String commandContent = parser.removeFirstWord(userCommand);
+		editHandler.setIndex(commandContent);
+		
+		if (editHandler.checkIndexValid() == false) {
+			return ERROR_INVALID_INDEX;
+		} else{
+			editHandler.setFieldValues(commandContent);
+			
+			if (editHandler.checkFieldValid() == false) {
+				return ERROR_INVALID_FIELD_VALUES;
+			} else{
+				return editHandler.editTask();
+			}
+		}
 	}
 	
 	private static String executeDeleteCommand(String userCommand) throws Exception {

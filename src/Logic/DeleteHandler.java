@@ -25,7 +25,7 @@ public class DeleteHandler {
 		indexToDelete = Integer.parseInt(commandContent);
 	}
 	public boolean checkIndexValid(){
-		if(indexToDelete <= 0 || indexToDelete>list.size()){
+		if (indexToDelete <= 0 || indexToDelete>list.size()) {
 			return false;
 		} else{
 			return true;
