@@ -132,7 +132,7 @@ import Parser.com.joestelmach;
 			}
 			return dateString;
 		}
-
+      
 		/**
 		 * Every dateString will be passed to this method and parsed by Natty
 		 *
@@ -142,6 +142,7 @@ import Parser.com.joestelmach;
 		 * @return                        A calendar object which reflects the date and/or time
 		 * 										from dateString
 		 */
+		
 		private Calendar parseDateByNatty(String dateString) throws ParserException{
 			dateString = convertFutureToTenYear(dateString);
 			com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
@@ -157,6 +158,7 @@ import Parser.com.joestelmach;
 			calendar.setTime(date);
 			return calendar;
 		}
+	
 
 		private boolean isValidDate (String dateString) throws ParserException{				
 			if(countAppearance(dateString, STRING_SLASH) == 2 ){
