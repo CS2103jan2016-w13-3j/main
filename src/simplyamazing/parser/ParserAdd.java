@@ -1,6 +1,6 @@
-package Parser;
+package simplyamazing.parser;
 
-import Data.Task;
+import simplyamazing.data.Task;
 
 public class ParserAdd {
 	private static final String KEYWORD_SCHEDULE_TO = "to";

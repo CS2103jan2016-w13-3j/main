@@ -1,4 +1,4 @@
-package Parser;
+package simplyamazing.parser;
 
 public class ParserException  extends Exception{
 	private static final long serialVersionUID = 2L;

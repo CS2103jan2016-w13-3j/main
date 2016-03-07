@@ -1,12 +1,14 @@
-package Storage;
+package simplyamazing.storage;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 import java.io.File;
 import java.nio.file.Files;
-import static java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
-import Data.Task;
+import simplyamazing.data.Task;
 
 public class Storage {
 	private static final String DIRECTORY_STORAGE = "C:\\Users\\Public\\SimplyAmzing";

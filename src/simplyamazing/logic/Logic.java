@@ -1,9 +1,10 @@
-package Logic;
+package simplyamazing.logic;
 
-import Parser.Parser;
-import Data.Task;
-import Storage.Storage;
 import java.util.ArrayList;
+
+import simplyamazing.data.Task;
+import simplyamazing.parser.Parser;
+import simplyamazing.storage.Storage;
 
 public class Logic {
 	

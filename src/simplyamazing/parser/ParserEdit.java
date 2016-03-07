@@ -1,6 +1,6 @@
-package Parser;
+package simplyamazing.parser;
 
-import Data.Task;
+import simplyamazing.data.Task;
 
 public class ParserEdit {
 	private static final String MESSAGE_INVALID_FORMAT = "The command is invalid";

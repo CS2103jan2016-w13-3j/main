@@ -1,4 +1,5 @@
-package Data;
+package simplyamazing.data;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

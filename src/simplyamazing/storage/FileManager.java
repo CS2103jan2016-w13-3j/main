@@ -1,4 +1,4 @@
-package Storage;
+package simplyamazing.storage;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
-import Data.Task;
+import simplyamazing.data.Task;
 
 public class FileManager {
 	

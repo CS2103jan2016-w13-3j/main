@@ -1,5 +1,5 @@
-package Parser;
-import Data.Task;
+package simplyamazing.parser;
+import simplyamazing.data.Task;
 
 public class Parser {
 
