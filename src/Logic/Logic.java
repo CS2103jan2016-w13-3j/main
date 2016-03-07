@@ -11,11 +11,13 @@ public class Logic {
 	private static Storage storage;
 	private static ArrayList<Task> list;
 	private static AddHandler addHandler;
+	private static DeleteHandler delHandler;
 	private static String previousCommand;
 	
 	private static final String STRING_EMPTY = "";
 	
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
+	private static final String ERROR_INVALID_INDEX = "Error: Invalid index entered";
 	
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command entered. Please enter \"help\" to view command format";
 	private static final String MESSAGE_INPUT_LOCATION = "Directory location not set, please input directory location before running the program";
@@ -33,6 +35,7 @@ public class Logic {
 		storage = new Storage();
 		list = new ArrayList<Task>();
 		addHandler = new AddHandler();
+		delHandler = new DeleteHandler();
 		previousCommand = "";
 	}
 	
@@ -135,15 +138,20 @@ public class Logic {
 	}
 	
 	private static String executeDeleteCommand(String userCommand) throws Exception {
-		
 		if (isListShown() == false) {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
-		String userCommandWithoutCommandType = parser.removeFirstWord(userCommand);
-		int indexToDelete = Integer.parseInt(userCommandWithoutCommandType);
-		Task taskToDelete = list.get(indexToDelete - 1);
-		list.remove(indexToDelete - 1);
-		return storage.deleteTask(taskToDelete);
+		delHandler.setList(list);
+		String commandContent = parser.removeFirstWord(userCommand);
+		delHandler.setIndex(commandContent);
+		
+		if(delHandler.checkIndexValid() == false) {
+			return ERROR_INVALID_INDEX;
+		} else {
+			String feedback = delHandler.deleteTask();
+			list = delHandler.getList();
+			return feedback;	
+		}
 	}
 
 	private static String executeSearchCommand(String userCommand) throws Exception {

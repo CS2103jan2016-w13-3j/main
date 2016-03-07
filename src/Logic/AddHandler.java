@@ -16,8 +16,8 @@ public class AddHandler {
 		storage = new Storage();
 		isContentValid = false;
 	}
-	public boolean checkContentValid(){
-		 isContentValid = parser.checkAdd(command);
+	public boolean checkContentValid() throws Exception{
+		 isContentValid = parser.parserCheckAddCommand(command);
 		 return isContentValid;
 	}
 	public void setContent(String taskContent) {
