@@ -7,7 +7,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class ReadManager {
-	public ArrayList<String> readFile(File file) throws Exception {
+	
+	public ArrayList<String> read(File file) throws Exception {
 		FileInputStream fileInputStream = new FileInputStream(file);
 		InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
 		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);

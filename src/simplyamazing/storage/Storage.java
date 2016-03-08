@@ -46,7 +46,7 @@ public class Storage {
 	public Storage() {
 		fileManager = new FileManager();
 		fileManager.createDirectory(DIRECTORY_STORAGE);
-		storage = fileManager.setupFile((DIRECTORY_STORAGE+FILENAME_STORAGE));
+		storage = fileManager.createFile((DIRECTORY_STORAGE+FILENAME_STORAGE));
 		tasks = new ArrayList<Task>();
 	}
 	
@@ -67,8 +67,7 @@ public class Storage {
 		if(!isLocationSet()) {
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
-			ReadManager readManager = new ReadManager();
-			String location = readManager.readFile(storage).get(INDEX_START_FOR_ARRAY);
+			String location = fileManager.readFile(storage).get(INDEX_START_FOR_ARRAY);
 			return location;
 		}
 	}
@@ -80,15 +79,15 @@ public class Storage {
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
 			addTaskToList(task);
-			fileManager.writeToFile(tasks, todo);
+			fileManager.importListToFile(tasks, todo);
 			return String.format(MESSAGE_ADDED, task.toFilteredString());
 		}
 	}
 
 	private void setupFiles() throws Exception {
-		todo = fileManager.setupFile(getLocation()+FILENAME_TODO);
+		todo = fileManager.createFile(getLocation()+FILENAME_TODO);
 		fileManager.createFileIfNotExist(todo);
-		todoBackup = fileManager.setupFile(getLocation()+FILENAME_TODO_BACKUP);
+		todoBackup = fileManager.createFile(getLocation()+FILENAME_TODO_BACKUP);
 		fileManager.createFileIfNotExist(todoBackup);
 	}
 
@@ -107,8 +106,7 @@ public class Storage {
 	}
 
 	private void createTaskList() throws Exception {
-		ReadManager readManger = new ReadManager();
-		ArrayList<String> lines = readManger.readFile(todo);
+		ArrayList<String> lines = fileManager.readFile(todo);
 		for (int i = 0; i < lines.size(); i++) {
 			String[] fields = lines.get(i).split(Task.FIELD_SEPARATOR);
 			
@@ -160,7 +158,7 @@ public class Storage {
 				}
 			}
 			addTaskToList(task);
-			fileManager.writeToFile(tasks, todo);
+			fileManager.importListToFile(tasks, todo);
 			return String.format(MESSAGE_UPDATED, task.toFilteredString());
 		}
 	}
@@ -172,7 +170,7 @@ public class Storage {
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
 			removeTaskFromList(task);
-			fileManager.writeToFile(tasks, todo);
+			fileManager.importListToFile(tasks, todo);
 			return String.format(MESSAGE_DELETED, task.toFilteredString());
 		}
 	}
@@ -316,7 +314,7 @@ public class Storage {
 			removeTaskFromList(task);
 			task.setDone(true);
 			addTaskToList(task);
-			fileManager.writeToFile(tasks, todo);
+			fileManager.importListToFile(tasks, todo);
 			return String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
 		}
 	}

@@ -14,30 +14,33 @@ public class FileManager {
 	private static final int SIZE_EMPTY = 0;
 	
 	public void createDirectory(String directoryName) {
-		new File(directoryName).mkdirs();
+		FileBuilder fileBuilder = new FileBuilder();
+		fileBuilder.createDirectory(directoryName);
 	}
 	
 	public void createFileIfNotExist(File file) throws Exception {
-		if(!file.exists()) {
-			file.createNewFile();
-		}
+		FileBuilder fileBuilder = new FileBuilder();
+		fileBuilder.createFileIfNotExist(file);
 	}
 	
-	public File setupFile(String filename) {
-		File file = new File(filename);
-		return file;
+	public File createFile(String filename) {
+		FileBuilder fileBuilder = new FileBuilder();
+		return fileBuilder.createFile(filename);
 	}
 	
 	public boolean isDirectory(String location) {
-		return new File(location).isDirectory();
+		FileVerifier fileVerifier = new FileVerifier();
+		return fileVerifier.isDirectory(location);
 	}
 	
 	public boolean isEmptyFile(File file) {
-		return file.length() == SIZE_EMPTY;
+		FileVerifier fileVerifier = new FileVerifier();
+		return fileVerifier.isEmptyFile(file);
 	}
 	
-	public void writeToFile(ArrayList<Task> tasks, File file) throws Exception {
-		if (!isEmptyFile(file)) { 
+	public void importListToFile(ArrayList<Task> tasks, File file) throws Exception {
+		FileVerifier fileVerifier = new FileVerifier();
+		if (!fileVerifier.isEmptyFile(file)) { 
 			cleanFile(file);
 		}
 		for (int i = 0; i < tasks.size(); i++) {
@@ -47,7 +50,12 @@ public class FileManager {
 	
 	public void writeToFile(File file, String text) throws Exception {
 		WriteManager writeManager = new WriteManager();
-		writeManager.writeToFile(file, text);
+		writeManager.write(file, text);
+	}
+	
+	public ArrayList<String> readFile(File file) throws Exception {
+		ReadManager readManager = new ReadManager();
+		return readManager.read(file);
 	}
 	
 	public void cleanFile(File file) throws Exception {
