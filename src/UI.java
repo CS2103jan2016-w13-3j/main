@@ -31,6 +31,7 @@ public class UI {
 				try {
 					UI window = new UI();
 					window.frame.setVisible(true);
+					txtCommand.requestFocusInWindow();
 					logic = new Logic();
 					executeUserCommand();
 				} catch (Exception e) {
@@ -56,6 +57,7 @@ public class UI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setResizable(false);
 		frame.setForeground(new Color(255, 255, 255));
 		frame.getContentPane().setBackground(SystemColor.window);
 		frame.setBounds(100, 100, 700, 475);
@@ -69,7 +71,6 @@ public class UI {
 				txtCommand.setText("");
 			}
 		});
-		txtCommand.setText("Type your command here.");
 		txtCommand.setToolTipText("Type your command here.");
 		txtCommand.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtCommand.setBounds(10, 392, 664, 33);
@@ -96,7 +97,8 @@ public class UI {
 		frame.getContentPane().add(scrollPane);
 		
 		textPane = new JTextPane();
-		textPane.setForeground(Color.RED);
+		textPane.setToolTipText("Feedback message will be shown here.");
+		textPane.setForeground(Color.BLACK);
 		textPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		textPane.setEditable(false);
 		textPane.setBounds(10, 57, 664, 311);
@@ -115,6 +117,7 @@ public class UI {
 						textPane.setForeground(Color.BLUE);
 					} catch (Exception e1) {
 						feedback = getErrorMessage(e1);
+						textPane.setForeground(Color.RED);
 					}
 					textPane.setText(feedback);
 					txtCommand.setText("");
