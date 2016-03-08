@@ -65,12 +65,6 @@ public class UI {
 		frame.getContentPane().setLayout(null);
 		
 		txtCommand = new JTextField();
-		txtCommand.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				txtCommand.setText("");
-			}
-		});
 		txtCommand.setToolTipText("Type your command here.");
 		txtCommand.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtCommand.setBounds(10, 392, 664, 33);
