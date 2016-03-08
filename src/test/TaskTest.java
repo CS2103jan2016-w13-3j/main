@@ -1,7 +1,10 @@
-package Data;
+package test;
+
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+
+import simplyamazing.data.Task;
 
 public class TaskTest {
 

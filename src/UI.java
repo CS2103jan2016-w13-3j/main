@@ -1,22 +1,20 @@
-
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
 import java.awt.Color;
-import java.awt.SystemColor;
-import javax.swing.JTextPane;
-
-import Logic.Logic;
-
+import java.awt.EventQueue;
 import java.awt.Font;
-import javax.swing.JSeparator;
+import java.awt.SystemColor;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+
+import simplyamazing.logic.Logic;
 
 public class UI {
 	private JFrame frame;

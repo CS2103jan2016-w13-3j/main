@@ -1,7 +1,10 @@
-package Storage;
+package test;
+
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+
+import simplyamazing.storage.Storage;
 
 public class StorageTest {
 	Storage storage = new Storage();
