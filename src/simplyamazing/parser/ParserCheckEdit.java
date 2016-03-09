@@ -29,7 +29,7 @@ public class ParserCheckEdit {
 			  return false;	
 			}
 		}else if (firstWord.equals(DESCRIPTON)){
-			
+			  return true;	
 		}else if (firstWord.equals(STARTTIME)){
 			if(removeFirstWord.equals("")){
 				return false;
