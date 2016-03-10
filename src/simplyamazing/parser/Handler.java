@@ -9,7 +9,7 @@ public class Handler {
 	private String keyWord;
 	private String feedback;
 	private boolean hasError;
-
+   
 	private static final String INDEX_DEFAULT_VALUE = null;
 	private static final String EMPTY_STRING = "";
 	private static final boolean HASERROR_DEFAULT_VALUE = false;
