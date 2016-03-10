@@ -4,26 +4,20 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.SystemColor;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
 
 import simplyamazing.logic.Logic;
 
 public class UI {
 	private JFrame frame;
-	private static JTextPane textPane;
-	private static Logic logic;
 	
+	private static Logic logic;
 	private static CommandBarController commandBarController;
+	private static FeedbackAreaController feedbackAreaController;
 
 	/**
 	 * Launch the application.
@@ -88,25 +82,20 @@ public class UI {
 		scrollPane.setBounds(10, 57, 664, 311);
 		frame.getContentPane().add(scrollPane);
 		
-		textPane = new JTextPane();
-		textPane.setToolTipText("Feedback message will be shown here.");
-		textPane.setForeground(Color.BLACK);
-		textPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		textPane.setEditable(false);
-		textPane.setBounds(10, 57, 664, 311);
-		scrollPane.setViewportView(textPane);
+		feedbackAreaController = new FeedbackAreaController();
+		scrollPane.setViewportView(feedbackAreaController.getTextPane());
 	}
 
 	public void executeUserCommand() {
 		String feedback = null;
 		try {
 			feedback = logic.executeCommand(commandBarController.getCommand());
-			textPane.setForeground(Color.BLUE);
+			feedbackAreaController.colorCodeFeedback(Color.BLUE);
+			commandBarController.clearCommand();
 		} catch (Exception e1) {
 			feedback = getErrorMessage(e1);
-			textPane.setForeground(Color.RED);
+			feedbackAreaController.colorCodeFeedback(Color.RED);
 		}
-		textPane.setText(feedback);
-		commandBarController.clearCommand();
+		feedbackAreaController.setFeedback(feedback);
 	}
 }
