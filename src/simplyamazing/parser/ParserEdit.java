@@ -40,7 +40,8 @@ public class ParserEdit {
 				}
 			}
 		} else {
-
+			handler.setHasError(true);
+			handler.setFeedBack(MESSAGE_INVALID_FORMAT);
 		}
 		return handler;
 	}
