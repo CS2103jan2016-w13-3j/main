@@ -171,20 +171,32 @@ public class Logic {
 		}
 	}
 
-	private static String executeSearchCommand(String userCommand) throws Exception {
-		String keyword = parser.removeFirstWord(userCommand);
-		list = storage.searchTasks(keyword);
-		String listInStringFormat = convertListToString(list);
-		return listInStringFormat;
+	private static String executeSearchCommand(Handler commandHandler) throws Exception {
+		if(commandHandler.hasError == true) {
+			throw new Exception(commandHandler.getFeedback());
+		} else{
+			String keyword = commandHandler.getKeyword();
+			list = storage.searchTasks(keyword);
+			String listInStringFormat = convertListToString(list);
+			return listInStringFormat;
+		}
 	}
 	
-	private static String executeUndoCommand(String userCommand) throws Exception {
-		return storage.restore();
+	private static String executeUndoCommand(Handler commandHandler) throws Exception {
+		if(commandHandler.hasError == true) {
+			throw new Exception(commandHandler.getFeedback());
+		} else {
+			return storage.restore();
+		}
 	}
 	
-	private static String executeSetLocationCommand(String userCommand) throws Exception {
-		String directoryPath = parser.removeFirstWord(userCommand);
-		return storage.setLocation(directoryPath);
+	private static String executeSetLocationCommand(Handler commandHandler) throws Exception {
+		if(commandHandler.hasError == true) {
+			throw new Exception(commandHandler.getFeedback());
+		} else {
+			String directoryPath = commandHandler.getKeyword();
+			return storage.setLocation(directoryPath);
+		}
 	}
 	
 	private static String executeMarkCommand(String userCommand) throws Exception {
