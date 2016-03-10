@@ -100,7 +100,6 @@ public class Storage {
 		} else { 
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
-			System.out.println(editedTask.toString());
 			updateTaskData();
 			listManager.removeTaskFromList(task);
 			if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {

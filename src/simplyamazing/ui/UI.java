@@ -1,3 +1,5 @@
+package simplyamazing.ui;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -18,9 +20,10 @@ import simplyamazing.logic.Logic;
 
 public class UI {
 	private JFrame frame;
-	private static JTextField txtCommand;
 	private static JTextPane textPane;
 	private static Logic logic;
+	
+	private static CommandBarController commandBarController;
 
 	/**
 	 * Launch the application.
@@ -31,9 +34,8 @@ public class UI {
 				try {
 					UI window = new UI();
 					window.frame.setVisible(true);
-					txtCommand.requestFocusInWindow();
+					commandBarController.getTxtCommand().requestFocusInWindow();
 					logic = new Logic();
-					executeUserCommand();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -64,12 +66,8 @@ public class UI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		txtCommand = new JTextField();
-		txtCommand.setToolTipText("Type your command here.");
-		txtCommand.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtCommand.setBounds(10, 392, 664, 33);
-		frame.getContentPane().add(txtCommand);
-		txtCommand.setColumns(10);
+		commandBarController = new CommandBarController(this);
+		frame.getContentPane().add(commandBarController.getTxtCommand());
 		
 		JSeparator separator = new JSeparator();
 		separator.setBounds(10, 379, 664, 2);
@@ -99,24 +97,16 @@ public class UI {
 		scrollPane.setViewportView(textPane);
 	}
 
-	private static void executeUserCommand() {
-		txtCommand.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					String feedback = null;
-					
-					try {
-						feedback = logic.executeCommand(txtCommand.getText());
-						textPane.setForeground(Color.BLUE);
-					} catch (Exception e1) {
-						feedback = getErrorMessage(e1);
-						textPane.setForeground(Color.RED);
-					}
-					textPane.setText(feedback);
-					txtCommand.setText("");
-				}
-			}
-		});
+	public void executeUserCommand() {
+		String feedback = null;
+		try {
+			feedback = logic.executeCommand(commandBarController.getCommand());
+			textPane.setForeground(Color.BLUE);
+		} catch (Exception e1) {
+			feedback = getErrorMessage(e1);
+			textPane.setForeground(Color.RED);
+		}
+		textPane.setText(feedback);
+		commandBarController.clearCommand();
 	}
 }
