@@ -156,7 +156,7 @@ public class Logic {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
 		
-		if(commandHandler.hasError == true) {
+		if (commandHandler.hasError == true) {
 			throw new Exception(commandHandler.getFeedback());
 		} else {
 			boolean isIndexValid = checkIndexValid(commandHandler.getIndex());
@@ -164,15 +164,15 @@ public class Logic {
 			if (isIndexValid == false) {
 				throw new Exception(ERROR_INVALID_INDEX);
 			} else {
-				int index = Integer.parseInt(commandHandler.getIndex());
-				Task taskToDelete = list.get(index);
+				int indexToDelete = Integer.parseInt(commandHandler.getIndex());
+				Task taskToDelete = list.get(indexToDelete - 1);
 				return storage.deleteTask(taskToDelete);
 			}
 		}
 	}
 
 	private static String executeSearchCommand(Handler commandHandler) throws Exception {
-		if(commandHandler.hasError == true) {
+		if (commandHandler.hasError == true) {
 			throw new Exception(commandHandler.getFeedback());
 		} else{
 			String keyword = commandHandler.getKeyword();
@@ -183,7 +183,7 @@ public class Logic {
 	}
 	
 	private static String executeUndoCommand(Handler commandHandler) throws Exception {
-		if(commandHandler.hasError == true) {
+		if (commandHandler.hasError == true) {
 			throw new Exception(commandHandler.getFeedback());
 		} else {
 			return storage.restore();
@@ -191,7 +191,7 @@ public class Logic {
 	}
 	
 	private static String executeSetLocationCommand(Handler commandHandler) throws Exception {
-		if(commandHandler.hasError == true) {
+		if (commandHandler.hasError == true) {
 			throw new Exception(commandHandler.getFeedback());
 		} else {
 			String directoryPath = commandHandler.getKeyword();
@@ -199,15 +199,22 @@ public class Logic {
 		}
 	}
 	
-	private static String executeMarkCommand(String userCommand) throws Exception {
+	private static String executeMarkCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
-		
-		String userCommandWithoutCommandType = parser.removeFirstWord(userCommand);
-		int indexToMark = Integer.parseInt(userCommandWithoutCommandType);
-		Task taskToMark = list.get(indexToMark -1);
-		return storage.markTaskDone(taskToMark);
+		if (commandHandler.hasError == true) {
+			throw new Exception(commandHandler.getFeedback());
+		} else {
+			boolean isIndexValid = checkIndexValid(commandHandler.getIndex());
+			if (isIndexValid == false) {
+				throw new Exception(ERROR_INVALID_INDEX);
+			} else{
+				int indexToMark = Integer.parseInt(commandHandler.getIndex());
+				Task taskToMark = list.get(indexToMark - 1);
+				return storage.markTaskDone(taskToMark);
+			}
+		}
 	}
 	
 	private static String executeHelpCommand(String userCommand) {
