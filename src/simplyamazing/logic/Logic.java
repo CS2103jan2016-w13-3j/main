@@ -11,12 +11,8 @@ public class Logic {
 	private static Parser parser;
 	private static Storage storage;
 	private static ArrayList<Task> list;
-	private static AddHandler addHandler;
-	private static DeleteHandler delHandler;
-	private static ViewHandler viewHandler;
-	private static EditHandler editHandler;
 	private static String previousCommand;
-	
+	private static Handler commandHandler;
 	private static final String STRING_EMPTY = "";
 	
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
@@ -39,10 +35,7 @@ public class Logic {
 		parser = new Parser();
 		storage = new Storage();
 		list = new ArrayList<Task>();
-		addHandler = new AddHandler();
-		delHandler = new DeleteHandler();
-		viewHandler = new ViewHandler();
-		editHandler = new EditHandler();
+		commandHandler = new commandHandler();
 		previousCommand = "";
 	}
 	
@@ -71,41 +64,44 @@ public class Logic {
 	}
 	
 	public String executeCommand(String userCommand) throws Exception {
-		String commandWord = parser.getFirstWord(userCommand);
+		commandHandler = parser.getHandler(userCommand);
+		String commandWord = commandHandler.getCommandType();
 		CommandType commandType = getCommandType(commandWord);
-		if(commandType != CommandType.SET_LOCATION) {
+		
+		if (commandType != CommandType.SET_LOCATION) {
 			if (!storage.isLocationSet()) {
 				throw new Exception(MESSAGE_INPUT_LOCATION);
 			}
 		}
+		
 		String feedback = STRING_EMPTY;
 		switch (commandType) {
 			case ADD_TASK :
-				feedback = executeAddCommand(userCommand);
+				feedback = executeAddCommand(commandHandler);
 				break;
 			case DELETE_TASK :
-				feedback = executeDeleteCommand(userCommand);
+				feedback = executeDeleteCommand(commandHandler);
 				break;
 			case VIEW_LIST :
-				feedback = executeViewCommand(userCommand);
+				feedback = executeViewCommand(commandHandler);
 				break;
 			case EDIT_TASK :
-				feedback = executeEditCommand(userCommand);
+				feedback = executeEditCommand(commandHandler);
 				break;
 			case SEARCH_KEYWORD :
-				feedback = executeSearchCommand(userCommand);
+				feedback = executeSearchCommand(commandHandler);
 				break;
 			case UNDO_LAST :
-				feedback = executeUndoCommand(userCommand);
+				feedback = executeUndoCommand(commandHandler);
 				break;
 			case SET_LOCATION :
-				feedback = executeSetLocationCommand(userCommand);
+				feedback = executeSetLocationCommand(commandHandler);
 				break;
 			case MARK_TASK :
-				feedback = executeMarkCommand(userCommand);
+				feedback = executeMarkCommand(commandHandler);
 				break;
 			case HELP :
-				feedback = executeHelpCommand(userCommand);
+				feedback = executeHelpCommand(commandHandler);
 				break;
 			default:
 				throw new Exception(MESSAGE_INVALID_COMMAND);
@@ -115,14 +111,12 @@ public class Logic {
 		return feedback;
 	}
 	
-	private static String executeAddCommand(String userCommand) throws Exception {
-		String taskContent = parser.removeFirstWord(userCommand);
-		addHandler.setContent(taskContent);
-		
-		if(addHandler.checkContentValid(parser) == false) {
-			return MESSAGE_INVALID_COMMAND;
+	private static String executeAddCommand(Handler commandHandler) throws Exception {
+		if (commandHandler.hasError() == true){
+			throw new Exception(commandHandler.getFeedBack());
 		} else {
-			return addHandler.addTask(parser, storage);
+			Task taskToAdd = commandHandler.getTask();
+			return storage.addTask(taskToAdd);
 		}
 	}
 	
