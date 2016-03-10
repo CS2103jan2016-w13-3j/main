@@ -112,7 +112,7 @@ public class Logic {
 	}
 	
 	private static String executeAddCommand(Handler commandHandler) throws Exception {
-		if (commandHandler.hasError() == true){
+		if (commandHandler.hasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			Task taskToAdd = commandHandler.getTask();
@@ -121,13 +121,11 @@ public class Logic {
 	}
 	
 	private static String executeViewCommand(String userCommand) throws Exception {
-		String keyWord = parser.removeFirstWord(userCommand);
-		viewHandler.setKeyword(keyWord);
-		
-		if(viewHandler.checkKeywordValid() == false) {
-			return ERROR_INVALID_KEYWORD;
+		if (commandHandler.hasError() == true) {
+			throw new Exception(commandHandler.getFeedback());
 		} else {
-			list = viewHandler.getList(storage);
+			String keyWord = commandHandler.getKeyword();
+			list = storage.load(keyWord);
 			return convertListToString(list);	
 		}
 	}
