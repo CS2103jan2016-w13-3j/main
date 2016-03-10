@@ -6,7 +6,6 @@ public class ParserAdd {
 	private static final String KEYWORD_SCHEDULE_TO = "to";
 	private static final String KEYWORD_SCHEDULE_FROM = "from";
 	private static final String KEYWORD_DEADLINE = "by";
-	private static final String KEYWORD_PRIORITY = "priority";
 	
 	public Handler parseAddCommand(Handler handler, String taskInfo) throws Exception {		
 		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) {	// For events

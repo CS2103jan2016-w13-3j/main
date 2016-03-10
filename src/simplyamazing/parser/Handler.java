@@ -16,7 +16,7 @@ public class Handler {
 	private static final Task TASK_DEFAULT_VALUE = null;
 
 	public Handler() {
-		this.task = null;
+		task = new Task();
 		this.commandType = EMPTY_STRING;
 		this.index = INDEX_DEFAULT_VALUE;
 		this.keyWord = EMPTY_STRING;
