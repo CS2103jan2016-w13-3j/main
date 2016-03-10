@@ -97,6 +97,9 @@ public class Parser {
 		 case COMMAND_HELP:
 			 handler.setCommandType(COMMAND_HELP);
 			 break;
+		 case COMMAND_UNDO:
+			 handler.setCommandType(COMMAND_UNDO);
+			 break;
 		 case COMMAND_SET_LOCATION:
 			 handler.setCommandType(COMMAND_SET_LOCATION);
 			 handler = parserLocationCommand(handler, removeFirstWord);
