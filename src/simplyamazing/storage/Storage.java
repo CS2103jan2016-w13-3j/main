@@ -1,9 +1,6 @@
 package simplyamazing.storage;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -326,8 +323,7 @@ public class Storage {
 			setupFiles();
 			
 			if(!fileManager.isEmptyFile(todoBackup) || !fileManager.isEmptyFile(todo)) {
-				fileManager.cleanFile(todo);
-				Files.copy(todoBackup.toPath(), todo.toPath(), REPLACE_EXISTING);
+				fileManager.restoreFromBackup(todo, todoBackup);
 				tasks = new ArrayList<Task>();
 				updateTaskList();
 			}

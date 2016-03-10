@@ -1,17 +1,11 @@
 package simplyamazing.storage;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
 import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 
 import simplyamazing.data.Task;
 
 public class FileManager {
-	
-	private static final int SIZE_EMPTY = 0;
 	
 	public void createDirectory(String directoryName) {
 		FileBuilder fileBuilder = new FileBuilder();
@@ -59,13 +53,19 @@ public class FileManager {
 	}
 	
 	public void cleanFile(File file) throws Exception {
-		FileOutputStream writer = new FileOutputStream(file);
-		writer.close();
+		WriteManager writeManager = new WriteManager();
+		writeManager.writeEmptyFile(file);
 	}
 	
 	public void createBackup(File file, File backupFile) throws Exception {
 		if(!isEmptyFile(file)) {
-			Files.copy(file.toPath(), backupFile.toPath(), REPLACE_EXISTING);
+			FileCopier fileCopier = new FileCopier();
+			fileCopier.copy(file, backupFile);
 		}
+	}
+	
+	public void restoreFromBackup(File file, File backupFile) throws Exception {
+		FileCopier fileCopier = new FileCopier();
+		fileCopier.copy(backupFile, file);
 	}
 }

@@ -1,6 +1,7 @@
 package simplyamazing.storage;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 
 public class WriteManager {
@@ -12,5 +13,10 @@ public class WriteManager {
 		fileWriter.write(content);
 		fileWriter.write(CHARACTER_NEW_LINE);
 		fileWriter.close();	
+	}
+	
+	public void writeEmptyFile(File file) throws Exception {
+		FileOutputStream writer = new FileOutputStream(file);
+		writer.close();
 	}
 }
