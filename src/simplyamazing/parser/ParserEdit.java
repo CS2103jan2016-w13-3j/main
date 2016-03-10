@@ -3,32 +3,33 @@ package simplyamazing.parser;
 import simplyamazing.data.Task;
 
 public class ParserEdit {
-	private static final String MESSAGE_INVALID_FORMAT = "The command is invalid";
+	private static final String MESSAGE_INVALID_FORMAT = "The command of input's field is invalid";
 	
-	public Task parserEditCommand(Parser parser, String taskInfo) throws Exception {
-		Task task = new Task();
-		String[] fieldValuePairs = taskInfo.split(",");
+	public Handler parseEditCommand(Handler handler, String taskIndex, String taskInfoWithoutIndex) throws Exception {
+		handler.setIndex(taskIndex);
+		String[] fieldValuePairs = taskInfoWithoutIndex.split(",");
 		for (int i = 0; i < fieldValuePairs.length; i++) {
-			String field = parser.getFirstWord(fieldValuePairs[i]);
-			String value = parser.removeFirstWord(fieldValuePairs[i]);
+			String field = Parser.getFirstWord(fieldValuePairs[i]);
+			String value = Parser.removeFirstWord(fieldValuePairs[i]);
 			
 			switch(field.toLowerCase()) {
 				case "description" :
-					task.setDescription(value);
+					handler.getTask().setDescription(value);
 					break;
 				case "starttime" :
-					task.setStartTime(value);
+					handler.getTask().setStartTime(value);
 					break;
 				case "endtime" :
-					task.setEndTime(value);
+					handler.getTask().setEndTime(value);
 					break;
 				case "priority" :
-					task.setPriority(value);
+					handler.getTask().setPriority(value);
 					break;
 				default :
-					throw new Exception(MESSAGE_INVALID_FORMAT);
+					handler.setHasError(true);
+					handler.setFeedBack(MESSAGE_INVALID_FORMAT);
 			}
 		}
-		return task;
+		return handler;
 	}
 }
