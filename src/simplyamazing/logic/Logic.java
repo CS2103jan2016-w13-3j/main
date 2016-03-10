@@ -12,6 +12,7 @@ public class Logic {
 	private static Parser parser;
 	private static Storage storage;
 	private static ArrayList<Task> list;
+	private static String previousCommandKeyword;
 	private static String previousCommand;
 	private static Handler commandHandler;
 	private static final String STRING_EMPTY = "";
@@ -25,11 +26,25 @@ public class Logic {
 	private static final String MESSAGE_INPUT_LOCATION = "Directory location not set, please input directory location before running the program";
 	private static final String MESSAGE_NO_TASK_FOUND = "No task found.";
 	
+	private static final String MESSAGE_HELP = "To view specific command formats, key in the following:\n"
+			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
+			+ "7. help location\n8. help undo\n9. help exit\n";
+	private static final String MESSAGE_HELP_EXIT = "Exit SimplyAmazing\ncommand = exit\n";
+	private static final String MESSAGE_HELP_SEARCH = "Search tasks for given keyword\ncommand = search <keyword>\n";
+	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\ncommand = undo\n";
+	private static final String MESSAGE_HELP_DONE = "Marks task as completed\n command = done <task index>";
+	
+	private static final String MESSAGE_HELP_LOCATION = "Set storage location or folder for application data\n"
+			+ "command = location <path>";
+	
+	private static final String MESSAGE_HELP_VIEW = "Display all tasks\n command = view\n\nDisplay tasks with deadlines\n"
+			+ "command = view deadlines\n\nDisplay events\ncommand = view events\n\nDisplay tasks without deadlines\ncommand = view tasks\n\n"
+			+ "Display completed tasks\ncommand = view done\n\nDisplay overdue tasks\ncommand = view overdue\n\n";
+	
 	enum CommandType {
 		ADD_TASK, VIEW_LIST, DELETE_TASK,INVALID,
 		SEARCH_KEYWORD, UNDO_LAST, EDIT_TASK, SET_LOCATION,
-		MARK_TASK, HELP, 
-		;
+		MARK_TASK, HELP, EXIT;
 	};
 	
 	public Logic(){
@@ -37,7 +52,8 @@ public class Logic {
 		storage = new Storage();
 		list = new ArrayList<Task>();
 		commandHandler = new Handler();
-		previousCommand = "";
+		previousCommand = STRING_EMPTY;
+		previousCommandKeyword = STRING_EMPTY;
 	}
 	
 	private static CommandType getCommandType(String commandWord) {
@@ -57,8 +73,10 @@ public class Logic {
 			return CommandType.SEARCH_KEYWORD;
 		} else if (commandWord.equalsIgnoreCase("edit")) {
 			return CommandType.EDIT_TASK;
-		} else if(commandWord.equalsIgnoreCase("help")) {
+		} else if (commandWord.equalsIgnoreCase("help")) {
 			return CommandType.HELP;
+		} else if (commandWord.equalsIgnoreCase("exit")){
+			return CommandType.EXIT;
 		} else {
 			return CommandType.INVALID;
 		}
@@ -104,6 +122,8 @@ public class Logic {
 			case HELP :
 				feedback = executeHelpCommand(commandHandler);
 				break;
+			case EXIT :
+				System.exit(0);
 			default:
 				throw new Exception(MESSAGE_INVALID_COMMAND);
 		}
