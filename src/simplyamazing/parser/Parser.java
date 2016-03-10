@@ -1,5 +1,4 @@
 package simplyamazing.parser;
-import simplyamazing.data.Task;
 public class Parser {
 
 	private static final String COMMAND_ADD = "add";
@@ -63,13 +62,9 @@ public class Parser {
 		ParserView parserView = new ParserView();
 		return parserView.parserViewCommand(handler,removeFirstWord);
 	}
-	public Handler parserSearchCommand(Handler handler, String removeFirstWord) throws Exception {
-		ParserSearch parserSearch = new ParserSearch();
-		return parserSearch.parserSearchCommand(handler,removeFirstWord);
-	}
 	public Handler parserLocationCommand(Handler handler, String removeFirstWord) throws Exception {
-		ParserLocation parserLocation = new ParserLocation();
-		return parserLocation.parserLocationCommand(handler,removeFirstWord);
+		ParserLocation parseLocation = new ParserLocation();
+		return parseLocation.parseLocationCmd(handler,removeFirstWord);
 	}
 	public Handler parserDoneCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserDone parserDone = new ParserDone();
@@ -97,7 +92,7 @@ public class Parser {
 			 break;
 		 case COMMAND_SEARCH:
 			 handler.setCommandType(COMMAND_SEARCH);
-			 handler = parserSearchCommand(handler, removeFirstWord);
+			 handler.setKeyWord(removeFirstWord);
 			 break;
 		 case COMMAND_HELP:
 			 handler.setCommandType(COMMAND_HELP);

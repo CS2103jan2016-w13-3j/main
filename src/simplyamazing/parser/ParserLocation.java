@@ -1,7 +1,17 @@
 package simplyamazing.parser;
 
 public class ParserLocation {
-	public Handler parserLocationCommand(Handler handler, String taskInfo) throws Exception{
+	private static final String STRING_EMPTY = "";
+	private static final String INVALID_LOCATION = "The location for storing is invalid";
+
+	public Handler parseLocationCmd(Handler handler, String taskInfo) throws Exception {
+		
+		if (taskInfo.equals(STRING_EMPTY)) {
+			handler.setHasError(true);
+			handler.setFeedBack(INVALID_LOCATION);
+		} else {
+			handler.setKeyWord(taskInfo);
+		}
 		return handler;
 	}
 }
