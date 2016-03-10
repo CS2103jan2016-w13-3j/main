@@ -120,7 +120,7 @@ public class Logic {
 		}
 	}
 	
-	private static String executeViewCommand(String userCommand) throws Exception {
+	private static String executeViewCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.hasError() == true) {
 			throw new Exception(commandHandler.getFeedback());
 		} else {
@@ -151,19 +151,23 @@ public class Logic {
 		}
 	}
 	
-	private static String executeDeleteCommand(String userCommand) throws Exception {
+	private static String executeDeleteCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
-		delHandler.setList(list);
-		String commandContent = parser.removeFirstWord(userCommand);
-		delHandler.setIndex(commandContent);
 		
-		if(delHandler.checkIndexValid() == false) {
-			return ERROR_INVALID_INDEX;
+		if(commandHandler.hasError == true) {
+			throw new Exception(commandHandler.getFeedback());
 		} else {
-			String feedback = delHandler.deleteTask(storage);
-			return feedback;	
+			boolean isIndexValid = checkIndexValid(commandHandler.getIndex());
+			
+			if (isIndexValid == false) {
+				throw new Exception(ERROR_INVALID_INDEX);
+			} else {
+				int index = Integer.parseInt(commandHandler.getIndex());
+				Task taskToDelete = list.get(index);
+				return storage.deleteTask(taskToDelete);
+			}
 		}
 	}
 
@@ -201,6 +205,19 @@ public class Logic {
 
 	public static void displayFeedback(String feedback){
 		System.out.println(feedback);
+	}
+	
+	private static boolean checkIndexValid(String indexStr){
+		if (indexStr == null) {
+			return false;
+		} else {
+			int indexToDelete = Integer.parseInt(indexStr);
+			if(indexToDelete <= 0 || indexToDelete>list.size()){
+				return false;
+			} else {
+				return true;
+			}
+		}
 	}
 	
 	private static boolean isListShown() {
