@@ -3,6 +3,7 @@ package simplyamazing.logic;
 import java.util.ArrayList;
 
 import simplyamazing.data.Task;
+import simplyamazing.parser.Handler;
 import simplyamazing.parser.Parser;
 import simplyamazing.storage.Storage;
 
@@ -35,7 +36,7 @@ public class Logic {
 		parser = new Parser();
 		storage = new Storage();
 		list = new ArrayList<Task>();
-		commandHandler = new commandHandler();
+		commandHandler = new Handler();
 		previousCommand = "";
 	}
 	
@@ -112,7 +113,7 @@ public class Logic {
 	}
 	
 	private static String executeAddCommand(Handler commandHandler) throws Exception {
-		if (commandHandler.hasError() == true) {
+		if (commandHandler.getHasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			Task taskToAdd = commandHandler.getTask();
@@ -121,32 +122,31 @@ public class Logic {
 	}
 	
 	private static String executeViewCommand(Handler commandHandler) throws Exception {
-		if (commandHandler.hasError() == true) {
-			throw new Exception(commandHandler.getFeedback());
+		if (commandHandler.getHasError() == true) {
+			throw new Exception(commandHandler.getFeedBack());
 		} else {
-			String keyWord = commandHandler.getKeyword();
+			String keyWord = commandHandler.getKeyWord();
 			list = storage.load(keyWord);
 			return convertListToString(list);	
 		}
 	}
 	
-	private static String executeEditCommand(String userCommand) throws Exception {
+	private static String executeEditCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
-		editHandler.setList(list);
-		String commandContent = parser.removeFirstWord(userCommand);
-		editHandler.setIndex(commandContent, parser);
-		
-		if (editHandler.checkIndexValid() == false) {
-			return ERROR_INVALID_INDEX;
-		} else{
-			editHandler.setFieldValues(commandContent, parser);
+		if (commandHandler.getHasError() == true) {
+			throw new Exception(commandHandler.getFeedBack());
+		} else { 
+			boolean isIndexValid = checkIndexValid(commandHandler.getIndex());
 			
-			if (editHandler.checkFieldValid(parser) == false) {
-				return ERROR_INVALID_FIELD_VALUES;
-			} else{
-				return editHandler.editTask(parser, storage);
+			if (isIndexValid == false) {
+				throw new Exception(ERROR_INVALID_INDEX);
+			} else {
+				int indexToEdit = Integer.parseInt(commandHandler.getIndex());
+				Task fieldsToChange = commandHandler.getTask();
+				Task originalTask = list.get(indexToEdit - 1);
+				return storage.editTask(originalTask, fieldsToChange);
 			}
 		}
 	}
@@ -156,11 +156,10 @@ public class Logic {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
 		
-		if (commandHandler.hasError == true) {
-			throw new Exception(commandHandler.getFeedback());
+		if (commandHandler.getHasError() == true) {
+			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			boolean isIndexValid = checkIndexValid(commandHandler.getIndex());
-			
 			if (isIndexValid == false) {
 				throw new Exception(ERROR_INVALID_INDEX);
 			} else {
@@ -172,10 +171,10 @@ public class Logic {
 	}
 
 	private static String executeSearchCommand(Handler commandHandler) throws Exception {
-		if (commandHandler.hasError == true) {
-			throw new Exception(commandHandler.getFeedback());
+		if (commandHandler.getHasError() == true) {
+			throw new Exception(commandHandler.getFeedBack());
 		} else{
-			String keyword = commandHandler.getKeyword();
+			String keyword = commandHandler.getKeyWord();
 			list = storage.searchTasks(keyword);
 			String listInStringFormat = convertListToString(list);
 			return listInStringFormat;
@@ -183,18 +182,18 @@ public class Logic {
 	}
 	
 	private static String executeUndoCommand(Handler commandHandler) throws Exception {
-		if (commandHandler.hasError == true) {
-			throw new Exception(commandHandler.getFeedback());
-		} else {
+		if (commandHandler.getHasError() == true) {
+			throw new Exception(commandHandler.getFeedBack());
+		} else{
 			return storage.restore();
 		}
 	}
 	
 	private static String executeSetLocationCommand(Handler commandHandler) throws Exception {
-		if (commandHandler.hasError == true) {
-			throw new Exception(commandHandler.getFeedback());
+		if (commandHandler.getHasError() == true) {
+			throw new Exception(commandHandler.getFeedBack());
 		} else {
-			String directoryPath = commandHandler.getKeyword();
+			String directoryPath = commandHandler.getKeyWord();
 			return storage.setLocation(directoryPath);
 		}
 	}
@@ -203,8 +202,8 @@ public class Logic {
 		if (isListShown() == false) {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
-		if (commandHandler.hasError == true) {
-			throw new Exception(commandHandler.getFeedback());
+		if (commandHandler.getHasError() == true) {
+			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			boolean isIndexValid = checkIndexValid(commandHandler.getIndex());
 			if (isIndexValid == false) {
@@ -217,13 +216,9 @@ public class Logic {
 		}
 	}
 	
-	private static String executeHelpCommand(String userCommand) {
+	private static String executeHelpCommand(Handler commandHandler) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public static void displayFeedback(String feedback){
-		System.out.println(feedback);
 	}
 	
 	private static boolean checkIndexValid(String indexStr){
