@@ -5,10 +5,10 @@ import java.awt.Font;
 
 import javax.swing.JTextPane;
 
-public class FeedbackAreaController {
+public class FeedbackPaneController {
 	private static JTextPane textPane;
 
-	public FeedbackAreaController() {
+	public FeedbackPaneController() {
 		textPane = new JTextPane();
 		textPane.setToolTipText("Feedback message will be shown here.");
 		textPane.setForeground(Color.BLACK);
