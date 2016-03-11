@@ -32,16 +32,16 @@ public class Logic {
 	private static final String MESSAGE_HELP_EXIT = "Exit SimplyAmazing\ncommand = exit\n";
 	private static final String MESSAGE_HELP_SEARCH = "Search tasks for given keyword\ncommand = search <keyword>\n";
 	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\ncommand = undo\n";
-	private static final String MESSAGE_HELP_DONE = "Marks task as completed\n command = done <task index>\n";
+	private static final String MESSAGE_HELP_DONE = "Marks task as completed\ncommand = done <task index>\n";
 	private static final String MESSAGE_HELP_DELETE = "Delete task from list\ncommand = delete <task index>\n";
 	private static final String MESSAGE_HELP_EDIT = "Edit content in a task\ncommand = edit <task index> <task header> <updated content>\n";
 	
 	private static final String MESSAGE_HELP_LOCATION = "Set storage location or folder for application data\n"
 			+ "command = location <path>";
 	
-	private static final String MESSAGE_HELP_VIEW = "Display all tasks\n command = view\n\nDisplay tasks with deadlines\n"
-			+ "command = view deadlines\n\nDisplay events\ncommand = view events\n\nDisplay tasks without deadlines\ncommand = view tasks\n\n"
-			+ "Display completed tasks\ncommand = view done\n\nDisplay overdue tasks\ncommand = view overdue\n\n";
+	private static final String MESSAGE_HELP_VIEW = "1.Display all tasks\n command = view\n\n2.Display tasks with deadlines\n"
+			+ "command = view deadlines\n\n3.Display events\ncommand = view events\n\n4.Display tasks without deadlines\ncommand = view tasks\n\n"
+			+ "5.Display completed tasks\ncommand = view done\n\n6.Display overdue tasks\ncommand = view overdue\n\n";
 
 	private static final String MESSAGE_HELP_ADD_TASK = "Add a task to a list\ncommand = add <task description>\n";
 	
