@@ -9,9 +9,9 @@ import simplyamazing.storage.Storage;
 
 public class Logic {
 	
-	private static Parser parser;
-	private static Storage storage;
-	private static ArrayList<Task> list;
+	private static Parser parserObj;
+	private static Storage storageObj;
+	private static ArrayList<Task> taskList;
 	private static String previousCommandKeyword;
 	private static String previousCommand;
 	private static Handler commandHandler;
@@ -53,9 +53,9 @@ public class Logic {
 	};
 	
 	public Logic(){
-		parser = new Parser();
-		storage = new Storage();
-		list = new ArrayList<Task>();
+		parserObj = new Parser();
+		storageObj = new Storage();
+		taskList = new ArrayList<Task>();
 		commandHandler = new Handler();
 		previousCommand = STRING_EMPTY;
 		previousCommandKeyword = STRING_EMPTY;
@@ -88,12 +88,12 @@ public class Logic {
 	}
 	
 	public String executeCommand(String userCommand) throws Exception {
-		commandHandler = parser.getHandler(userCommand);
+		commandHandler = parserObj.getHandler(userCommand);
 		String commandWord = commandHandler.getCommandType();
 		CommandType commandType = getCommandType(commandWord);
 		
 		if (commandType != CommandType.SET_LOCATION) {
-			if (!storage.isLocationSet()) {
+			if (!storageObj.isLocationSet()) {
 				throw new Exception(MESSAGE_INPUT_LOCATION);
 			}
 		}
@@ -142,7 +142,7 @@ public class Logic {
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			Task taskToAdd = commandHandler.getTask();
-			return storage.addTask(taskToAdd);
+			return storageObj.addTask(taskToAdd);
 		}
 	}
 	
@@ -151,8 +151,8 @@ public class Logic {
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			String keyWord = commandHandler.getKeyWord();
-			list = storage.load(keyWord);
-			return convertListToString(list);	
+			taskList = storageObj.load(keyWord);
+			return convertListToString(taskList);	
 		}
 	}
 	
@@ -170,8 +170,8 @@ public class Logic {
 			} else {
 				int indexToEdit = Integer.parseInt(commandHandler.getIndex());
 				Task fieldsToChange = commandHandler.getTask();
-				Task originalTask = list.get(indexToEdit - 1);
-				return storage.editTask(originalTask, fieldsToChange);
+				Task originalTask = taskList.get(indexToEdit - 1);
+				return storageObj.editTask(originalTask, fieldsToChange);
 			}
 		}
 	}
@@ -189,8 +189,8 @@ public class Logic {
 				throw new Exception(ERROR_INVALID_INDEX);
 			} else {
 				int indexToDelete = Integer.parseInt(commandHandler.getIndex());
-				Task taskToDelete = list.get(indexToDelete - 1);
-				return storage.deleteTask(taskToDelete);
+				Task taskToDelete = taskList.get(indexToDelete - 1);
+				return storageObj.deleteTask(taskToDelete);
 			}
 		}
 	}
@@ -200,8 +200,8 @@ public class Logic {
 			throw new Exception(commandHandler.getFeedBack());
 		} else{
 			String keyword = commandHandler.getKeyWord();
-			list = storage.searchTasks(keyword);
-			String listInStringFormat = convertListToString(list);
+			taskList = storageObj.searchTasks(keyword);
+			String listInStringFormat = convertListToString(taskList);
 			return listInStringFormat;
 		}
 	}
@@ -210,7 +210,7 @@ public class Logic {
 		if (commandHandler.getHasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
 		} else{
-			return storage.restore();
+			return storageObj.restore();
 		}
 	}
 	
@@ -219,7 +219,7 @@ public class Logic {
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			String directoryPath = commandHandler.getKeyWord();
-			return storage.setLocation(directoryPath);
+			return storageObj.setLocation(directoryPath);
 		}
 	}
 	
@@ -235,8 +235,8 @@ public class Logic {
 				throw new Exception(ERROR_INVALID_INDEX);
 			} else{
 				int indexToMark = Integer.parseInt(commandHandler.getIndex());
-				Task taskToMark = list.get(indexToMark - 1);
-				return storage.markTaskDone(taskToMark);
+				Task taskToMark = taskList.get(indexToMark - 1);
+				return storageObj.markTaskDone(taskToMark);
 			}
 		}
 	}
@@ -274,7 +274,7 @@ public class Logic {
 			return false;
 		} else {
 			int indexToDelete = Integer.parseInt(indexStr);
-			if(indexToDelete <= 0 || indexToDelete>list.size()){
+			if(indexToDelete <= 0 || indexToDelete > taskList.size()){
 				return false;
 			} else {
 				return true;
