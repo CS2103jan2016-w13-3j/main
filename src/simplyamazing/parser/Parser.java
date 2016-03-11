@@ -33,41 +33,41 @@ public class Parser {
 		return userCommand.trim().split(CHARACTER_SPACE)[0];
 	}	
     
-	public Handler parserAddCommand(Handler handler, String taskInfo) throws Exception {
+	private Handler parserAddCommand(Handler handler, String taskInfo) throws Exception {
 	    ParserAdd parserAdd = new ParserAdd();
 	    return parserAdd.parseAddCommand(handler,taskInfo);
 	    
 	}	
-	public Handler parserEditCommand(Handler handler, String taskInfo) throws Exception {
+	private Handler parserEditCommand(Handler handler, String taskInfo) throws Exception {
 		ParserEdit parserEdit = new ParserEdit();
 		taskIndex =  getFirstWord(taskInfo);
 		taskInfoWithoutIndex = removeFirstWord(taskInfo);
 		
 		return parserEdit.parseEditCommand(handler, taskIndex, taskInfoWithoutIndex);
 	}
-	public Handler parserDeleteCommand(Handler handler, String removeFirstWord) throws Exception {
+	private Handler parserDeleteCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserDelete parserDelete = new ParserDelete();
 		return parserDelete.parserDeleteCommand(handler,removeFirstWord);
 	}
-	public Handler parserViewCommand(Handler handler, String removeFirstWord) throws Exception {
+	private Handler parserViewCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserView parserView = new ParserView();
 		return parserView.parserViewCommand(handler,removeFirstWord);
 	}
-	public Handler parserLocationCommand(Handler handler, String removeFirstWord) throws Exception {
+	private Handler parserLocationCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserLocation parseLocation = new ParserLocation();
 		return parseLocation.parseLocationCmd(handler,removeFirstWord);
 	}
-	public Handler parserDoneCommand(Handler handler, String removeFirstWord) throws Exception {
+	private Handler parserDoneCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserDone parserDone = new ParserDone();
 		return parserDone.parserDoneCommand(handler,removeFirstWord);
 	}
-	public Handler parserHelpCommand(Handler handler, String removeFirstWord) throws Exception {
+	private Handler parserHelpCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserHelp parserHelp = new ParserHelp();
 		return parserHelp.parserHelpCommand(handler,removeFirstWord);
 	}
 	
 	
-	public Handler parserFirstWord(Handler handler, String firstWord,String removeFirstWord) throws Exception{
+	private Handler parserFirstWord(Handler handler, String firstWord,String removeFirstWord) throws Exception{
 		switch(firstWord.toLowerCase()){
 		 case COMMAND_ADD:
 			 handler.setCommandType(COMMAND_ADD);
