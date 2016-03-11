@@ -18,16 +18,20 @@ import javax.swing.JTextPane;
 import simplyamazing.logic.Logic;
 
 public class UI {
+	private static final CharSequence CHARACTER_NEW_LINE = "\n";
+	
 	private JFrame frame;
 	private JTextField txtCommand;
 	private JTextPane textPane;
 	private JSeparator separator, separator_1;
 	private JScrollPane scrollPane;
 	private JTextArea txtrHeader;
+	private JTextArea textArea;
 	
 	private static Logic logic;
 	private static CommandBarController commandBarController;
-	private static FeedbackPaneController feedbackPaneController;
+	private static TaskDataPanelController taskDataPanelController;
+	private static FeedbackAreaController feedbackAreaController;
 
 	/**
 	 * Launch the application.
@@ -65,7 +69,8 @@ public class UI {
 	private void initialize() {
 		setupFrame();
 		setupAppLogo();
-		setupFeedbackPane();
+		setupTaskDataPanel();
+		setupFeedbackArea();
 		setupCommandBar();
 		setupSeparators();
 	}
@@ -76,11 +81,19 @@ public class UI {
 		frame.getContentPane().add(separator_1);
 		frame.getContentPane().add(scrollPane);
 		frame.getContentPane().add(txtCommand);
+		frame.getContentPane().add(textArea);
 	}
 
-	private void setupFeedbackPane() {
+	private void setupFeedbackArea() {
+		textArea = new JTextArea();
+		textArea.setBounds(10, 346, 664, 22);
+		feedbackAreaController = new FeedbackAreaController();
+		feedbackAreaController.setFeedbackArea(textArea);
+	}
+
+	private void setupTaskDataPanel() {
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 57, 664, 311);
+		scrollPane.setBounds(10, 57, 664, 278);
 		textPane = new JTextPane();
 		textPane.setToolTipText("Feedback message will be shown here.");
 		textPane.setForeground(Color.BLACK);
@@ -88,8 +101,8 @@ public class UI {
 		textPane.setEditable(false);
 		textPane.setBounds(10, 57, 664, 311);
 		scrollPane.setViewportView(textPane);
-		feedbackPaneController = new FeedbackPaneController();
-		feedbackPaneController.setFeedbackPane(textPane);	
+		taskDataPanelController = new TaskDataPanelController();
+		taskDataPanelController.setFeedbackPane(textPane);	
 	}
 
 	private void setupAppLogo() {
@@ -133,12 +146,17 @@ public class UI {
 		String feedback = null;
 		try {
 			feedback = logic.executeCommand(commandBarController.getCommand());
-			feedbackPaneController.colorCodeFeedback(Color.BLUE);
+			if(feedback.contains(CHARACTER_NEW_LINE)) {
+				taskDataPanelController.setFeedback(feedback);
+			} else {
+				feedbackAreaController.colorCodeFeedback(Color.GREEN);
+				feedbackAreaController.setFeedback(feedback);
+			}
 			commandBarController.clearCommand();
 		} catch (Exception e1) {
 			feedback = getErrorMessage(e1);
-			feedbackPaneController.colorCodeFeedback(Color.RED);
+			feedbackAreaController.colorCodeFeedback(Color.RED);
+			feedbackAreaController.setFeedback(feedback);
 		}
-		feedbackPaneController.setFeedback(feedback);
 	}
 }

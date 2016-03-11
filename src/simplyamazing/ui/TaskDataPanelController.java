@@ -6,7 +6,7 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
-public class FeedbackPaneController {
+public class TaskDataPanelController {
 	private JTextPane feedbackPane;
 
 	public JTextPane getFeedbackPane() {
@@ -19,9 +19,5 @@ public class FeedbackPaneController {
 	
 	public void setFeedback(String feedback) {
 		feedbackPane.setText(feedback);
-	}
-	
-	public void colorCodeFeedback(Color color) {
-		feedbackPane.setForeground(color);
 	}
 }
