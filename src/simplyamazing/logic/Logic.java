@@ -92,12 +92,6 @@ public class Logic {
 		String commandWord = commandHandler.getCommandType();
 		CommandType commandType = getCommandType(commandWord);
 		
-		if (commandType != CommandType.SET_LOCATION) {
-			if (!storageObj.isLocationSet()) {
-				throw new Exception(MESSAGE_INPUT_LOCATION);
-			}
-		}
-		
 		String feedback = STRING_EMPTY;
 		switch (commandType) {
 			case ADD_TASK :
@@ -151,7 +145,7 @@ public class Logic {
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			String keyWord = commandHandler.getKeyWord();
-			taskList = storageObj.load(keyWord);
+			taskList = storageObj.viewTasks(keyWord);
 			return convertListToString(taskList);	
 		}
 	}

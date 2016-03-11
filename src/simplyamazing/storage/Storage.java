@@ -24,7 +24,7 @@ public class Storage {
 	private static final int INDEX_START_FOR_ARRAY = 0;
 	
 	private static final String MESSAGE_LOCATION_SET = "Storage location of task data is set sucessfully.";
-	private static final String MESSAGE_LOCATION_NOT_SET = "Storage location of task data is not set yet.\nPlease enter \"location <directory>\" to input the directory location.";
+	private static final String MESSAGE_LOCATION_NOT_SET = "Storage location of task data is not set yet. Please enter \"location <directory>\" command to set the storage location.";
 	private static final String MESSAGE_NOT_DIRECTORY = "Provided storage location is not a valid directory.";
 	private static final String MESSAGE_ADDED = "%1$s is added successfully.";
 	private static final String MESSAGE_RESTORED = "System is successfully restored to previous state.";
@@ -45,7 +45,7 @@ public class Storage {
 		listManager = new ListManager();
 	}
 	
-	public boolean isLocationSet() {
+	private boolean isLocationSet() {
 		return !fileManager.isEmptyFile(storage);
 	}
 	
@@ -135,7 +135,7 @@ public class Storage {
 		}
 	}
 	
-	public ArrayList<Task> load(String taskType) throws Exception {
+	public ArrayList<Task> viewTasks(String taskType) throws Exception {
 		if(!isLocationSet()) {
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else {
@@ -143,17 +143,17 @@ public class Storage {
 			updateTaskData();
 			switch(taskType) {
 				case STRING_EMPTY :
-					return loadTasks();
+					return viewTasks();
 				case STRING_TASK_TYPE_EVENT :
-					return loadEvents();
+					return viewEvents();
 				case STRING_TASK_TYPE_DEADLINE :
-					return loadDeadlines();
+					return viewDeadlines();
 				case STRING_TASK_TYPE_FLOATING :
-					return loadFloatingTasks();
+					return viewFloatingTasks();
 				case STRING_TASK_TYPE_OVERDUE :
-					return loadOverdueTasks();
+					return viewOverdueTasks();
 				case STRING_TASK_TYPE_DONE :
-					return loadCompletedTasks();
+					return viewCompletedTasks();
 				default :
 					//throw an error if the task type is not recognized
 					throw new Error(MESSAGE_INVALID_TASK_TYPE);
@@ -161,7 +161,7 @@ public class Storage {
 		}
 	}
 	
-	private ArrayList<Task> loadTasks() {
+	private ArrayList<Task> viewTasks() {
 		ArrayList<Task> tasks = listManager.getTasks();
 		ArrayList<Task> currentTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
@@ -175,7 +175,7 @@ public class Storage {
 		return currentTasks;
 	}
 	
-	private ArrayList<Task> loadEvents() {
+	private ArrayList<Task> viewEvents() {
 		ArrayList<Task> tasks = listManager.getTasks();
 		ArrayList<Task> currentEvents = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
@@ -190,7 +190,7 @@ public class Storage {
 		return currentEvents;
 	}
 	
-	private ArrayList<Task> loadDeadlines() {
+	private ArrayList<Task> viewDeadlines() {
 		ArrayList<Task> tasks = listManager.getTasks();
 		ArrayList<Task> currentDeadlines = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
@@ -205,7 +205,7 @@ public class Storage {
 		return currentDeadlines;
 	}
 	
-	private ArrayList<Task> loadFloatingTasks() {
+	private ArrayList<Task> viewFloatingTasks() {
 		ArrayList<Task> tasks = listManager.getTasks();
 		ArrayList<Task> currentFloatingTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
@@ -219,7 +219,7 @@ public class Storage {
 		return currentFloatingTasks;
 	}
 	
-	private ArrayList<Task> loadOverdueTasks() {
+	private ArrayList<Task> viewOverdueTasks() {
 		ArrayList<Task> tasks = listManager.getTasks();
 		ArrayList<Task> overdueTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
@@ -233,7 +233,7 @@ public class Storage {
 		return overdueTasks;		
 	}
 	
-	private ArrayList<Task> loadCompletedTasks() {
+	private ArrayList<Task> viewCompletedTasks() {
 		ArrayList<Task> tasks = listManager.getTasks();
 		ArrayList<Task> completedTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
@@ -251,7 +251,7 @@ public class Storage {
 		} else {
 			switch(keyword) {
 				case CHARACTER_SPACE :
-					return loadTasks();
+					return viewTasks();
 				default :
 					ArrayList<Task> filteredTasks = new ArrayList<Task>();
 				updateTaskData();
