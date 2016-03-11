@@ -26,6 +26,7 @@ public class ParserAdd {
 				String description = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[0].trim();
 				String startTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[0]
 						.trim();
+				
 				String endTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[1]
 						.trim();
 				handler.getTask().setDescription(description);
@@ -48,11 +49,24 @@ public class ParserAdd {
 
 	public boolean isAddingValid(String taskInfo) throws Exception {
 		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) {
-			description = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[0].trim();
-			startTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[0].trim();
-			endTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[1].trim();
+			//description = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[0].trim();
+			//startTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[0].trim();
+			int startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
+			int endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
+			startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
+			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
+			description = taskInfo.substring(0, startTimeIndex);
+			System.out.println(startTime);
+			System.out.println(endTime);
+			System.out.println(description);
+			
+			
+			//System.out.println(taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[2].trim());
+			
+			//endTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[1].trim();
 
 			if (description.equals(EMPTY_STRING) || startTime.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
+				System.out.println("empty string");
 				return false;
 			} else if (!startTime.equals(EMPTY_STRING) && !endTime.equals(EMPTY_STRING)) {
 				try {
@@ -63,13 +77,16 @@ public class ParserAdd {
 					Date todayDate = sdf.parse(sdf.format(new Date()));
 
 					if (startingDate.after(endingDate)) {
+						System.out.println("start after end");
 						return false;
-					} else if (startingDate.after(endingDate) || startingDate.before(todayDate)) {
+					} else if (startingDate.before(todayDate) || startingDate.before(todayDate)) {
+						System.out.println("already expired");
 						return false;
 					}
 
 					return true;
 				} catch (ParseException e) {
+					System.out.println("Date parse exception");
 					return false;
 				}
 			}
