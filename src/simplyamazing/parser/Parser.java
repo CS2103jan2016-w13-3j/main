@@ -91,10 +91,10 @@ public class Parser {
 			 break;
 		 case COMMAND_HELP:
 			 handler.setCommandType(COMMAND_HELP);
+			 handler = parserHelpCommand(handler,removeFirstWord);
 			 break;
 		 case COMMAND_UNDO:
 			 handler.setCommandType(COMMAND_UNDO);
-			 handler = parserHelpCommand(handler,removeFirstWord);
 			 break;
 		 case COMMAND_SET_LOCATION:
 			 handler.setCommandType(COMMAND_SET_LOCATION);
