@@ -14,6 +14,8 @@ public class ParserAdd {
 	private static String description = "";
 	private static String startTime = "";
 	private static String endTime = "";
+	private static int startTimeIndex;
+	private static int endTimeIndex;
 
 	private boolean checkValue;
 
@@ -23,18 +25,20 @@ public class ParserAdd {
 
 			if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) { // For
 																										// events
-				int startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
-				int endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
+				startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
+				endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
 				startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
 				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
 				description = taskInfo.substring(0, startTimeIndex);
-				
+
 				handler.getTask().setDescription(description);
 				handler.getTask().setStartTime(startTime);
 				handler.getTask().setEndTime(endTime);
 			} else if (taskInfo.contains(KEYWORD_DEADLINE)) { // For deadlines
-				String description = taskInfo.trim().split(KEYWORD_DEADLINE)[0].trim();
-				String endTime = taskInfo.trim().split(KEYWORD_DEADLINE)[1].trim();
+				endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
+				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex));
+				description = taskInfo.substring(0, endTimeIndex);
+
 				handler.getTask().setDescription(description);
 				handler.getTask().setEndTime(endTime);
 			} else {
@@ -49,17 +53,11 @@ public class ParserAdd {
 
 	public boolean isAddingValid(String taskInfo) throws Exception {
 		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) {
-			//description = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[0].trim();
-			//startTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[0].trim();
-			int startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
-			int endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
+			startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
+			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
 			startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
 			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
 			description = taskInfo.substring(0, startTimeIndex);
-						
-			//System.out.println(taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[2].trim());
-			
-			//endTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[1].trim();
 
 			if (description.equals(EMPTY_STRING) || startTime.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
 				System.out.println("empty string");
@@ -73,22 +71,20 @@ public class ParserAdd {
 					Date todayDate = sdf.parse(sdf.format(new Date()));
 
 					if (startingDate.after(endingDate)) {
-						System.out.println("start after end");
 						return false;
 					} else if (startingDate.before(todayDate) || startingDate.before(todayDate)) {
-						System.out.println("already expired");
 						return false;
 					}
 
 					return true;
 				} catch (ParseException e) {
-					System.out.println("Date parse exception");
 					return false;
 				}
 			}
 		} else if (taskInfo.contains(KEYWORD_DEADLINE)) {
-			description = taskInfo.trim().split(KEYWORD_DEADLINE)[0].trim();
-			endTime = taskInfo.trim().split(KEYWORD_DEADLINE)[1].trim();
+			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
+			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex));
+			description = taskInfo.substring(0, endTimeIndex);
 
 			if (description.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
 				return false;
