@@ -61,6 +61,10 @@ public class Parser {
 		ParserDone parserDone = new ParserDone();
 		return parserDone.parserDoneCommand(handler,removeFirstWord);
 	}
+	public Handler parserHelpCommand(Handler handler, String removeFirstWord) throws Exception {
+		ParserHelp parserHelp = new ParserHelp();
+		return parserHelp.parserHelpCommand(handler,removeFirstWord);
+	}
 	
 	
 	public Handler parserFirstWord(Handler handler, String firstWord,String removeFirstWord) throws Exception{
@@ -90,6 +94,7 @@ public class Parser {
 			 break;
 		 case COMMAND_UNDO:
 			 handler.setCommandType(COMMAND_UNDO);
+			 handler = parserHelpCommand(handler,removeFirstWord);
 			 break;
 		 case COMMAND_SET_LOCATION:
 			 handler.setCommandType(COMMAND_SET_LOCATION);
