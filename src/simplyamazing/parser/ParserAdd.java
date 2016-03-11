@@ -23,12 +23,12 @@ public class ParserAdd {
 
 			if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) { // For
 																										// events
-				String description = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[0].trim();
-				String startTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[0]
-						.trim();
+				int startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
+				int endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
+				startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
+				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
+				description = taskInfo.substring(0, startTimeIndex);
 				
-				String endTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[1]
-						.trim();
 				handler.getTask().setDescription(description);
 				handler.getTask().setStartTime(startTime);
 				handler.getTask().setEndTime(endTime);
@@ -56,11 +56,7 @@ public class ParserAdd {
 			startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
 			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
 			description = taskInfo.substring(0, startTimeIndex);
-			System.out.println(startTime);
-			System.out.println(endTime);
-			System.out.println(description);
-			
-			
+						
 			//System.out.println(taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[2].trim());
 			
 			//endTime = taskInfo.trim().split(KEYWORD_SCHEDULE_FROM)[1].trim().split(KEYWORD_SCHEDULE_TO)[1].trim();
