@@ -1,5 +1,6 @@
 package simplyamazing.ui;
 
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -9,11 +10,13 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import simplyamazing.logic.Logic;
 
 public class UI {
 	private JFrame frame;
+	private JTextField txtCommand;
 	private JSeparator separator, separator_1;
 	private JScrollPane scrollPane;
 	private JTextArea txtrHeader;
@@ -31,7 +34,7 @@ public class UI {
 				try {
 					UI window = new UI();
 					window.frame.setVisible(true);
-					commandBarController.getTxtCommand().requestFocusInWindow();
+					commandBarController.getCommandBar().requestFocusInWindow();
 					logic = new Logic();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -68,7 +71,7 @@ public class UI {
 		frame.getContentPane().add(separator);
 		frame.getContentPane().add(separator_1);
 		frame.getContentPane().add(scrollPane);
-		frame.getContentPane().add(commandBarController.getTxtCommand());
+		frame.getContentPane().add(txtCommand);
 	}
 
 	private void setupFeedbackPane() {
@@ -95,7 +98,12 @@ public class UI {
 	}
 
 	private void setupCommandBar() {
-		commandBarController = new CommandBarController(this);
+		txtCommand = new JTextField();
+		txtCommand.setToolTipText("Type your command here.");
+		txtCommand.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtCommand.setBounds(10, 392, 664, 33);
+		txtCommand.setColumns(10);
+		commandBarController = new CommandBarController(this, txtCommand);
 	}
 
 	private void setupFrame() {
