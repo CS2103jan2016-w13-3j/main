@@ -5,22 +5,26 @@ import java.awt.Color;
 import javax.swing.JTextArea;
 
 public class FeedbackAreaController {
+	private final String STRING_NULL = "";
+	
 	private JTextArea feedbackArea;
+	
+	public FeedbackAreaController() {
+		feedbackArea = new JTextArea();
+		feedbackArea.setEditable(false);
+		feedbackArea.setBounds(10, 346, 664, 22);
+	}
 
-	public JTextArea getFeedbackArea() {
+	public JTextArea getFeedbackArea() {		
 		return feedbackArea;
 	}
 
-	public void setFeedbackArea(JTextArea textArea) {
-		this.feedbackArea = textArea;
-	}
-	
 	public void setFeedback(String feedback) {
 		feedbackArea.setText(feedback);
 	}
 	
-	public void clearFeedback(String feedback) {
-		feedbackArea.setText("");
+	public void clear() {
+		feedbackArea.setText(STRING_NULL);
 	}
 	
 	public void colorCodeFeedback(Color color) {

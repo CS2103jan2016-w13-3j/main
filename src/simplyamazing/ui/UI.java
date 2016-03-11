@@ -6,25 +6,19 @@ import java.awt.Font;
 import java.awt.SystemColor;
 
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
 
 import simplyamazing.logic.Logic;
 
 public class UI {
+	private static final Color COLOR_DARK_GREEN = new Color(0, 128, 0);
+
 	private static final CharSequence CHARACTER_NEW_LINE = "\n";
-	private static final String MESSAGE_NO_TASK_FOUND = "No task found.";
 	
 	private JFrame frame;
-	private JTextField txtCommand;
-	private JTextPane textPane;
 	private JSeparator separator, separator_1;
-	private JScrollPane scrollPane;
 	private JTextArea txtrHeader;
-	private JTextArea textArea;
 	
 	private static Logic logic;
 	private static CommandBarController commandBarController;
@@ -77,32 +71,17 @@ public class UI {
 		frame.getContentPane().add(txtrHeader);
 		frame.getContentPane().add(separator);
 		frame.getContentPane().add(separator_1);
-		frame.getContentPane().add(scrollPane);
-		frame.getContentPane().add(txtCommand);
-		frame.getContentPane().add(textArea);
+		frame.getContentPane().add(taskDataPanelController.getTaskDataPanel());
+		frame.getContentPane().add(commandBarController.getCommandBar());
+		frame.getContentPane().add(feedbackAreaController.getFeedbackArea());
 	}
 
 	private void setupFeedbackArea() {
-		textArea = new JTextArea();
-		textArea.setEditable(false);
-		textArea.setBounds(10, 346, 664, 22);
 		feedbackAreaController = new FeedbackAreaController();
-		feedbackAreaController.setFeedbackArea(textArea);
 	}
 
 	private void setupTaskDataPanel() {
-		scrollPane = new JScrollPane();
-		scrollPane.setBorder(null);
-		scrollPane.setBounds(10, 57, 664, 278);
-		textPane = new JTextPane();
-		textPane.setToolTipText("Feedback message will be shown here.");
-		textPane.setForeground(Color.BLACK);
-		textPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		textPane.setEditable(false);
-		textPane.setBounds(10, 57, 664, 311);
-		scrollPane.setViewportView(textPane);
 		taskDataPanelController = new TaskDataPanelController();
-		taskDataPanelController.setTaskDataPanel(textPane);	
 	}
 
 	private void setupAppLogo() {
@@ -113,23 +92,15 @@ public class UI {
 		txtrHeader.setBounds(203, 11, 278, 22);
 	}
 
-	private JSeparator setupSeparators() {
+	private void setupSeparators() {
 		separator = new JSeparator();
 		separator.setBounds(10, 379, 664, 2);
 		separator_1 = new JSeparator();
 		separator_1.setBounds(10, 44, 664, 2);
-		return separator;
 	}
 
 	private void setupCommandBar() {
-		txtCommand = new JTextField();
-		txtCommand.setForeground(Color.BLACK);
-		txtCommand.setToolTipText("Type your command here.");
-		txtCommand.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtCommand.setBounds(10, 392, 664, 33);
-		txtCommand.setColumns(10);
 		commandBarController = new CommandBarController();
-		commandBarController.setCommandBar(txtCommand);
 		commandBarController.handleKeyPressedEvent(this);
 	}
 
@@ -145,16 +116,17 @@ public class UI {
 
 	public void executeUserCommand() {
 		String feedback = null;
+		feedbackAreaController.clear();
 		try {
 			feedback = logic.executeCommand(commandBarController.getCommand());
 			if(feedback.contains(CHARACTER_NEW_LINE)) {
 				taskDataPanelController.setTaskData(feedback);
 			} else {
 				taskDataPanelController.clear();
-				feedbackAreaController.colorCodeFeedback(new Color(0, 128, 0));
+				feedbackAreaController.colorCodeFeedback(COLOR_DARK_GREEN);
 				feedbackAreaController.setFeedback(feedback);
 			}
-			commandBarController.clearCommand();
+			commandBarController.clear();
 		} catch (Exception e1) {
 			feedback = getErrorMessage(e1);
 			feedbackAreaController.colorCodeFeedback(Color.RED);

@@ -1,5 +1,7 @@
 package simplyamazing.ui;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -8,13 +10,22 @@ import javax.swing.JTextField;
 public class CommandBarController {
 	private static JTextField commandBar;
 	
+	public CommandBarController() {
+		commandBar = new JTextField();
+		commandBar.setForeground(Color.BLACK);
+		commandBar.setToolTipText("Type your command here.");
+		commandBar.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		commandBar.setBounds(10, 392, 664, 33);
+		commandBar.setColumns(10);
+	}
+	
 	public void handleKeyPressedEvent(final UI ui) {
 		commandBar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 					ui.executeUserCommand();
-					clearCommand();
+					clear();
 				}
 			}
 		});
@@ -24,15 +35,11 @@ public class CommandBarController {
 		return commandBar;
 	}
 
-	public void setCommandBar(JTextField commandBar) {
-		this.commandBar = commandBar;
-	}
-
 	public String getCommand() {
 		return commandBar.getText();
 	}
 	
-	public void clearCommand() {
+	public void clear() {
 		commandBar.setText("");
 	}
 }
