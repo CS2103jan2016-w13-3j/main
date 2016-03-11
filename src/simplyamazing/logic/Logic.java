@@ -32,7 +32,9 @@ public class Logic {
 	private static final String MESSAGE_HELP_EXIT = "Exit SimplyAmazing\ncommand = exit\n";
 	private static final String MESSAGE_HELP_SEARCH = "Search tasks for given keyword\ncommand = search <keyword>\n";
 	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\ncommand = undo\n";
-	private static final String MESSAGE_HELP_DONE = "Marks task as completed\n command = done <task index>";
+	private static final String MESSAGE_HELP_DONE = "Marks task as completed\n command = done <task index>\n";
+	private static final String MESSAGE_HELP_DELETE = "Delete task from list\ncommand = delete <task index>\n";
+	private static final String MESSAGE_HELP_EDIT = "Edit content in a task\ncommand = edit <task index> <task header> <updated content>\n";
 	
 	private static final String MESSAGE_HELP_LOCATION = "Set storage location or folder for application data\n"
 			+ "command = location <path>";
@@ -40,6 +42,9 @@ public class Logic {
 	private static final String MESSAGE_HELP_VIEW = "Display all tasks\n command = view\n\nDisplay tasks with deadlines\n"
 			+ "command = view deadlines\n\nDisplay events\ncommand = view events\n\nDisplay tasks without deadlines\ncommand = view tasks\n\n"
 			+ "Display completed tasks\ncommand = view done\n\nDisplay overdue tasks\ncommand = view overdue\n\n";
+
+	private static final String MESSAGE_HELP_ADD_TASK = "Add a task to a list\ncommand = add <task description>\n";
+	
 	
 	enum CommandType {
 		ADD_TASK, VIEW_LIST, DELETE_TASK,INVALID,
@@ -236,9 +241,32 @@ public class Logic {
 		}
 	}
 	
-	private static String executeHelpCommand(Handler commandHandler) {
-		// TODO Auto-generated method stub
-		return null;
+	private static String executeHelpCommand(Handler commandHandler) throws Exception {
+		if (commandHandler.getHasError() == true) {
+			throw new Exception(commandHandler.getFeedBack());
+		} else {
+			if(commandHandler.getKeyWord().equals("")) {
+				return MESSAGE_HELP;
+			} else if (commandHandler.getKeyWord().equals("add")) {
+				return MESSAGE_HELP_ADD_TASK;
+			} else if (commandHandler.getKeyWord().equals("delete")) {
+				return MESSAGE_HELP_DELETE;
+			} else if (commandHandler.getKeyWord().equals("view")) {
+				return MESSAGE_HELP_VIEW;
+			} else if (commandHandler.getKeyWord().equals("search")) {
+				return MESSAGE_HELP_SEARCH;
+			} else if (commandHandler.getKeyWord().equals("edit")) {
+				return MESSAGE_HELP_EDIT;
+			} else if (commandHandler.getKeyWord().equals("exit")) {
+				return MESSAGE_HELP_EXIT;
+			} else if (commandHandler.getKeyWord().equals("location")) {
+				return MESSAGE_HELP_LOCATION;
+			} else if (commandHandler.getKeyWord().equals("undo")) {
+				return MESSAGE_HELP_UNDO;
+			} else {
+				return MESSAGE_HELP_DONE;
+			}
+		}
 	}
 	
 	private static boolean checkIndexValid(String indexStr){
