@@ -1,23 +1,24 @@
 package simplyamazing.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 public class TaskDataPanelController {
-	private JTextPane feedbackPane;
+	private JTextPane taskDataPanel;
+	private final String STRING_NULL = "";
 
-	public JTextPane getFeedbackPane() {
-		return feedbackPane;
+	public JTextPane getTaskDataPanel() {
+		return taskDataPanel;
 	}
 	
-	public void setFeedbackPane(JTextPane feedbackPane) {
-		this.feedbackPane = feedbackPane;
+	public void setTaskDataPanel(JTextPane feedbackPane) {
+		this.taskDataPanel = feedbackPane;
 	}
 	
-	public void setFeedback(String feedback) {
-		feedbackPane.setText(feedback);
+	public void setTaskData(String taskData) {
+		taskDataPanel.setText(taskData);
+	}
+	
+	public void clear() {
+		taskDataPanel.setText(STRING_NULL);
 	}
 }

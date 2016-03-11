@@ -1,12 +1,9 @@
 package simplyamazing.ui;
 
-
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.SystemColor;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -19,6 +16,7 @@ import simplyamazing.logic.Logic;
 
 public class UI {
 	private static final CharSequence CHARACTER_NEW_LINE = "\n";
+	private static final String MESSAGE_NO_TASK_FOUND = "No task found.";
 	
 	private JFrame frame;
 	private JTextField txtCommand;
@@ -86,6 +84,7 @@ public class UI {
 
 	private void setupFeedbackArea() {
 		textArea = new JTextArea();
+		textArea.setEditable(false);
 		textArea.setBounds(10, 346, 664, 22);
 		feedbackAreaController = new FeedbackAreaController();
 		feedbackAreaController.setFeedbackArea(textArea);
@@ -93,6 +92,7 @@ public class UI {
 
 	private void setupTaskDataPanel() {
 		scrollPane = new JScrollPane();
+		scrollPane.setBorder(null);
 		scrollPane.setBounds(10, 57, 664, 278);
 		textPane = new JTextPane();
 		textPane.setToolTipText("Feedback message will be shown here.");
@@ -102,7 +102,7 @@ public class UI {
 		textPane.setBounds(10, 57, 664, 311);
 		scrollPane.setViewportView(textPane);
 		taskDataPanelController = new TaskDataPanelController();
-		taskDataPanelController.setFeedbackPane(textPane);	
+		taskDataPanelController.setTaskDataPanel(textPane);	
 	}
 
 	private void setupAppLogo() {
@@ -123,6 +123,7 @@ public class UI {
 
 	private void setupCommandBar() {
 		txtCommand = new JTextField();
+		txtCommand.setForeground(Color.BLACK);
 		txtCommand.setToolTipText("Type your command here.");
 		txtCommand.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtCommand.setBounds(10, 392, 664, 33);
@@ -147,9 +148,10 @@ public class UI {
 		try {
 			feedback = logic.executeCommand(commandBarController.getCommand());
 			if(feedback.contains(CHARACTER_NEW_LINE)) {
-				taskDataPanelController.setFeedback(feedback);
+				taskDataPanelController.setTaskData(feedback);
 			} else {
-				feedbackAreaController.colorCodeFeedback(Color.GREEN);
+				taskDataPanelController.clear();
+				feedbackAreaController.colorCodeFeedback(new Color(0, 128, 0));
 				feedbackAreaController.setFeedback(feedback);
 			}
 			commandBarController.clearCommand();
