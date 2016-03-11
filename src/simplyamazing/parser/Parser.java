@@ -14,7 +14,6 @@ public class Parser {
 	private static final String COMMAND_INVALID = "the input command is invalid";
 	
 	private static final String STRING_EMPTY = "";
-	private static final String CHARACTER_FIELD_VALUE_SEPARATOR = ":";
 	private static final String CHARACTER_SPACE = "\\s";
 	
 	private String firstWord = STRING_EMPTY;
@@ -45,14 +44,6 @@ public class Parser {
 		taskInfoWithoutIndex = removeFirstWord(taskInfo);
 		
 		return parserEdit.parseEditCommand(handler, taskIndex, taskInfoWithoutIndex);
-	}
-	public boolean parserCheckAddCommand(String taskInfo) throws Exception{
-		ParserCheckAdd parserAdd = new ParserCheckAdd();
-		return parserAdd.isAddingValid(taskInfo);
-	}
-	public boolean parserCheckEditCommand(String taskInfo) throws Exception{
-		ParserCheckEdit parserEdit = new ParserCheckEdit();
-		return parserEdit.isEditingValid(taskInfo);
 	}
 	public Handler parserDeleteCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserDelete parserDelete = new ParserDelete();
