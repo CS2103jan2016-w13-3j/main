@@ -26,7 +26,6 @@ public class ParserEdit {
 			handler.setFeedBack(MESSAGE_INVALID_FORMAT);
 			return handler;
 		}
-		handler.setIndex(taskIndex);
 		String[] fieldValuePairs = taskInfoWithoutIndex.split(",");
 		isValid = isEditingValid(taskInfoWithoutIndex);
 		if (isValid) {

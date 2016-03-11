@@ -10,6 +10,7 @@ public class ParserAdd {
 	private static final String KEYWORD_DEADLINE = "by";
 	private static final String EMPTY_STRING = "";
 	private static final String TIME_FORMAT = "H:mm dd MMM yyyy";
+	private static final String ERROR_MESSAGE = "the add command is not correct";
 	private static String description = "";
 	private static String startTime = "";
 	private static String endTime = "";
@@ -39,7 +40,8 @@ public class ParserAdd {
 				handler.getTask().setDescription(taskInfo.trim());
 			}
 		} else {
-
+			handler.setHasError(true);
+			handler.setFeedBack(ERROR_MESSAGE);
 		}
 		return handler;
 	}
