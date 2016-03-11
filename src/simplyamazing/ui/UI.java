@@ -5,18 +5,22 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 import simplyamazing.logic.Logic;
 
 public class UI {
 	private JFrame frame;
 	private JTextField txtCommand;
+	private JTextPane textPane;
 	private JSeparator separator, separator_1;
 	private JScrollPane scrollPane;
 	private JTextArea txtrHeader;
@@ -77,8 +81,15 @@ public class UI {
 	private void setupFeedbackPane() {
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 57, 664, 311);
+		textPane = new JTextPane();
+		textPane.setToolTipText("Feedback message will be shown here.");
+		textPane.setForeground(Color.BLACK);
+		textPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		textPane.setEditable(false);
+		textPane.setBounds(10, 57, 664, 311);
+		scrollPane.setViewportView(textPane);
 		feedbackPaneController = new FeedbackPaneController();
-		scrollPane.setViewportView(feedbackPaneController.getTextPane());
+		feedbackPaneController.setFeedbackPane(textPane);	
 	}
 
 	private void setupAppLogo() {
@@ -103,7 +114,9 @@ public class UI {
 		txtCommand.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtCommand.setBounds(10, 392, 664, 33);
 		txtCommand.setColumns(10);
-		commandBarController = new CommandBarController(this, txtCommand);
+		commandBarController = new CommandBarController();
+		commandBarController.setCommandBar(txtCommand);
+		commandBarController.handleKeyPressedEvent(this);
 	}
 
 	private void setupFrame() {

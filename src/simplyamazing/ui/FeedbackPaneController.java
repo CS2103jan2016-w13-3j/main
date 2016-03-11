@@ -3,29 +3,25 @@ package simplyamazing.ui;
 import java.awt.Color;
 import java.awt.Font;
 
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 public class FeedbackPaneController {
-	private static JTextPane textPane;
+	private JTextPane feedbackPane;
 
-	public FeedbackPaneController() {
-		textPane = new JTextPane();
-		textPane.setToolTipText("Feedback message will be shown here.");
-		textPane.setForeground(Color.BLACK);
-		textPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		textPane.setEditable(false);
-		textPane.setBounds(10, 57, 664, 311);
+	public JTextPane getFeedbackPane() {
+		return feedbackPane;
 	}
-
-	public JTextPane getTextPane() {
-		return textPane;
+	
+	public void setFeedbackPane(JTextPane feedbackPane) {
+		this.feedbackPane = feedbackPane;
 	}
 	
 	public void setFeedback(String feedback) {
-		textPane.setText(feedback);
+		feedbackPane.setText(feedback);
 	}
 	
 	public void colorCodeFeedback(Color color) {
-		textPane.setForeground(color);
+		feedbackPane.setForeground(color);
 	}
 }

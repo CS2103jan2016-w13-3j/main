@@ -8,8 +8,7 @@ import javax.swing.JTextField;
 public class CommandBarController {
 	private static JTextField commandBar;
 	
-	public CommandBarController(final UI ui, JTextField commandBar) {
-		this.commandBar = commandBar;
+	public void handleKeyPressedEvent(final UI ui) {
 		commandBar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
