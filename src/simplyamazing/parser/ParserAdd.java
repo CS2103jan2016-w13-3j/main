@@ -60,12 +60,11 @@ public class ParserAdd {
 			description = taskInfo.substring(0, startTimeIndex);
 
 			if (description.equals(EMPTY_STRING) || startTime.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
-				System.out.println("empty string");
 				return false;
 			} else if (!startTime.equals(EMPTY_STRING) && !endTime.equals(EMPTY_STRING)) {
 				try {
 					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);
-					sdf.setLenient(false);
+					sdf.setLenient(true);
 					Date startingDate = sdf.parse(startTime);
 					Date endingDate = sdf.parse(endTime);
 					Date todayDate = sdf.parse(sdf.format(new Date()));
@@ -91,7 +90,7 @@ public class ParserAdd {
 			} else if (!endTime.equals(EMPTY_STRING)) {
 				try {
 					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);
-					sdf.setLenient(false);
+					sdf.setLenient(true);
 					Date endingDate = sdf.parse(endTime);
 					Date todayDate = sdf.parse(sdf.format(new Date()));
 					if (endingDate.before(todayDate)) {
