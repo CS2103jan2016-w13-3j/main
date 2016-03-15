@@ -7,10 +7,8 @@ public class FileBuilder {
 		new File(directoryName).mkdirs();
 	}
 	
-	public void createFileIfNotExist(File file) throws Exception {
-		if(!file.exists()) {
-			file.createNewFile();
-		}
+	public void createNewFile(File file) throws Exception {
+		file.createNewFile();
 	}
 	
 	public File createFile(String filename) {

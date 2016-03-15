@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JSeparator;
@@ -12,9 +14,13 @@ import javax.swing.JTextArea;
 import simplyamazing.logic.Logic;
 
 public class UI {
+	private static final String MESSAGE_LOG_USER_COMMAND_EXECUTED = "user command is successfully executed.";
+
 	private static final Color COLOR_DARK_GREEN = new Color(0, 128, 0);
 
 	private static final CharSequence CHARACTER_NEW_LINE = "\n";
+	
+	private static Logger logger = Logger.getLogger("UI");
 	
 	private JFrame frame;
 	private JSeparator separator, separator_1;
@@ -119,16 +125,19 @@ public class UI {
 		feedbackAreaController.clear();
 		try {
 			feedback = logic.executeCommand(commandBarController.getCommand());
+			logger.log(Level.INFO, MESSAGE_LOG_USER_COMMAND_EXECUTED);
 			if(feedback.contains(CHARACTER_NEW_LINE)) {
 				taskDataPanelController.setTaskData(feedback);
 			} else {
 				taskDataPanelController.clear();
 				feedbackAreaController.colorCodeFeedback(COLOR_DARK_GREEN);
 				feedbackAreaController.setFeedback(feedback);
+				logger.log(Level.INFO, feedback);
 			}
 			commandBarController.clear();
 		} catch (Exception e1) {
 			feedback = getErrorMessage(e1);
+			logger.log(Level.WARNING, feedback);
 			feedbackAreaController.colorCodeFeedback(Color.RED);
 			feedbackAreaController.setFeedback(feedback);
 		}

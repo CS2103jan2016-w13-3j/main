@@ -13,4 +13,8 @@ public class FileVerifier {
 	public boolean isEmptyFile(File file) {
 		return file.length() == SIZE_EMPTY;
 	}
+	
+	public boolean isFileExisting(File file) {
+		return file.exists();
+	}
 }

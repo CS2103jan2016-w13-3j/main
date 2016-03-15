@@ -3,6 +3,8 @@ package simplyamazing.storage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import simplyamazing.data.Task;
 import simplyamazing.data.TaskList;
@@ -34,6 +36,16 @@ public class Storage {
 	private static final String MESSAGE_MARKED_DONE = "%1$s is marked as done successfully.";
 	private static final String MESSAGE_UPDATED = "%1$s is updated successfully.";
 	
+	private static final String MESSAGE_LOG_DIRECTORY_CREATED = "Directory for storage file is created successfully.";
+	private static final String MESSAGE_LOG_STORAGE_FILE_SETUP = "Storage file is setup successfully.";
+	private static final String MESSAGE_LOG_TASK_DATA_FILE_SETUP = "Task data file is setup successfully.";
+	private static final String MESSAGE_LOG_TASK_DATA_BACKUP_FILE_SETUP = "Task data backup file is setup successfully.";
+	private static final String MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED = "Task data backup file is successfully updated";
+	private static final String MESSAGE_LOG_TASK_LIST_UPDATED = "Task data is successfully loaded into the task list.";
+	private static final String MESSAGE_LOG_TASK_DATA_READABLE = "Content is readable from task data file.";
+	
+	private static Logger logger = Logger.getLogger("Storage");
+	
 	private File storage, todo, todoBackup;
 	
 	private FileManager fileManager;
@@ -42,7 +54,9 @@ public class Storage {
 	public Storage() {
 		fileManager = new FileManager();
 		fileManager.createDirectory(DIRECTORY_STORAGE);
+		logger.log(Level.CONFIG, MESSAGE_LOG_DIRECTORY_CREATED);
 		storage = fileManager.createFile((DIRECTORY_STORAGE+FILENAME_STORAGE));
+		logger.log(Level.CONFIG, MESSAGE_LOG_STORAGE_FILE_SETUP);
 		taskList = new TaskList();
 	}
 	
@@ -52,15 +66,18 @@ public class Storage {
 	
 	public String setLocation(String location) throws Exception {
 		if(!fileManager.isDirectory(location)) {
+			logger.log(Level.WARNING, MESSAGE_NOT_DIRECTORY);
 			throw new Exception(MESSAGE_NOT_DIRECTORY);
 		} else {	
 			fileManager.writeToFile(storage, location);
+			logger.log(Level.OFF, MESSAGE_LOCATION_SET);
 			return MESSAGE_LOCATION_SET;
 		}
 	}
 	
 	public String getLocation() throws Exception {
 		if(!isLocationSet()) {
+			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
 			String location = fileManager.readFile(storage).get(INDEX_START_FOR_ARRAY);
@@ -70,37 +87,51 @@ public class Storage {
 	
 	public String addTask(Task task) throws Exception {
 		if(!isLocationSet()) {
+			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 	
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
 			updateTaskData();
 			taskList.addTaskToList(task);
 			fileManager.importListToFile(taskList.getTasks(), todo);
-			return String.format(MESSAGE_ADDED, task.toFilteredString());
+			String feedback = String.format(MESSAGE_ADDED, task.toFilteredString());
+			logger.log(Level.INFO, feedback);
+			return feedback;
 		}
 	}
 
 	private void setupFiles() throws Exception {
-		todo = fileManager.createFile(getLocation()+FILENAME_TODO);
-		fileManager.createFileIfNotExist(todo);
+		todo = fileManager.createFile(getLocation()+FILENAME_TODO);	
+		if (fileManager.isFileExisting(todo)) {
+			fileManager.createNewFile(todo);
+		}
+		logger.log(Level.CONFIG, MESSAGE_LOG_TASK_DATA_FILE_SETUP);
 		todoBackup = fileManager.createFile(getLocation()+FILENAME_TODO_BACKUP);
-		fileManager.createFileIfNotExist(todoBackup);
+		if (fileManager.isFileExisting(todoBackup)) {
+			fileManager.createNewFile(todoBackup);
+		}
+		logger.log(Level.CONFIG, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_SETUP);
 	}
 	
 	private void updateTaskData() throws Exception {
 		if(!fileManager.isEmptyFile(todo)) {
 			ArrayList<String> taskData = fileManager.readFile(todo);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_READABLE);
 			taskList.updateTaskList(taskData);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_LIST_UPDATED);
 		}
 	}
 	
 	public String editTask(Task task, Task editedTask) throws Exception {
 		if(!isLocationSet()) {
+			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
 			updateTaskData();
 			taskList.removeTaskFromList(task);
 			if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
@@ -119,28 +150,36 @@ public class Storage {
 			}
 			taskList.addTaskToList(task);
 			fileManager.importListToFile(taskList.getTasks(), todo);
-			return String.format(MESSAGE_UPDATED, task.toFilteredString());
+			String feedback = String.format(MESSAGE_UPDATED, task.toFilteredString());
+			logger.log(Level.INFO, feedback);
+			return feedback;
 		}
 	}
 	
 	public String deleteTask(Task task) throws Exception {
 		if(!isLocationSet()) {
+			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
 			updateTaskData();
 			taskList.removeTaskFromList(task);
 			fileManager.importListToFile(taskList.getTasks(), todo);
-			return String.format(MESSAGE_DELETED, task.toFilteredString());
+			String feedback = String.format(MESSAGE_DELETED, task.toFilteredString());
+			logger.log(Level.INFO, feedback);
+			return feedback;
 		}
 	}
 	
 	public ArrayList<Task> viewTasks(String taskType) throws Exception {
 		if(!isLocationSet()) {
+			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else {
 			setupFiles();
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
 			updateTaskData();
 			switch(taskType) {
 				case STRING_EMPTY :
@@ -248,6 +287,7 @@ public class Storage {
 	
 	public ArrayList<Task> searchTasks(String keyword) throws Exception {
 		if(!isLocationSet()) {
+			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else {
 			switch(keyword) {
@@ -255,7 +295,8 @@ public class Storage {
 					return viewTasks();
 				default :
 					ArrayList<Task> filteredTasks = new ArrayList<Task>();
-				updateTaskData();
+					logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+					updateTaskData();
 					ArrayList<Task> tasks = taskList.getTasks();
 					for (int i = 0; i < tasks.size(); i++) {
 						if (tasks.get(i).toString().contains(keyword)) {
@@ -269,21 +310,26 @@ public class Storage {
 	
 	public String markTaskDone(Task task) throws Exception {
 		if(!isLocationSet()) {
+			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else {
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
 			updateTaskData();
 			taskList.removeTaskFromList(task);
 			task.setDone(true);
 			taskList.addTaskToList(task);
 			fileManager.importListToFile(taskList.getTasks(), todo);
-			return String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
+			String feedback = String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
+			logger.log(Level.INFO, feedback);
+			return feedback;
 		}
 	}
 	
 	public String restore() throws Exception {
 		if(!isLocationSet()) {
+			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else {
 			setupFiles();
@@ -293,6 +339,7 @@ public class Storage {
 				taskList.resetTaskList();
 				updateTaskData();
 			}
+			logger.log(Level.INFO, MESSAGE_RESTORED);
 			return MESSAGE_RESTORED;
 		}
 	}
