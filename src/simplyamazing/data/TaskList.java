@@ -1,18 +1,18 @@
-package simplyamazing.storage;
+package simplyamazing.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import simplyamazing.data.Task;
 
-public class ListManager {
+public class TaskList {
 	
 	private static final String CHARACTER_SPACE = " ";
 	private static final int SIZE_EMPTY = 0;
 	
 	private ArrayList<Task> tasks;
 	
-	public ListManager() {
+	public TaskList() {
 		tasks = new ArrayList<Task>();
 	}
 	
@@ -20,8 +20,8 @@ public class ListManager {
 		return tasks;
 	}
 
-	public void setTasks(ArrayList<Task> tasks) {
-		this.tasks = tasks;
+	public void resetTaskList() {
+		tasks = new ArrayList<Task>();;
 	}
 
 	public void createTaskList(ArrayList<String> lines) throws Exception {

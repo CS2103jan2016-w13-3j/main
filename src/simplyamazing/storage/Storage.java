@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import simplyamazing.data.Task;
+import simplyamazing.data.TaskList;
 
 public class Storage {
 	private static final String DIRECTORY_STORAGE = "C:\\Users\\Public\\SimplyAmzing";
@@ -36,13 +37,13 @@ public class Storage {
 	private File storage, todo, todoBackup;
 	
 	private FileManager fileManager;
-	private ListManager listManager;
+	private TaskList taskList;
 	
 	public Storage() {
 		fileManager = new FileManager();
 		fileManager.createDirectory(DIRECTORY_STORAGE);
 		storage = fileManager.createFile((DIRECTORY_STORAGE+FILENAME_STORAGE));
-		listManager = new ListManager();
+		taskList = new TaskList();
 	}
 	
 	private boolean isLocationSet() {
@@ -74,8 +75,8 @@ public class Storage {
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
 			updateTaskData();
-			listManager.addTaskToList(task);
-			fileManager.importListToFile(listManager.getTasks(), todo);
+			taskList.addTaskToList(task);
+			fileManager.importListToFile(taskList.getTasks(), todo);
 			return String.format(MESSAGE_ADDED, task.toFilteredString());
 		}
 	}
@@ -90,7 +91,7 @@ public class Storage {
 	private void updateTaskData() throws Exception {
 		if(!fileManager.isEmptyFile(todo)) {
 			ArrayList<String> taskData = fileManager.readFile(todo);
-			listManager.updateTaskList(taskData);
+			taskList.updateTaskList(taskData);
 		}
 	}
 	
@@ -101,7 +102,7 @@ public class Storage {
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
 			updateTaskData();
-			listManager.removeTaskFromList(task);
+			taskList.removeTaskFromList(task);
 			if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
 				task.setDescription(editedTask.getDescription());
 			}
@@ -116,8 +117,8 @@ public class Storage {
 					task.setPriority(editedTask.getPriority());
 				}
 			}
-			listManager.addTaskToList(task);
-			fileManager.importListToFile(listManager.getTasks(), todo);
+			taskList.addTaskToList(task);
+			fileManager.importListToFile(taskList.getTasks(), todo);
 			return String.format(MESSAGE_UPDATED, task.toFilteredString());
 		}
 	}
@@ -129,8 +130,8 @@ public class Storage {
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
 			updateTaskData();
-			listManager.removeTaskFromList(task);
-			fileManager.importListToFile(listManager.getTasks(), todo);
+			taskList.removeTaskFromList(task);
+			fileManager.importListToFile(taskList.getTasks(), todo);
 			return String.format(MESSAGE_DELETED, task.toFilteredString());
 		}
 	}
@@ -162,7 +163,7 @@ public class Storage {
 	}
 	
 	private ArrayList<Task> viewTasks() {
-		ArrayList<Task> tasks = listManager.getTasks();
+		ArrayList<Task> tasks = taskList.getTasks();
 		ArrayList<Task> currentTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -176,7 +177,7 @@ public class Storage {
 	}
 	
 	private ArrayList<Task> viewEvents() {
-		ArrayList<Task> tasks = listManager.getTasks();
+		ArrayList<Task> tasks = taskList.getTasks();
 		ArrayList<Task> currentEvents = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -191,7 +192,7 @@ public class Storage {
 	}
 	
 	private ArrayList<Task> viewDeadlines() {
-		ArrayList<Task> tasks = listManager.getTasks();
+		ArrayList<Task> tasks = taskList.getTasks();
 		ArrayList<Task> currentDeadlines = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -206,7 +207,7 @@ public class Storage {
 	}
 	
 	private ArrayList<Task> viewFloatingTasks() {
-		ArrayList<Task> tasks = listManager.getTasks();
+		ArrayList<Task> tasks = taskList.getTasks();
 		ArrayList<Task> currentFloatingTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -220,7 +221,7 @@ public class Storage {
 	}
 	
 	private ArrayList<Task> viewOverdueTasks() {
-		ArrayList<Task> tasks = listManager.getTasks();
+		ArrayList<Task> tasks = taskList.getTasks();
 		ArrayList<Task> overdueTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -234,7 +235,7 @@ public class Storage {
 	}
 	
 	private ArrayList<Task> viewCompletedTasks() {
-		ArrayList<Task> tasks = listManager.getTasks();
+		ArrayList<Task> tasks = taskList.getTasks();
 		ArrayList<Task> completedTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -255,7 +256,7 @@ public class Storage {
 				default :
 					ArrayList<Task> filteredTasks = new ArrayList<Task>();
 				updateTaskData();
-					ArrayList<Task> tasks = listManager.getTasks();
+					ArrayList<Task> tasks = taskList.getTasks();
 					for (int i = 0; i < tasks.size(); i++) {
 						if (tasks.get(i).toString().contains(keyword)) {
 							filteredTasks.add(tasks.get(i));
@@ -273,10 +274,10 @@ public class Storage {
 			setupFiles();
 			fileManager.createBackup(todo, todoBackup);
 			updateTaskData();
-			listManager.removeTaskFromList(task);
+			taskList.removeTaskFromList(task);
 			task.setDone(true);
-			listManager.addTaskToList(task);
-			fileManager.importListToFile(listManager.getTasks(), todo);
+			taskList.addTaskToList(task);
+			fileManager.importListToFile(taskList.getTasks(), todo);
 			return String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
 		}
 	}
@@ -289,7 +290,7 @@ public class Storage {
 			
 			if(!fileManager.isEmptyFile(todoBackup) || !fileManager.isEmptyFile(todo)) {
 				fileManager.restoreFromBackup(todo, todoBackup);
-				listManager.setTasks(new ArrayList<Task>());
+				taskList.resetTaskList();
 				updateTaskData();
 			}
 			return MESSAGE_RESTORED;
