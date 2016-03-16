@@ -1,6 +1,8 @@
 package simplyamazing.logic;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import simplyamazing.data.Task;
 import simplyamazing.parser.Handler;
@@ -8,6 +10,9 @@ import simplyamazing.parser.Parser;
 import simplyamazing.storage.Storage;
 
 public class Logic {
+	
+	private static Logger logger = Logger.getLogger("Logic"); 
+	
 	
 	private static Parser parserObj;
 	private static Storage storageObj;
@@ -87,8 +92,11 @@ public class Logic {
 	
 	public String executeCommand(String userCommand) throws Exception {
 		commandHandler = parserObj.getHandler(userCommand);
+		logger.log(Level.INFO, "at going to execute command");
 		
 		assert commandHandler != null;                                     // assert
+		
+		logger.log(Level.INFO, "commandHandler not null");
 		
 		String commandWord = commandHandler.getCommandType();
 		CommandType commandType = getCommandType(commandWord);
@@ -127,15 +135,17 @@ public class Logic {
 			default:
 				throw new Exception(MESSAGE_INVALID_COMMAND);
 		}
-		
+		logger.log(Level.INFO, "about to return to UI");
 		previousCommand = commandWord;
 		return feedback;
 	}
 	
 	private static String executeAddCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in add");
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
+			logger.log(Level.INFO, "no error with add, interacting with storage now");
 			Task taskToAdd = commandHandler.getTask();
 			return storageObj.addTask(taskToAdd);
 		}
@@ -161,8 +171,10 @@ public class Logic {
 			boolean isIndexValid = checkIndexValid(commandHandler.getIndex());
 			
 			if (isIndexValid == false) {
+				logger.log(Level.WARNING, "index given is invalid");
 				throw new Exception(ERROR_INVALID_INDEX);
 			} else {
+				logger.log(Level.INFO, "index valid, editing now");
 				int indexToEdit = Integer.parseInt(commandHandler.getIndex());
 				Task fieldsToChange = commandHandler.getTask();
 				Task originalTask = taskList.get(indexToEdit - 1);
@@ -222,6 +234,7 @@ public class Logic {
 		if (isListShown() == false) {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
+		
 		if (commandHandler.getHasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
