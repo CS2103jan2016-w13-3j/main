@@ -1,6 +1,12 @@
 package simplyamazing.parser;
-public class Parser {
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class Parser {
+	private static Logger logger = Logger.getLogger("Parser");
+	
+	
 	private static final String COMMAND_ADD = "add";
 	private static final String COMMAND_DELETE = "delete";
 	private static final String COMMAND_EDIT = "edit";
@@ -40,6 +46,7 @@ public class Parser {
 	}	
 	private Handler parserEditCommand(Handler handler, String taskInfo) throws Exception {
 		ParserEdit parserEdit = new ParserEdit();
+		assert parserEdit !=  null;						//assert
 		taskIndex =  getFirstWord(taskInfo);
 		taskInfoWithoutIndex = removeFirstWord(taskInfo);
 		
@@ -47,18 +54,22 @@ public class Parser {
 	}
 	private Handler parserDeleteCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserDelete parserDelete = new ParserDelete();
+		assert parserDelete != null;					// assert
 		return parserDelete.parserDeleteCommand(handler,removeFirstWord);
 	}
 	private Handler parserViewCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserView parserView = new ParserView();
+		assert parserView != null;
 		return parserView.parserViewCommand(handler,removeFirstWord);
 	}
 	private Handler parserLocationCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserLocation parseLocation = new ParserLocation();
+		assert parseLocation != null;
 		return parseLocation.parseLocationCmd(handler,removeFirstWord);
 	}
 	private Handler parserDoneCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserDone parserDone = new ParserDone();
+		assert parserDone != null;
 		return parserDone.parserDoneCommand(handler,removeFirstWord);
 	}
 	private Handler parserHelpCommand(Handler handler, String removeFirstWord) throws Exception {
@@ -108,6 +119,7 @@ public class Parser {
 			 handler.setCommandType(COMMAND_EXIT);
 		     break;
 		 default:
+			 logger.log(Level.WARNING, "invalid command");
 			 handler.setHasError(true);
 			 handler.setFeedBack(COMMAND_INVALID);
 		}
@@ -115,11 +127,12 @@ public class Parser {
 	}
 	
 	public Handler getHandler(String input) throws Exception{
+		logger.log(Level.INFO, "before starting on getHandler");
 		Handler handler = new Handler();
 		firstWord = getFirstWord(input);
 		removeFirstWord = removeFirstWord(input);
 		handler = parserFirstWord(handler,firstWord,removeFirstWord);
-		
+		logger.log(Level.INFO, "about to return to storage");
 		return handler;
 	}
 }
