@@ -3,6 +3,8 @@ package simplyamazing.parser;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ParserAdd {
 	private static final String KEYWORD_SCHEDULE_TO = "to";
@@ -19,7 +21,10 @@ public class ParserAdd {
 
 	private boolean checkValue;
 
+	private static Logger logger = Logger.getLogger("ParserAdd");
+	
 	public Handler parseAddCommand(Handler handler, String taskInfo) throws Exception {
+		logger.log(Level.INFO, "going to start processing cmd");
 		checkValue = isAddingValid(taskInfo);
 		if (checkValue) {
 
@@ -46,8 +51,10 @@ public class ParserAdd {
 			}
 		} else {
 			handler.setHasError(true);
+			logger.log(Level.WARNING, "error with the given input");
 			handler.setFeedBack(ERROR_MESSAGE);
 		}
+		logger.log(Level.INFO, "returning to parser");
 		return handler;
 	}
 
