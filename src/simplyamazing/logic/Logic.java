@@ -19,8 +19,6 @@ public class Logic {
 	
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
 	private static final String ERROR_INVALID_INDEX = "Error: Invalid index entered";
-	private static final String ERROR_INVALID_KEYWORD = "Error: Keyword given is invalid";
-	private static final String ERROR_INVALID_FIELD_VALUES = "Error: Field Values given are invalid";
 	
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command entered. Please enter \"help\" to view command format";
 	private static final String MESSAGE_INPUT_LOCATION = "Directory location not set, please input directory location before running the program";
@@ -89,6 +87,9 @@ public class Logic {
 	
 	public String executeCommand(String userCommand) throws Exception {
 		commandHandler = parserObj.getHandler(userCommand);
+		
+		assert commandHandler != null;                                     // assert
+		
 		String commandWord = commandHandler.getCommandType();
 		CommandType commandType = getCommandType(commandWord);
 		
@@ -268,6 +269,10 @@ public class Logic {
 			return false;
 		} else {
 			int indexToDelete = Integer.parseInt(indexStr);
+			
+			assert indexToDelete >= 0;
+			assert indexToDelete < taskList.size();
+			
 			if(indexToDelete <= 0 || indexToDelete > taskList.size()){
 				return false;
 			} else {
