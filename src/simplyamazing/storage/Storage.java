@@ -65,6 +65,7 @@ public class Storage {
 	}
 	
 	public String setLocation(String location) throws Exception {
+		assert(location != null && location.isEmpty() == false);
 		if(!fileManager.isDirectory(location)) {
 			logger.log(Level.WARNING, MESSAGE_NOT_DIRECTORY);
 			throw new Exception(MESSAGE_NOT_DIRECTORY);
@@ -81,22 +82,34 @@ public class Storage {
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
 			String location = fileManager.readFile(storage).get(INDEX_START_FOR_ARRAY);
+			assert(location != null && location.isEmpty() == false);
 			return location;
 		}
 	}
 	
 	public String addTask(Task task) throws Exception {
+		assert(task != null);
 		if(!isLocationSet()) {
 			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 	
 			setupFiles();
+			assert(todo != null && todo.exists());
+			assert(todoBackup != null && todoBackup.exists());
 			fileManager.createBackup(todo, todoBackup);
 			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
 			updateTaskData();
+			
+			int taskListSizeBeforeAdding = taskList.getTasks().size();
 			taskList.addTaskToList(task);
+			int taskListSizeAfterAdding = taskList.getTasks().size();
+			assert(taskListSizeAfterAdding == taskListSizeBeforeAdding + 1);
+			
 			fileManager.importListToFile(taskList.getTasks(), todo);
+			assert(todo.length() > 0);
+			
 			String feedback = String.format(MESSAGE_ADDED, task.toFilteredString());
+			assert(feedback != null && feedback.isEmpty() == false);
 			logger.log(Level.INFO, feedback);
 			return feedback;
 		}
@@ -125,60 +138,67 @@ public class Storage {
 	}
 	
 	public String editTask(Task task, Task editedTask) throws Exception {
-		if(!isLocationSet()) {
-			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
-			throw new Exception(MESSAGE_LOCATION_NOT_SET);
-		} else { 
-			setupFiles();
-			fileManager.createBackup(todo, todoBackup);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
-			updateTaskData();
-			taskList.removeTaskFromList(task);
-			if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
-				task.setDescription(editedTask.getDescription());
-			}
-			if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 && editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
-				task.setStartTime(editedTask.getStartTime());
-			}
-			if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 && editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
-				task.setEndTime(editedTask.getEndTime());
-			}
-			if (task.getPriority() != editedTask.getPriority()) {
-				if (editedTask.getPriority() > 2) {
-					task.setPriority(editedTask.getPriority());
-				}
-			}
-			taskList.addTaskToList(task);
-			fileManager.importListToFile(taskList.getTasks(), todo);
-			String feedback = String.format(MESSAGE_UPDATED, task.toFilteredString());
-			logger.log(Level.INFO, feedback);
-			return feedback;
+		assert(task != null);
+		deleteTask(task);
+			
+		if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
+			task.setDescription(editedTask.getDescription());
 		}
+		if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 && editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
+			task.setStartTime(editedTask.getStartTime());
+		}
+		if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 && editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
+			task.setEndTime(editedTask.getEndTime());
+		}
+		if (task.getPriority() != editedTask.getPriority()) {
+			if (editedTask.getPriority() > 2) {
+				task.setPriority(editedTask.getPriority());
+			}
+		}
+
+		addTask(task);
+
+		String feedback = String.format(MESSAGE_UPDATED, task.toFilteredString());
+		assert(feedback != null && feedback.isEmpty() == false);
+		logger.log(Level.INFO, feedback);
+		return feedback;
 	}
 	
 	public String deleteTask(Task task) throws Exception {
+		assert(task != null);
 		if(!isLocationSet()) {
 			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else { 
 			setupFiles();
+			assert(todo != null && todo.exists());
+			assert(todoBackup != null && todoBackup.exists());
 			fileManager.createBackup(todo, todoBackup);
 			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
 			updateTaskData();
+			
+			int taskListSizeBeforeRemoving = taskList.getTasks().size();
 			taskList.removeTaskFromList(task);
+			int taskListSizeAfterRemoving = taskList.getTasks().size();
+			assert(taskListSizeAfterRemoving == taskListSizeBeforeRemoving - 1);
+			
 			fileManager.importListToFile(taskList.getTasks(), todo);
 			String feedback = String.format(MESSAGE_DELETED, task.toFilteredString());
+			assert(feedback != null && feedback.isEmpty() == false);
 			logger.log(Level.INFO, feedback);
 			return feedback;
 		}
 	}
 	
 	public ArrayList<Task> viewTasks(String taskType) throws Exception {
+		assert(taskType != null);
 		if(!isLocationSet()) {
 			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else {
 			setupFiles();
+			assert(todo != null && todo.exists());
+			assert(todoBackup != null && todoBackup.exists());
 			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
 			updateTaskData();
 			switch(taskType) {
@@ -203,6 +223,7 @@ public class Storage {
 	
 	private ArrayList<Task> viewTasks() {
 		ArrayList<Task> tasks = taskList.getTasks();
+		assert(tasks != null);
 		ArrayList<Task> currentTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -217,6 +238,7 @@ public class Storage {
 	
 	private ArrayList<Task> viewEvents() {
 		ArrayList<Task> tasks = taskList.getTasks();
+		assert(tasks != null);
 		ArrayList<Task> currentEvents = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -232,6 +254,7 @@ public class Storage {
 	
 	private ArrayList<Task> viewDeadlines() {
 		ArrayList<Task> tasks = taskList.getTasks();
+		assert(tasks != null);
 		ArrayList<Task> currentDeadlines = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -247,6 +270,7 @@ public class Storage {
 	
 	private ArrayList<Task> viewFloatingTasks() {
 		ArrayList<Task> tasks = taskList.getTasks();
+		assert(tasks != null);
 		ArrayList<Task> currentFloatingTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -261,6 +285,7 @@ public class Storage {
 	
 	private ArrayList<Task> viewOverdueTasks() {
 		ArrayList<Task> tasks = taskList.getTasks();
+		assert(tasks != null);
 		ArrayList<Task> overdueTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -275,6 +300,7 @@ public class Storage {
 	
 	private ArrayList<Task> viewCompletedTasks() {
 		ArrayList<Task> tasks = taskList.getTasks();
+		assert(tasks != null);
 		ArrayList<Task> completedTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
@@ -286,6 +312,7 @@ public class Storage {
 	}
 	
 	public ArrayList<Task> searchTasks(String keyword) throws Exception {
+		assert(keyword != null);
 		if(!isLocationSet()) {
 			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
@@ -298,6 +325,7 @@ public class Storage {
 					logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
 					updateTaskData();
 					ArrayList<Task> tasks = taskList.getTasks();
+					assert(tasks != null);
 					for (int i = 0; i < tasks.size(); i++) {
 						if (tasks.get(i).toString().contains(keyword)) {
 							filteredTasks.add(tasks.get(i));
@@ -309,22 +337,15 @@ public class Storage {
 	}
 	
 	public String markTaskDone(Task task) throws Exception {
-		if(!isLocationSet()) {
-			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
-			throw new Exception(MESSAGE_LOCATION_NOT_SET);
-		} else {
-			setupFiles();
-			fileManager.createBackup(todo, todoBackup);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
-			updateTaskData();
-			taskList.removeTaskFromList(task);
-			task.setDone(true);
-			taskList.addTaskToList(task);
-			fileManager.importListToFile(taskList.getTasks(), todo);
-			String feedback = String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
-			logger.log(Level.INFO, feedback);
-			return feedback;
-		}
+		assert(task != null);
+		deleteTask(task);
+		task.setDone(true);
+		addTask(task);
+			
+		String feedback = String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
+		assert(feedback != null && feedback.isEmpty() == false);
+		logger.log(Level.INFO, feedback);
+		return feedback;
 	}
 	
 	public String restore() throws Exception {
@@ -333,10 +354,13 @@ public class Storage {
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else {
 			setupFiles();
-			
+			assert(todo != null && todo.exists());
+			assert(todoBackup != null && todoBackup.exists());
 			if(!fileManager.isEmptyFile(todoBackup) || !fileManager.isEmptyFile(todo)) {
 				fileManager.restoreFromBackup(todo, todoBackup);
+				assert(taskList != null);
 				taskList.resetTaskList();
+				assert(taskList.getTasks().size() == 0);
 				updateTaskData();
 			}
 			logger.log(Level.INFO, MESSAGE_RESTORED);
