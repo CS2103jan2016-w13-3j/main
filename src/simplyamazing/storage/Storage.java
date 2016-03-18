@@ -26,15 +26,15 @@ public class Storage {
 
 	private static final int INDEX_START_FOR_ARRAY = 0;
 	
-	private static final String MESSAGE_LOCATION_SET = "Storage location of task data is set sucessfully.";
-	private static final String MESSAGE_LOCATION_NOT_SET = "Storage location of task data is not set yet. Please enter \"location <directory>\" command to set the storage location.";
+	private static final String MESSAGE_LOCATION_SET = "Storage location of task data has been sucessfully set.";
+	private static final String MESSAGE_LOCATION_NOT_SET = "Storage location of task data is has not been set. Please enter \"location <directory>\" command to set the storage location.";
 	private static final String MESSAGE_NOT_DIRECTORY = "Provided storage location is not a valid directory.";
-	private static final String MESSAGE_ADDED = "%1$s is added successfully.";
-	private static final String MESSAGE_RESTORED = "System is successfully restored to previous state.";
+	private static final String MESSAGE_ADDED = "%1$s has been added.";
+	private static final String MESSAGE_RESTORED = "SimplyAmazing has been successfully restored to its previous state.";
 	private static final String MESSAGE_INVALID_TASK_TYPE = "Unrecognized task type!";
-	private static final String MESSAGE_DELETED = "%1$s is deleted successfully.";
-	private static final String MESSAGE_MARKED_DONE = "%1$s is marked as done successfully.";
-	private static final String MESSAGE_UPDATED = "%1$s is updated successfully.";
+	private static final String MESSAGE_DELETED = "%1$s has been successfully deleted.";
+	private static final String MESSAGE_MARKED_DONE = "%1$s has been marked as done.";
+	private static final String MESSAGE_UPDATED = "%1$s has been successfully updated.";
 	
 	private static final String MESSAGE_LOG_DIRECTORY_CREATED = "Directory for storage file is created successfully.";
 	private static final String MESSAGE_LOG_STORAGE_FILE_SETUP = "Storage file is setup successfully.";
