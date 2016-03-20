@@ -10,7 +10,7 @@ import simplyamazing.data.Task;
 import simplyamazing.data.TaskList;
 
 public class Storage {
-	private static final String DIRECTORY_STORAGE = "C:\\Users\\Public\\SimplyAmzing";
+	private static final String DIRECTORY_SYSTEM = "C:\\Users\\Public\\SimplyAmzing";
 	private static final String FILENAME_STORAGE = "\\storage.txt";
 	private static final String FILENAME_TODO = "\\todo.txt";
 	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
@@ -26,7 +26,7 @@ public class Storage {
 
 	private static final int INDEX_START_FOR_ARRAY = 0;
 	
-	private static final String MESSAGE_LOCATION_SET = "Storage location of task data has been sucessfully set.";
+	private static final String MESSAGE_LOCATION_SET = "Storage location of task data has been sucessfully set as %1$s.";
 	private static final String MESSAGE_LOCATION_NOT_SET = "Storage location of task data is has not been set. Please enter \"location <directory>\" command to set the storage location.";
 	private static final String MESSAGE_NOT_DIRECTORY = "Provided storage location is not a valid directory.";
 	private static final String MESSAGE_ADDED = "%1$s has been added.";
@@ -37,12 +37,13 @@ public class Storage {
 	private static final String MESSAGE_UPDATED = "%1$s has been successfully updated.";
 	
 	private static final String MESSAGE_LOG_DIRECTORY_CREATED = "Directory for storage file is created successfully.";
-	private static final String MESSAGE_LOG_STORAGE_FILE_SETUP = "Storage file is setup successfully.";
+	private static final String MESSAGE_LOG_STORAGE_FILE_CREATED = "Storage file is setup successfully.";
 	private static final String MESSAGE_LOG_TASK_DATA_FILE_SETUP = "Task data file is setup successfully.";
 	private static final String MESSAGE_LOG_TASK_DATA_BACKUP_FILE_SETUP = "Task data backup file is setup successfully.";
 	private static final String MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED = "Task data backup file is successfully updated";
 	private static final String MESSAGE_LOG_TASK_LIST_UPDATED = "Task data is successfully loaded into the task list.";
 	private static final String MESSAGE_LOG_TASK_DATA_READABLE = "Content is readable from task data file.";
+	private static final String MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE = "Task list is successfully imported into the task data file.";
 	
 	private static Logger logger = Logger.getLogger("Storage");
 	
@@ -53,10 +54,10 @@ public class Storage {
 	
 	public Storage() {
 		fileManager = new FileManager();
-		fileManager.createDirectory(DIRECTORY_STORAGE);
+		fileManager.createDirectory(DIRECTORY_SYSTEM);
 		logger.log(Level.CONFIG, MESSAGE_LOG_DIRECTORY_CREATED);
-		storage = fileManager.createFile((DIRECTORY_STORAGE+FILENAME_STORAGE));
-		logger.log(Level.CONFIG, MESSAGE_LOG_STORAGE_FILE_SETUP);
+		storage = fileManager.createFile((DIRECTORY_SYSTEM+FILENAME_STORAGE));
+		logger.log(Level.CONFIG, MESSAGE_LOG_STORAGE_FILE_CREATED);
 		taskList = new TaskList();
 	}
 	
@@ -70,9 +71,19 @@ public class Storage {
 			logger.log(Level.WARNING, MESSAGE_NOT_DIRECTORY);
 			throw new Exception(MESSAGE_NOT_DIRECTORY);
 		} else {	
+			if(fileManager.isFileExisting(storage)) { // When storage location has been set before
+				fileManager.cleanFile(storage);
+				File todoNew = fileManager.createFile(location+FILENAME_TODO);
+				fileManager.createBackup(todo, todoNew);
+				todo.delete();
+				todo = todoNew;
+			}
 			fileManager.writeToFile(storage, location);
-			logger.log(Level.OFF, MESSAGE_LOCATION_SET);
-			return MESSAGE_LOCATION_SET;
+			
+			String feedback = String.format(MESSAGE_LOCATION_SET, location);
+			assert(feedback != null && feedback.isEmpty() == false);
+			logger.log(Level.INFO, feedback);
+			return feedback;
 		}
 	}
 	
@@ -95,9 +106,10 @@ public class Storage {
 		} else { 	
 			setupFiles();
 			assert(todo != null && todo.exists());
-			assert(todoBackup != null && todoBackup.exists());
+			
 			fileManager.createBackup(todo, todoBackup);
 			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+			
 			updateTaskData();
 			
 			int taskListSizeBeforeAdding = taskList.getTasks().size();
@@ -107,6 +119,7 @@ public class Storage {
 			
 			fileManager.importListToFile(taskList.getTasks(), todo);
 			assert(todo.length() > 0);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
 			
 			String feedback = String.format(MESSAGE_ADDED, task.toFilteredString());
 			assert(feedback != null && feedback.isEmpty() == false);
@@ -117,12 +130,12 @@ public class Storage {
 
 	private void setupFiles() throws Exception {
 		todo = fileManager.createFile(getLocation()+FILENAME_TODO);	
-		if (fileManager.isFileExisting(todo)) {
+		if (!fileManager.isFileExisting(todo)) {
 			fileManager.createNewFile(todo);
 		}
 		logger.log(Level.CONFIG, MESSAGE_LOG_TASK_DATA_FILE_SETUP);
-		todoBackup = fileManager.createFile(getLocation()+FILENAME_TODO_BACKUP);
-		if (fileManager.isFileExisting(todoBackup)) {
+		todoBackup = fileManager.createFile(DIRECTORY_SYSTEM+FILENAME_TODO_BACKUP);
+		if (!fileManager.isFileExisting(todoBackup)) {
 			fileManager.createNewFile(todoBackup);
 		}
 		logger.log(Level.CONFIG, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_SETUP);
@@ -172,9 +185,10 @@ public class Storage {
 		} else { 
 			setupFiles();
 			assert(todo != null && todo.exists());
-			assert(todoBackup != null && todoBackup.exists());
+			
 			fileManager.createBackup(todo, todoBackup);
 			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+			
 			updateTaskData();
 			
 			int taskListSizeBeforeRemoving = taskList.getTasks().size();
@@ -183,6 +197,8 @@ public class Storage {
 			assert(taskListSizeAfterRemoving == taskListSizeBeforeRemoving - 1);
 			
 			fileManager.importListToFile(taskList.getTasks(), todo);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
+			
 			String feedback = String.format(MESSAGE_DELETED, task.toFilteredString());
 			assert(feedback != null && feedback.isEmpty() == false);
 			logger.log(Level.INFO, feedback);
@@ -198,9 +214,12 @@ public class Storage {
 		} else {
 			setupFiles();
 			assert(todo != null && todo.exists());
-			assert(todoBackup != null && todoBackup.exists());
+			
+			fileManager.createBackup(todo, todoBackup);
 			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+			
 			updateTaskData();
+			
 			switch(taskType) {
 				case STRING_EMPTY :
 					return viewTasks();
@@ -317,27 +336,22 @@ public class Storage {
 			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else {
-			switch(keyword) {
-				case CHARACTER_SPACE :
-					return viewTasks();
-				default :
-					ArrayList<Task> filteredTasks = new ArrayList<Task>();
-					logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
-					updateTaskData();
-					ArrayList<Task> tasks = taskList.getTasks();
-					assert(tasks != null);
-					for (int i = 0; i < tasks.size(); i++) {
-						if (tasks.get(i).toString().contains(keyword)) {
-							filteredTasks.add(tasks.get(i));
-						}
-					}
-					return filteredTasks;
+			ArrayList<Task> tasks = viewTasks(STRING_EMPTY);
+			assert(tasks != null);
+
+			ArrayList<Task> filteredTasks = new ArrayList<Task>();
+			for (int i = 0; i < tasks.size(); i++) {
+				if (tasks.get(i).toString().contains(keyword)) {
+					filteredTasks.add(tasks.get(i));
+				}
 			}
+			return filteredTasks;
 		}
 	}
 	
 	public String markTaskDone(Task task) throws Exception {
 		assert(task != null);
+		
 		deleteTask(task);
 		task.setDone(true);
 		addTask(task);
@@ -356,6 +370,7 @@ public class Storage {
 			setupFiles();
 			assert(todo != null && todo.exists());
 			assert(todoBackup != null && todoBackup.exists());
+			
 			if(!fileManager.isEmptyFile(todoBackup) || !fileManager.isEmptyFile(todo)) {
 				fileManager.restoreFromBackup(todo, todoBackup);
 				assert(taskList != null);
