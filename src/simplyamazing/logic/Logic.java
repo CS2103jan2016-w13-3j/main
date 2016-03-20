@@ -289,7 +289,7 @@ public class Logic {
 			int indexToDelete = Integer.parseInt(indexStr);
 			
 			assert indexToDelete >= 0;
-			assert indexToDelete < taskList.size();
+			assert indexToDelete <= taskList.size();
 			
 			if(indexToDelete <= 0 || indexToDelete > taskList.size()){
 				return false;
