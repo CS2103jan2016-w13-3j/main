@@ -13,7 +13,9 @@ public class Storage {
 	private static final String DIRECTORY_SYSTEM = "C:\\Users\\Public\\SimplyAmzing";
 	private static final String FILENAME_STORAGE = "\\storage.txt";
 	private static final String FILENAME_TODO = "\\todo.txt";
+	private static final String FILENAME_DONE = "\\done.txt";
 	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
+	private static final String FILENAME_DONE_BACKUP = "\\doneBackup.txt";
 	
 	private static final String CHARACTER_SPACE = " ";
 	private static final String STRING_EMPTY = "";
@@ -32,6 +34,7 @@ public class Storage {
 	private static final String MESSAGE_ADDED = "%1$s has been added.";
 	private static final String MESSAGE_RESTORED = "SimplyAmazing has been successfully restored to its previous state.";
 	private static final String MESSAGE_INVALID_TASK_TYPE = "Unrecognized task type!";
+	private static final String MESSAGE_COMPLETED_TASK = "%1$s is a completed task.";
 	private static final String MESSAGE_DELETED = "%1$s has been successfully deleted.";
 	private static final String MESSAGE_MARKED_DONE = "%1$s has been marked as done.";
 	private static final String MESSAGE_UPDATED = "%1$s has been successfully updated.";
@@ -39,25 +42,31 @@ public class Storage {
 	private static final String MESSAGE_LOG_DIRECTORY_CREATED = "Directory for storage file is created successfully.";
 	private static final String MESSAGE_LOG_STORAGE_FILE_CREATED = "Storage file is setup successfully.";
 	private static final String MESSAGE_LOG_TASK_DATA_FILE_SETUP = "Task data file is setup successfully.";
+	private static final String MESSAGE_LOG_DONE_TASKS_FILE_SETUP = "Task data file for completed tasks is setup successfully.";
 	private static final String MESSAGE_LOG_TASK_DATA_BACKUP_FILE_SETUP = "Task data backup file is setup successfully.";
+	private static final String MESSAGE_LOG_DONE_TASKS_BACKUP_FILE_SETUP = "Task data backup file for completed tasks is setup successfully.";
 	private static final String MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED = "Task data backup file is successfully updated";
+	private static final String MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED = "Task data backup file for completed tasks is successfully updated";
 	private static final String MESSAGE_LOG_TASK_LIST_UPDATED = "Task data is successfully loaded into the task list.";
 	private static final String MESSAGE_LOG_TASK_DATA_READABLE = "Content is readable from task data file.";
 	private static final String MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE = "Task list is successfully imported into the task data file.";
 	
 	private static Logger logger = Logger.getLogger("Storage");
 	
-	private File storage, todo, todoBackup;
+	private File storage, todo, done, todoBackup, doneBackup;
 	
 	private FileManager fileManager;
 	private TaskList taskList;
 	
 	public Storage() {
 		fileManager = new FileManager();
+		
 		fileManager.createDirectory(DIRECTORY_SYSTEM);
 		logger.log(Level.CONFIG, MESSAGE_LOG_DIRECTORY_CREATED);
+		
 		storage = fileManager.createFile((DIRECTORY_SYSTEM+FILENAME_STORAGE));
 		logger.log(Level.CONFIG, MESSAGE_LOG_STORAGE_FILE_CREATED);
+		
 		taskList = new TaskList();
 	}
 	
@@ -73,10 +82,16 @@ public class Storage {
 		} else {	
 			if(fileManager.isFileExisting(storage)) { // When storage location has been set before
 				fileManager.cleanFile(storage);
+				
 				File todoNew = fileManager.createFile(location+FILENAME_TODO);
 				fileManager.createBackup(todo, todoNew);
 				todo.delete();
 				todo = todoNew;
+				
+				File doneNew = fileManager.createFile(location+FILENAME_DONE);
+				fileManager.createBackup(done, doneNew);
+				done.delete();
+				done = doneNew;
 			}
 			fileManager.writeToFile(storage, location);
 			
@@ -113,7 +128,7 @@ public class Storage {
 			updateTaskData();
 			
 			int taskListSizeBeforeAdding = taskList.getTasks().size();
-			taskList.addTaskToList(task);
+			taskList.addTaskToList(task, taskList.getTasks());
 			int taskListSizeAfterAdding = taskList.getTasks().size();
 			assert(taskListSizeAfterAdding == taskListSizeBeforeAdding + 1);
 			
@@ -134,24 +149,45 @@ public class Storage {
 			fileManager.createNewFile(todo);
 		}
 		logger.log(Level.CONFIG, MESSAGE_LOG_TASK_DATA_FILE_SETUP);
+		
 		todoBackup = fileManager.createFile(DIRECTORY_SYSTEM+FILENAME_TODO_BACKUP);
 		if (!fileManager.isFileExisting(todoBackup)) {
 			fileManager.createNewFile(todoBackup);
 		}
 		logger.log(Level.CONFIG, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_SETUP);
+		
+		done = fileManager.createFile(getLocation()+FILENAME_DONE);
+		if (!fileManager.isFileExisting(done)) {
+			fileManager.createNewFile(done);
+		}
+		logger.log(Level.CONFIG, MESSAGE_LOG_DONE_TASKS_FILE_SETUP);
+		
+		doneBackup = fileManager.createFile(DIRECTORY_SYSTEM+FILENAME_DONE_BACKUP);
+		if (!fileManager.isFileExisting(doneBackup)) {
+			fileManager.createNewFile(doneBackup);
+		}
+		logger.log(Level.CONFIG, MESSAGE_LOG_DONE_TASKS_BACKUP_FILE_SETUP);
 	}
 	
 	private void updateTaskData() throws Exception {
 		if(!fileManager.isEmptyFile(todo)) {
 			ArrayList<String> taskData = fileManager.readFile(todo);
 			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_READABLE);
-			taskList.updateTaskList(taskData);
+			taskList.updateTaskList(taskData, taskList.getTasks());
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_LIST_UPDATED);
+		}
+		if(!fileManager.isEmptyFile(done)) {
+			ArrayList<String> completedTaskData = fileManager.readFile(done);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_READABLE);
+			taskList.updateTaskList(completedTaskData, taskList.getCompletedTasks());
 			logger.log(Level.INFO, MESSAGE_LOG_TASK_LIST_UPDATED);
 		}
 	}
 	
 	public String editTask(Task task, Task editedTask) throws Exception {
 		assert(task != null);
+		throwExceptionIfCompletedTask(task);
+		
 		deleteTask(task);
 			
 		if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
@@ -176,6 +212,15 @@ public class Storage {
 		logger.log(Level.INFO, feedback);
 		return feedback;
 	}
+
+	private void throwExceptionIfCompletedTask(Task task) throws Exception {
+		if(taskList.getCompletedTasks().contains(task)) {
+			String exceptionMessage = String.format(MESSAGE_COMPLETED_TASK, task.toFilteredString());
+			assert(exceptionMessage != null && exceptionMessage.isEmpty() == false);
+			logger.log(Level.WARNING, exceptionMessage);
+			throw new Exception(exceptionMessage);
+		}
+	}
 	
 	public String deleteTask(Task task) throws Exception {
 		assert(task != null);
@@ -191,12 +236,10 @@ public class Storage {
 			
 			updateTaskData();
 			
-			int taskListSizeBeforeRemoving = taskList.getTasks().size();
 			taskList.removeTaskFromList(task);
-			int taskListSizeAfterRemoving = taskList.getTasks().size();
-			assert(taskListSizeAfterRemoving == taskListSizeBeforeRemoving - 1);
 			
 			fileManager.importListToFile(taskList.getTasks(), todo);
+			fileManager.importListToFile(taskList.getCompletedTasks(), done);
 			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
 			
 			String feedback = String.format(MESSAGE_DELETED, task.toFilteredString());
@@ -214,9 +257,6 @@ public class Storage {
 		} else {
 			setupFiles();
 			assert(todo != null && todo.exists());
-			
-			fileManager.createBackup(todo, todoBackup);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
 			
 			updateTaskData();
 			
@@ -247,8 +287,9 @@ public class Storage {
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
 			Date now = new Date();
+			Date startTime = task.getStartTime();
 			Date endTime = task.getEndTime();
-			if (!task.isDone() && (endTime.after(now) || endTime == Task.DEFAULT_DATE_VALUE)) {
+			if ((startTime.after(now) || startTime == Task.DEFAULT_DATE_VALUE) && (endTime.after(now) || endTime == Task.DEFAULT_DATE_VALUE)) {
 				currentTasks.add(task);
 			}
 		}
@@ -264,7 +305,7 @@ public class Storage {
 			Date now = new Date();
 			Date startTime = task.getStartTime();
 			Date endTime = task.getEndTime();
-			if (!task.isDone() && (endTime.after(now) && startTime != Task.DEFAULT_DATE_VALUE)) {
+			if ((startTime.after(now) && endTime.after(now)) && startTime != Task.DEFAULT_DATE_VALUE) {
 				currentEvents.add(task);
 			}
 		}
@@ -280,7 +321,7 @@ public class Storage {
 			Date now = new Date();
 			Date startTime = task.getStartTime();
 			Date endTime = task.getEndTime();
-			if (!task.isDone() && endTime.after(now) && startTime == Task.DEFAULT_DATE_VALUE) {
+			if (endTime.after(now) && startTime == Task.DEFAULT_DATE_VALUE) {
 				currentDeadlines.add(task);
 			}
 		}
@@ -295,7 +336,7 @@ public class Storage {
 			Task task = tasks.get(i);
 			Date startTime = task.getStartTime();
 			Date endTime = task.getEndTime();
-			if (!task.isDone() && startTime == Task.DEFAULT_DATE_VALUE && endTime == Task.DEFAULT_DATE_VALUE) {
+			if (startTime == Task.DEFAULT_DATE_VALUE && endTime == Task.DEFAULT_DATE_VALUE) {
 				currentFloatingTasks.add(task);
 			}
 		}
@@ -309,8 +350,9 @@ public class Storage {
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
 			Date now = new Date();
+			Date startTime = task.getStartTime();
 			Date endTime = task.getEndTime();
-			if (!task.isDone() && (endTime.before(now) && endTime != Task.DEFAULT_DATE_VALUE)) {
+			if ((endTime.before(now) && endTime != Task.DEFAULT_DATE_VALUE) || (startTime.before(now) && startTime != Task.DEFAULT_DATE_VALUE)) {
 				overdueTasks.add(task);
 			}
 		}
@@ -318,16 +360,7 @@ public class Storage {
 	}
 	
 	private ArrayList<Task> viewCompletedTasks() {
-		ArrayList<Task> tasks = taskList.getTasks();
-		assert(tasks != null);
-		ArrayList<Task> completedTasks = new ArrayList<Task>();
-		for (int i = 0; i < tasks.size(); i++) {
-			Task task = tasks.get(i);
-			if (task.isDone()) {
-				completedTasks.add(task);
-			}
-		}
-		return completedTasks;
+		return taskList.getCompletedTasks();
 	}
 	
 	public ArrayList<Task> searchTasks(String keyword) throws Exception {
@@ -337,6 +370,7 @@ public class Storage {
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
 		} else {
 			ArrayList<Task> tasks = viewTasks(STRING_EMPTY);
+			tasks.addAll(taskList.getCompletedTasks());
 			assert(tasks != null);
 
 			ArrayList<Task> filteredTasks = new ArrayList<Task>();
@@ -351,15 +385,31 @@ public class Storage {
 	
 	public String markTaskDone(Task task) throws Exception {
 		assert(task != null);
+		throwExceptionIfCompletedTask(task);
 		
 		deleteTask(task);
 		task.setDone(true);
-		addTask(task);
+		moveToDoneFile(task);
 			
 		String feedback = String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
 		assert(feedback != null && feedback.isEmpty() == false);
 		logger.log(Level.INFO, feedback);
+		
 		return feedback;
+	}
+
+	private void moveToDoneFile(Task task) throws Exception {
+		fileManager.createBackup(done, doneBackup);
+		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
+		
+		int taskListSizeBeforeAdding = taskList.getCompletedTasks().size();
+		taskList.addTaskToList(task, taskList.getCompletedTasks());
+		int taskListSizeAfterAdding = taskList.getCompletedTasks().size();
+		assert(taskListSizeAfterAdding == taskListSizeBeforeAdding + 1);
+		
+		fileManager.importListToFile(taskList.getCompletedTasks(), done);
+		assert(done.length() > 0);
+		logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
 	}
 	
 	public String restore() throws Exception {
@@ -369,13 +419,22 @@ public class Storage {
 		} else {
 			setupFiles();
 			assert(todo != null && todo.exists());
+			assert(done != null && done.exists());
 			assert(todoBackup != null && todoBackup.exists());
+			assert(doneBackup != null && doneBackup.exists());
 			
 			if(!fileManager.isEmptyFile(todoBackup) || !fileManager.isEmptyFile(todo)) {
 				fileManager.restoreFromBackup(todo, todoBackup);
 				assert(taskList != null);
 				taskList.resetTaskList();
 				assert(taskList.getTasks().size() == 0);
+				updateTaskData();
+			}
+			if(!fileManager.isEmptyFile(doneBackup) || !fileManager.isEmptyFile(done)) {
+				fileManager.restoreFromBackup(done, doneBackup);
+				assert(taskList != null);
+				taskList.resetCompletedTaskList();
+				assert(taskList.getCompletedTasks().size() == 0);
 				updateTaskData();
 			}
 			logger.log(Level.INFO, MESSAGE_RESTORED);
