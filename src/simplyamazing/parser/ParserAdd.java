@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ParserAdd {
+	private static final String STRING_TIME_FORMATTER = ":";
 	private static final String KEYWORD_SCHEDULE_TO = "to";
 	private static final String KEYWORD_SCHEDULE_FROM = "from";
 	private static final String KEYWORD_DEADLINE = "by";
@@ -27,23 +28,11 @@ public class ParserAdd {
 		logger.log(Level.INFO, "going to start processing cmd");
 		checkValue = isAddingValid(taskInfo);
 		if (checkValue) {
-
-			if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) { // For
-																										// events
-				startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
-				endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
-				startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
-				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
-				description = taskInfo.substring(0, startTimeIndex);
-
+			if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO) && taskInfo.contains(STRING_TIME_FORMATTER)) { // For events
 				handler.getTask().setDescription(description);
 				handler.getTask().setStartTime(startTime);
 				handler.getTask().setEndTime(endTime);
-			} else if (taskInfo.contains(KEYWORD_DEADLINE) && !Parser.removeFirstWord(taskInfo).trim().equals(EMPTY_STRING)) { // For deadlines
-				endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
-				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex));
-				description = taskInfo.substring(0, endTimeIndex);
-
+			} else if (taskInfo.contains(KEYWORD_DEADLINE) && taskInfo.contains(STRING_TIME_FORMATTER)) { // For deadlines
 				handler.getTask().setDescription(description);
 				handler.getTask().setEndTime(endTime);
 			} else {
@@ -59,9 +48,13 @@ public class ParserAdd {
 	}
 
 	public boolean isAddingValid(String taskInfo) throws Exception {
-		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) {
+		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO) && taskInfo.contains(STRING_TIME_FORMATTER)) {
+			System.out.println("Found "+KEYWORD_SCHEDULE_FROM+", "+KEYWORD_SCHEDULE_TO+","+STRING_TIME_FORMATTER);
 			startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
 			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
+			if (startTimeIndex > endTimeIndex) {
+				return false;
+			}
 			startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
 			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
 			description = taskInfo.substring(0, startTimeIndex);
@@ -80,14 +73,15 @@ public class ParserAdd {
 						return false;
 					} else if (startingDate.before(todayDate) || startingDate.before(todayDate)) {
 						return false;
+					} else {
+						return true;
 					}
-
-					return true;
 				} catch (ParseException e) {
 					return false;
 				}
 			}
-		} else if (taskInfo.contains(KEYWORD_DEADLINE) && !Parser.removeFirstWord(taskInfo).trim().equals(EMPTY_STRING)) {
+		} else if (taskInfo.contains(KEYWORD_DEADLINE) && taskInfo.contains(STRING_TIME_FORMATTER)) {
+			System.out.println("Found "+KEYWORD_DEADLINE+", "+STRING_TIME_FORMATTER);
 			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
 			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex));
 			description = taskInfo.substring(0, endTimeIndex);
@@ -108,12 +102,13 @@ public class ParserAdd {
 				}
 			}
 		} else {
-			if (taskInfo.equals(EMPTY_STRING)) {
+			if(taskInfo.contains(STRING_TIME_FORMATTER)) {
+				System.out.println("Found "+STRING_TIME_FORMATTER);
 				return false;
-			}else if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && !taskInfo.contains(KEYWORD_SCHEDULE_TO)){
-				return false;
-			}else if (!taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)){
-				return false;
+			} else {
+				if (taskInfo.equals(EMPTY_STRING)) {
+					return false;
+				}
 			}
 		}
 		return true;
