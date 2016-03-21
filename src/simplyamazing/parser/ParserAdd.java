@@ -39,7 +39,7 @@ public class ParserAdd {
 				handler.getTask().setDescription(description);
 				handler.getTask().setStartTime(startTime);
 				handler.getTask().setEndTime(endTime);
-			} else if (taskInfo.contains(KEYWORD_DEADLINE)) { // For deadlines
+			} else if (taskInfo.contains(KEYWORD_DEADLINE) && !Parser.removeFirstWord(taskInfo).trim().equals(EMPTY_STRING)) { // For deadlines
 				endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
 				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex));
 				description = taskInfo.substring(0, endTimeIndex);
@@ -87,7 +87,7 @@ public class ParserAdd {
 					return false;
 				}
 			}
-		} else if (taskInfo.contains(KEYWORD_DEADLINE)) {
+		} else if (taskInfo.contains(KEYWORD_DEADLINE) && !Parser.removeFirstWord(taskInfo).trim().equals(EMPTY_STRING)) {
 			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
 			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex));
 			description = taskInfo.substring(0, endTimeIndex);
