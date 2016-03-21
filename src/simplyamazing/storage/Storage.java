@@ -54,6 +54,7 @@ public class Storage {
 	private static Logger logger = Logger.getLogger("Storage");
 	
 	private File storage, todo, done, todoBackup, doneBackup;
+	private boolean isEditingTask = false;
 	
 	private FileManager fileManager;
 	private TaskList taskList;
@@ -122,9 +123,10 @@ public class Storage {
 			setupFiles();
 			assert(todo != null && todo.exists());
 			
-			fileManager.createBackup(todo, todoBackup);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
-			
+			if (!isEditingTask) {
+				fileManager.createBackup(todo, todoBackup);
+				logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+			}
 			updateTaskData();
 			
 			int taskListSizeBeforeAdding = taskList.getTasks().size();
@@ -187,7 +189,7 @@ public class Storage {
 	public String editTask(Task task, Task editedTask) throws Exception {
 		assert(task != null);
 		throwExceptionIfCompletedTask(task);
-		
+		isEditingTask = true;
 		deleteTask(task);
 			
 		if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
@@ -210,6 +212,7 @@ public class Storage {
 		String feedback = String.format(MESSAGE_UPDATED, task.toFilteredString());
 		assert(feedback != null && feedback.isEmpty() == false);
 		logger.log(Level.INFO, feedback);
+		isEditingTask = false;
 		return feedback;
 	}
 
