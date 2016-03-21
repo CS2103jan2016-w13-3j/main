@@ -32,7 +32,7 @@ public class Storage {
 	private static final String MESSAGE_LOCATION_NOT_SET = "Storage location of task data is has not been set. Please enter \"location <directory>\" command to set the storage location.";
 	private static final String MESSAGE_NOT_DIRECTORY = "Provided storage location is not a valid directory.";
 	private static final String MESSAGE_ADDED = "%1$s has been added.";
-	private static final String MESSAGE_RESTORED = "SimplyAmazing has been successfully restored to its previous state.";
+	private static final String MESSAGE_RESTORED = "\"%1$s\" command has been successfully undone.";
 	private static final String MESSAGE_INVALID_TASK_TYPE = "Unrecognized task type!";
 	private static final String MESSAGE_COMPLETED_TASK = "%1$s is a completed task.";
 	private static final String MESSAGE_DELETED = "%1$s has been successfully deleted.";
@@ -415,7 +415,7 @@ public class Storage {
 		logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
 	}
 	
-	public String restore() throws Exception {
+	public String restore(String previousCommand) throws Exception {
 		if(!isLocationSet()) {
 			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
@@ -440,8 +440,10 @@ public class Storage {
 				assert(taskList.getCompletedTasks().size() == 0);
 				updateTaskData();
 			}
-			logger.log(Level.INFO, MESSAGE_RESTORED);
-			return MESSAGE_RESTORED;
+			String feedback = String.format(MESSAGE_RESTORED, previousCommand);
+			assert(feedback != null && feedback.isEmpty() == false);
+			logger.log(Level.INFO, feedback);
+			return feedback;
 		}
 	}
 }

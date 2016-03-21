@@ -146,7 +146,9 @@ public class Logic {
 		}
 		logger.log(Level.INFO, "about to return to UI");
 		previousCommandKeyword = commandWord;
-		previousCommandString = userCommand;
+		if (!commandType.equals(CommandType.VIEW_LIST) && !commandType.equals(CommandType.SEARCH_KEYWORD) && !commandType.equals(CommandType.UNDO_LAST)) {
+			previousCommandString = userCommand;
+		}
 		return feedback;
 	}
 	
@@ -248,8 +250,7 @@ public class Logic {
 			if (hasPreviousCommand == false) {
 				return MESSAGE_PREVIOUS_COMMAND_INVALID;
 			} else {
-				return storageObj.restore();
-				//return storageObj.restore(previousCommandString);
+				return storageObj.restore(previousCommandString);
 			}
 		}
 	}
