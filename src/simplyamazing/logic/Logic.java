@@ -1,6 +1,7 @@
 package simplyamazing.logic;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,21 +25,24 @@ public class Logic {
 	
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
 	private static final String ERROR_INVALID_INDEX = "Error: Invalid index entered";
+	private static final String ERROR_INVALID_DATE = "Error: Please make sure that given date and time fields are valid";
+	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view command format";
 	
-	private static final String MESSAGE_INVALID_COMMAND = "Invalid command entered. Please enter \"help\" to view command format";
 	private static final String MESSAGE_INPUT_LOCATION = "Directory location not set, please input directory location before running the program";
 	private static final String MESSAGE_NO_TASK_FOUND = "No task found.";
 	private static final String MESSAGE_PREVIOUS_COMMAND_INVALID = "There is no previous command to undo";
 	
-	private static final String MESSAGE_HELP = "Key in the following to view specific command formats:\n"
-			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
-			+ "7. help location\n8. help undo\n9. help exit\n";
+	
 	private static final String MESSAGE_HELP_EXIT = "Exit SimplyAmazing\ncommand: exit\n";
 	private static final String MESSAGE_HELP_SEARCH = "Search for tasks containing the given keyword\ncommand: search <keyword>\n";
 	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\ncommand: undo\n";
 	private static final String MESSAGE_HELP_DONE = "Marks task as completed\ncommand: done <task index>\n";
 	private static final String MESSAGE_HELP_DELETE = "Delete task from list\ncommand: delete <task index>\n";
 	private static final String MESSAGE_HELP_EDIT = "Edit content in a task\ncommand: edit <task index> <task header> <updated content>\n";
+	
+	private static final String MESSAGE_HELP = "Key in the following to view specific command formats:\n"
+			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
+			+ "7. help location\n8. help undo\n9. help exit\n";
 	
 	private static final String MESSAGE_HELP_LOCATION = "Set storage location or folder for application data\n"
 			+ "command: location <path>";
@@ -58,6 +62,7 @@ public class Logic {
 		MARK_TASK, HELP, EXIT;
 	};
 	
+	
 	public Logic(){
 		parserObj = new Parser();
 		storageObj = new Storage();
@@ -66,6 +71,7 @@ public class Logic {
 		previousCommandKeyword = STRING_EMPTY;
 		previousCommandString = STRING_EMPTY;
 	}
+	
 	
 	private static CommandType getCommandType(String commandWord) {
 		if (commandWord.equalsIgnoreCase("add")) {
@@ -92,6 +98,7 @@ public class Logic {
 			return CommandType.INVALID;
 		}
 	}
+	
 	
 	public String executeCommand(String userCommand) throws Exception {
 		commandHandler = parserObj.getHandler(userCommand);
@@ -135,13 +142,14 @@ public class Logic {
 			case EXIT :
 				System.exit(0);
 			default:
-				throw new Exception(MESSAGE_INVALID_COMMAND);
+				throw new Exception(ERROR_INVALID_COMMAND);
 		}
 		logger.log(Level.INFO, "about to return to UI");
 		previousCommandKeyword = commandWord;
 		previousCommandString = userCommand;
 		return feedback;
 	}
+	
 	
 	private static String executeAddCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
@@ -154,6 +162,7 @@ public class Logic {
 		}
 	}
 	
+	
 	private static String executeViewCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
@@ -165,6 +174,7 @@ public class Logic {
 			return convertListToString(taskList);	
 		}
 	}
+	
 	
 	private static String executeEditCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
@@ -185,12 +195,16 @@ public class Logic {
 				Task originalTask = taskList.get(indexToEdit - 1);
 				boolean isDateValid = checkDateValid(fieldsToChange, originalTask);
 				
-				
-				return storageObj.editTask(originalTask, fieldsToChange);
+				if (isDateValid == true) {
+					return storageObj.editTask(originalTask, fieldsToChange);
+				} else {
+					throw new Exception(ERROR_INVALID_DATE);
+				}
 			}
 		}
 	}
 
+	
 	private static String executeDeleteCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
@@ -212,6 +226,7 @@ public class Logic {
 		}
 	}
 
+	
 	private static String executeSearchCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
@@ -223,18 +238,22 @@ public class Logic {
 		}
 	}
 	
+	
 	private static String executeUndoCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
+			boolean hasPreviousCommand = isPreviousCommandValid();
 			
-			if (previousCommandString.equals(STRING_EMPTY)) {
+			if (hasPreviousCommand == false) {
 				return MESSAGE_PREVIOUS_COMMAND_INVALID;
 			} else {
-				return storageObj.restore(previousCommandString);
+				return storageObj.restore();
+				//return storageObj.restore(previousCommandString);
 			}
 		}
 	}
+	
 	
 	private static String executeSetLocationCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
@@ -245,6 +264,7 @@ public class Logic {
 			return storageObj.setLocation(directoryPath);
 		}
 	}
+	
 	
 	private static String executeMarkCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
@@ -264,6 +284,7 @@ public class Logic {
 			}
 		}
 	}
+	
 	
 	private static String executeHelpCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
@@ -293,6 +314,7 @@ public class Logic {
 		}
 	}
 	
+	
 	private static boolean checkIndexValid(String indexStr){
 		if (indexStr == null) {
 			return false;
@@ -310,6 +332,7 @@ public class Logic {
 		}
 	}
 	
+	
 	private static boolean isListShown() {
 		if (previousCommandKeyword.toLowerCase().equals("search") || previousCommandKeyword.toLowerCase().equals("view")) {
 			return true;
@@ -318,10 +341,56 @@ public class Logic {
 		}
 	}
 	
-	private static boolean checkDateValid(Task fieldsToChange, Task originalTask){
-		//if(fieldsToChange.)
-		return false;
+	
+	private static boolean checkDateValid(Task fieldsToChange, Task originalTask) throws Exception{
+		Date newStartTime = fieldsToChange.getStartTime();
+		Date newEndTime = fieldsToChange.getEndTime();
+		Date previousStartTime = originalTask.getStartTime();
+		Date previousEndTime = originalTask.getEndTime();
+		Date currentTime =  new Date();
+		
+		
+		// date fields not modified
+		if(newStartTime.equals(Task.DEFAULT_DATE_VALUE) && newEndTime.equals(Task.DEFAULT_DATE_VALUE)){
+			return true;
+			
+		} else if ( (!newStartTime.equals(Task.DEFAULT_DATE_VALUE)) && (!newEndTime.equals(Task.DEFAULT_DATE_VALUE))){
+			return true;              // both start and end time modified. This should be checked by parser
+			
+		} else if (newStartTime.equals(Task.DEFAULT_DATE_VALUE) && !newEndTime.equals(Task.DEFAULT_DATE_VALUE)) {      // start not modified, check the end
+			if (newEndTime.before(currentTime)) {						// newEndtime has passed, so its invalid
+				return false;
+			} else if(newEndTime.before(previousStartTime) && !(previousStartTime.equals(Task.DEFAULT_DATE_VALUE))) {
+				return false;                                           // new end time is before old start time, so its invalid
+			} else {
+				return true;
+			}
+		} else if (newEndTime.equals(Task.DEFAULT_DATE_VALUE) && !(newStartTime.equals(Task.DEFAULT_DATE_VALUE))) {        // new end time not modified, only check the new start time
+			//if( newStartTime.before(currentTime)) {
+			//	return false;
+			//} else 
+			if (previousEndTime.equals(Task.DEFAULT_DATE_VALUE)) {
+				return false;
+			} else if (newStartTime.after(previousEndTime) && !(previousEndTime.equals(Task.DEFAULT_DATE_VALUE))){
+				return false;											// previous end time not default and new start is after previous end
+			} else{
+				return true;
+			}
+		
+		} else {
+			return false;
+		}
 	}
+	
+	
+	private static boolean isPreviousCommandValid() {
+		if (previousCommandString.equals(STRING_EMPTY)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	
 	private static String convertListToString(ArrayList<Task> list){
 		if (list.size() == 0) {
