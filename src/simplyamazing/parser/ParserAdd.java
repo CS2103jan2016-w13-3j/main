@@ -110,6 +110,10 @@ public class ParserAdd {
 		} else {
 			if (taskInfo.equals(EMPTY_STRING)) {
 				return false;
+			}else if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && !taskInfo.contains(KEYWORD_SCHEDULE_TO)){
+				return false;
+			}else if (!taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)){
+				return false;
 			}
 		}
 		return true;
