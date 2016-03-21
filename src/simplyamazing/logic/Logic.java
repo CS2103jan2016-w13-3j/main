@@ -347,9 +347,28 @@ public class Logic {
 		Date newEndTime = fieldsToChange.getEndTime();
 		Date previousStartTime = originalTask.getStartTime();
 		Date previousEndTime = originalTask.getEndTime();
-		Date currentTime =  new Date();
+		//Date currentTime =  new Date();
 		
-		
+		if(!(newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0 && newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0)) { // if both start time and end time are not modified
+			if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // start time is modified
+				if (previousEndTime.compareTo(Task.DEFAULT_DATE_VALUE) == 0) { // no end time => it's a floating task
+					return false;
+				} else {
+					if (newStartTime.after(previousEndTime)) {
+						return false;
+					}
+
+				}
+			} else if (newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // end time is modified
+				if (previousStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // has start time => it's an event
+					if (newEndTime.before(previousStartTime)) {
+						return false;
+					}
+				}
+			} 
+		}
+		return true;
+		/*
 		// date fields not modified
 		if(newStartTime.equals(Task.DEFAULT_DATE_VALUE) && newEndTime.equals(Task.DEFAULT_DATE_VALUE)){
 			return true;
@@ -379,7 +398,7 @@ public class Logic {
 		
 		} else {
 			return false;
-		}
+		}*/
 	}
 	
 	
