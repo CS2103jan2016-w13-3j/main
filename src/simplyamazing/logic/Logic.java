@@ -17,8 +17,8 @@ public class Logic {
 	private static Parser parserObj;
 	private static Storage storageObj;
 	private static ArrayList<Task> taskList;
+	private static String previousCommandString;
 	private static String previousCommandKeyword;
-	private static String previousCommand;
 	private static Handler commandHandler;
 	private static final String STRING_EMPTY = "";
 	
@@ -28,6 +28,7 @@ public class Logic {
 	private static final String MESSAGE_INVALID_COMMAND = "Invalid command entered. Please enter \"help\" to view command format";
 	private static final String MESSAGE_INPUT_LOCATION = "Directory location not set, please input directory location before running the program";
 	private static final String MESSAGE_NO_TASK_FOUND = "No task found.";
+	private static final String MESSAGE_PREVIOUS_COMMAND_INVALID = "There is no previous command to undo";
 	
 	private static final String MESSAGE_HELP = "Key in the following to view specific command formats:\n"
 			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
@@ -46,7 +47,9 @@ public class Logic {
 			+ "command: view deadlines\n\n3.Display events\ncommand: view events\n\n4.Display tasks without deadlines\ncommand: view tasks\n\n"
 			+ "5.Display completed tasks\ncommand: view done\n\n6.Display overdue tasks\ncommand: view overdue\n\n";
 
-	private static final String MESSAGE_HELP_ADD_TASK = "Add a task to a list\ncommand: add <task description>\n";
+	private static final String MESSAGE_HELP_ADD_TASK = "1.Add a task to the list\ncommand: add <task description>\n\n"
+			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to <end time hh:mm> <end date dd MMM yyyy>\n\n"
+			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>";
 	
 	
 	enum CommandType {
@@ -60,8 +63,8 @@ public class Logic {
 		storageObj = new Storage();
 		taskList = new ArrayList<Task>();
 		commandHandler = new Handler();
-		previousCommand = STRING_EMPTY;
 		previousCommandKeyword = STRING_EMPTY;
+		previousCommandString = STRING_EMPTY;
 	}
 	
 	private static CommandType getCommandType(String commandWord) {
@@ -92,10 +95,9 @@ public class Logic {
 	
 	public String executeCommand(String userCommand) throws Exception {
 		commandHandler = parserObj.getHandler(userCommand);
-		logger.log(Level.INFO, "at going to execute command");
 		
+		logger.log(Level.INFO, "at going to execute command");	
 		assert commandHandler != null;                                     // assert
-		
 		logger.log(Level.INFO, "commandHandler not null");
 		
 		String commandWord = commandHandler.getCommandType();
@@ -136,7 +138,8 @@ public class Logic {
 				throw new Exception(MESSAGE_INVALID_COMMAND);
 		}
 		logger.log(Level.INFO, "about to return to UI");
-		previousCommand = commandWord;
+		previousCommandKeyword = commandWord;
+		previousCommandString = userCommand;
 		return feedback;
 	}
 	
@@ -180,11 +183,14 @@ public class Logic {
 				int indexToEdit = Integer.parseInt(commandHandler.getIndex());
 				Task fieldsToChange = commandHandler.getTask();
 				Task originalTask = taskList.get(indexToEdit - 1);
+				boolean isDateValid = checkDateValid(fieldsToChange, originalTask);
+				
+				
 				return storageObj.editTask(originalTask, fieldsToChange);
 			}
 		}
 	}
-	
+
 	private static String executeDeleteCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
@@ -220,8 +226,13 @@ public class Logic {
 	private static String executeUndoCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
-		} else{
-			return storageObj.restore();
+		} else {
+			
+			if (previousCommandString.equals(STRING_EMPTY)) {
+				return MESSAGE_PREVIOUS_COMMAND_INVALID;
+			} else {
+				return storageObj.restore(previousCommandString);
+			}
 		}
 	}
 	
@@ -300,11 +311,16 @@ public class Logic {
 	}
 	
 	private static boolean isListShown() {
-		if (previousCommand.toLowerCase().equals("search") || previousCommand.toLowerCase().equals("view")) {
+		if (previousCommandKeyword.toLowerCase().equals("search") || previousCommandKeyword.toLowerCase().equals("view")) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	private static boolean checkDateValid(Task fieldsToChange, Task originalTask){
+		//if(fieldsToChange.)
+		return false;
 	}
 	
 	private static String convertListToString(ArrayList<Task> list){
