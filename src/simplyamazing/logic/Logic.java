@@ -104,7 +104,7 @@ public class Logic {
 		commandHandler = parserObj.getHandler(userCommand);
 		
 		logger.log(Level.INFO, "at going to execute command");	
-		assert commandHandler != null;                                     // assert
+		assert commandHandler != null;                      
 		logger.log(Level.INFO, "commandHandler not null");
 		
 		String commandWord = commandHandler.getCommandType();
@@ -185,7 +185,7 @@ public class Logic {
 		if (commandHandler.getHasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
 		} else { 
-			boolean isIndexValid = checkIndexValid(commandHandler.getIndex());
+			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
 			
 			if (isIndexValid == false) {
 				logger.log(Level.WARNING, "index given is invalid");
@@ -215,7 +215,7 @@ public class Logic {
 		if (commandHandler.getHasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
-			boolean isIndexValid = checkIndexValid(commandHandler.getIndex());
+			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
 			if (isIndexValid == false) {
 				logger.log(Level.WARNING, "index given is invalid");
 				throw new Exception(ERROR_INVALID_INDEX);
@@ -248,7 +248,7 @@ public class Logic {
 			boolean hasPreviousCommand = isPreviousCommandValid();
 			
 			if (hasPreviousCommand == false) {
-				return MESSAGE_PREVIOUS_COMMAND_INVALID;
+				throw new Exception(MESSAGE_PREVIOUS_COMMAND_INVALID);
 			} else {
 				return storageObj.restore(previousCommandString);
 			}
@@ -275,7 +275,7 @@ public class Logic {
 		if (commandHandler.getHasError() == true) {
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
-			boolean isIndexValid = checkIndexValid(commandHandler.getIndex());
+			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
 			if (isIndexValid == false) {
 				throw new Exception(ERROR_INVALID_INDEX);
 			} else{
@@ -316,16 +316,16 @@ public class Logic {
 	}
 	
 	
-	private static boolean checkIndexValid(String indexStr){
+	public static boolean checkIndexValid(String indexStr, ArrayList<Task> list){
 		if (indexStr == null) {
 			return false;
 		} else {
 			int indexToDelete = Integer.parseInt(indexStr);
 			
 			assert indexToDelete >= 0;
-			assert indexToDelete <= taskList.size();
+			assert indexToDelete <= list.size();
 			
-			if(indexToDelete <= 0 || indexToDelete > taskList.size()){
+			if(indexToDelete <= 0 || indexToDelete > list.size()){
 				return false;
 			} else {
 				return true;
@@ -336,8 +336,10 @@ public class Logic {
 	
 	private static boolean isListShown() {
 		if (previousCommandKeyword.toLowerCase().equals("search") || previousCommandKeyword.toLowerCase().equals("view")) {
+			logger.log(Level.INFO, "list has been shown");
 			return true;
 		} else {
+			logger.log(Level.WARNING, "list has not been shown ");
 			return false;
 		}
 	}
