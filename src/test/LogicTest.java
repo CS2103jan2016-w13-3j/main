@@ -31,6 +31,14 @@ public class LogicTest {
 	private static final String ADD_TASK_ENDTIME_BEFORE_STARTIME = "add play fifa from 14:00 30 Mar 2016 to 13:00 30 Mar 2016";
 	
 	
+	private static final String HELP_VALID = "help";
+	private static final String HELP_VALID_FEEDBACK = "Key in the following to view specific command formats:\n"
+			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
+			+ "7. help location\n8. help undo\n9. help exit\n";
+	private static final String HELP_INVALID = "help 1";
+	private static final String HELP_INVALID_FEEDBACK = "the help command is invalid";
+	private static final String HELP_VALID_TASKTYPE = "help undo";
+	private static final String HELP_VALID_TASKTYPE_FEEDBACK = "Undo the most recent command\ncommand: undo\n";
 	
 	
 	
@@ -44,6 +52,8 @@ public class LogicTest {
 		assertEquals(new Exception(LOCATION_FEEDBACK_FAIL),logicObj.executeCommand(LOCATION_COMMAND_FAIL));
 		assertEquals(new Exception(LOCATION_FEEDBACK_PASS), logicObj.executeCommand(LOCATION_COMMAND_PASS));
 	}
+	
+	
 	
 	@Test(expected = Exception.class)
 	public void testValidCommandTypes() throws Exception {
@@ -70,6 +80,16 @@ public class LogicTest {
 	}
 	
 	
+	
+	@Test(expected = Exception.class)
+	public void testHelpCommand() throws Exception{
+		assertEquals(HELP_VALID_FEEDBACK, logicObj.executeCommand(HELP_VALID));
+		assertEquals(new Exception(HELP_INVALID_FEEDBACK), logicObj.executeCommand(HELP_INVALID));
+		assertEquals(HELP_VALID_TASKTYPE_FEEDBACK, logicObj.executeCommand(HELP_VALID_TASKTYPE));
+	}
+	
+	
+	
 	@Test
 	/*
 	 * The following test case contains 3 equivalent partitions, a negative partition where the value is below what is expected,
@@ -83,12 +103,14 @@ public class LogicTest {
 		// this is the boundary case for negative value partition. Other values include -2, -10, -10000
 		assertFalse(Logic.checkIndexValid(new String("-3"), list)); 
 		assertFalse(Logic.checkIndexValid(new String("0"), list));
+		
 		// this is the boundary case for the correct value partition. Values should range from [1,5]
 		assertTrue(Logic.checkIndexValid(new String("1"), list));
 		
 		// this is the boundary case for positive value partition. Other values include 10, 1000, 10000
 		assertFalse(Logic.checkIndexValid(new String("6"), list));
 	}
+	
 	
 	
 	public void addItemsToList(int numItemsToAdd) {
