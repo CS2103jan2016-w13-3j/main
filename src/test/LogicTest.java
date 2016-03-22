@@ -1,10 +1,12 @@
-package simplyamazing.logic;
+package test;
 
 import static org.junit.Assert.*;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import simplyamazing.data.Task;
+import simplyamazing.logic.Logic;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -18,21 +20,37 @@ public class LogicTest {
 	private static final String LOCATION_FEEDBACK_FAIL = "Provided storage location is not a valid directory.";
 	private static final String LOCATION_FEEDBACK_PASS = "storage location of task data has been successfully set";
 	
+	private static final String ADD_TASK_PASS = "add hello world";
+	private static final String ADD_TASK_PASS_FEEDBACK = "Task[hello world] has been added.";
+	private static final String ADD_DEADLINE_PASS = "add cs2103 peer review by 23:59 25 Mar 2016";
+	private static final String ADD_DEADLINE_PASS_FEEDBACK = "Task[cs2103 peer review by 23:59 25 Mar 2016] has been added.";
+	private static final String ADD_EVENT_PASS = "add hackathon in SOC from 09:30 26 Mar 2016 to 10:00 27 Mar 2016";
+	private static final String ADD_EVENT_PASS_FEEDBACK = "Task[hackathon in SOC from 9:30 26 Mar 2016 to 10:00 27 Mar 2016] has been added.";
 	
-	
-	
-	@Test
+	@Test(expected = Exception.class)
+	/*
+	 * This test case has 2 partitions, namely correct and incorrect. These refer to the validity of the command input
+	 * The correct partition encompasses all valid file paths while the incorrect encompasses all invalid file paths
+	 */
 	public void testSetLocation() throws Exception{
+		
 		assertEquals(new Exception(LOCATION_FEEDBACK_FAIL),logicObj.executeCommand(LOCATION_COMMAND_FAIL));
 		assertEquals(new Exception(LOCATION_FEEDBACK_PASS), logicObj.executeCommand(LOCATION_COMMAND_PASS));
 	}
 	
-	@Test
+	@Test(expected = Exception.class)
 	public void testValidCommandTypes() throws Exception {
 		assertEquals(new Exception("the add command is not correct"),logicObj.executeCommand("add "));
 		assertEquals(new Exception("Error: Invalid command entered. Please enter \"help\" to view command format"), logicObj.executeCommand("hi"));
 		assertEquals(new Exception("there is no previous command to undo"), logicObj.executeCommand("undo"));
 		assertEquals(new Exception("the index of deleting is invalid"), logicObj.executeCommand("delete"));
+	}
+	
+	@Test
+	public void testValidAddCommand() throws Exception{
+		assertEquals(ADD_TASK_PASS_FEEDBACK, logicObj.executeCommand(ADD_TASK_PASS));
+		assertEquals(ADD_EVENT_PASS_FEEDBACK, logicObj.executeCommand(ADD_EVENT_PASS));
+		assertEquals(ADD_DEADLINE_PASS_FEEDBACK, logicObj.executeCommand(ADD_DEADLINE_PASS));
 	}
 	
 	
