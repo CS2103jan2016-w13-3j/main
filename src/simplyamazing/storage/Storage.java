@@ -54,7 +54,6 @@ public class Storage {
 	private static Logger logger = Logger.getLogger("Storage");
 	
 	private File storage, todo, done, todoBackup, doneBackup;
-	private boolean isEditingTask = false;
 	
 	private FileManager fileManager;
 	private TaskList taskList;
@@ -123,10 +122,9 @@ public class Storage {
 			setupFiles();
 			assert(todo != null && todo.exists());
 			
-			if (!isEditingTask) {
-				fileManager.createBackup(todo, todoBackup);
-				logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
-			}
+			fileManager.createBackup(todo, todoBackup);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+			
 			updateTaskData();
 			
 			int taskListSizeBeforeAdding = taskList.getTasks().size();
@@ -189,30 +187,27 @@ public class Storage {
 	public String editTask(Task task, Task editedTask) throws Exception {
 		assert(task != null);
 		throwExceptionIfCompletedTask(task);
-		isEditingTask = true;
-		deleteTask(task);
+		
+		int taskIndex = taskList.getTasks().indexOf(task);
 			
 		if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
-			task.setDescription(editedTask.getDescription());
+			taskList.getTasks().get(taskIndex).setDescription(editedTask.getDescription());
 		}
 		if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 && editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
-			task.setStartTime(editedTask.getStartTime());
+			taskList.getTasks().get(taskIndex).setStartTime(editedTask.getStartTime());
 		}
 		if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 && editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
-			task.setEndTime(editedTask.getEndTime());
+			taskList.getTasks().get(taskIndex).setEndTime(editedTask.getEndTime());
 		}
 		if (task.getPriority() != editedTask.getPriority()) {
 			if (editedTask.getPriority() > 2) {
-				task.setPriority(editedTask.getPriority());
+				taskList.getTasks().get(taskIndex).setPriority(editedTask.getPriority());
 			}
 		}
-
-		addTask(task);
 
 		String feedback = String.format(MESSAGE_UPDATED, task.toFilteredString());
 		assert(feedback != null && feedback.isEmpty() == false);
 		logger.log(Level.INFO, feedback);
-		isEditingTask = false;
 		return feedback;
 	}
 
