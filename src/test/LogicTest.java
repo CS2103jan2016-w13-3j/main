@@ -26,6 +26,13 @@ public class LogicTest {
 	private static final String ADD_DEADLINE_PASS_FEEDBACK = "Task[cs2103 peer review by 23:59 25 Mar 2016] has been added.";
 	private static final String ADD_EVENT_PASS = "add hackathon in SOC from 09:30 26 Mar 2016 to 10:00 27 Mar 2016";
 	private static final String ADD_EVENT_PASS_FEEDBACK = "Task[hackathon in SOC from 9:30 26 Mar 2016 to 10:00 27 Mar 2016] has been added.";
+	private static final String ADD_TASK_WITH_STARTIME_ONLY = "add sleep from 03:00 24 Mar 2016";
+	private static final String ADD_ERROR_MESSAGE = "the add command is not correct";
+	private static final String ADD_TASK_ENDTIME_BEFORE_STARTIME = "add play fifa from 14:00 30 Mar 2016 to 13:00 30 Mar 2016";
+	
+	
+	
+	
 	
 	@Test(expected = Exception.class)
 	/*
@@ -46,11 +53,20 @@ public class LogicTest {
 		assertEquals(new Exception("the index of deleting is invalid"), logicObj.executeCommand("delete"));
 	}
 	
-	@Test
-	public void testValidAddCommand() throws Exception{
+	
+	
+	
+	@Test (expected = Exception.class)
+	/*
+	 * The following test has 2 equivalent partitions, valid and invalid commands.
+	 */
+	public void testAddCommand() throws Exception{
 		assertEquals(ADD_TASK_PASS_FEEDBACK, logicObj.executeCommand(ADD_TASK_PASS));
 		assertEquals(ADD_EVENT_PASS_FEEDBACK, logicObj.executeCommand(ADD_EVENT_PASS));
 		assertEquals(ADD_DEADLINE_PASS_FEEDBACK, logicObj.executeCommand(ADD_DEADLINE_PASS));
+		
+		assertEquals(ADD_ERROR_MESSAGE, logicObj.executeCommand(ADD_TASK_WITH_STARTIME_ONLY));
+		assertEquals(ADD_ERROR_MESSAGE, logicObj.executeCommand(ADD_TASK_ENDTIME_BEFORE_STARTIME));
 	}
 	
 	
