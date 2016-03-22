@@ -41,6 +41,15 @@ public class LogicTest {
 	private static final String HELP_VALID_TASKTYPE_FEEDBACK = "Undo the most recent command\ncommand: undo\n";
 	
 	
+	private static final String DELETE_VALID_INDEX = "delete 2";
+	private static final String DELETE_VALID_INDEX_FEEDBACK = "Task[hackathon in SOC from 9:30 26 Mar 2016 to 10:00 27 Mar 2016] has been successfully deleted.";
+	private static final String DELETE_INVALID_INDEX_LARGER = "delete 5";
+	private static final String DELETE_INVALID_INDEX_FEEDBACK = "Error: Invalid index entered";
+	private static final String DELETE_INVALID_INDEX_ZERO = "delete 0";
+	private static final String DELETE_INVALID_INDEX_NEGATIVE = "delete -1";
+	
+	
+	
 	
 	@Test(expected = Exception.class)
 	/*
@@ -88,6 +97,15 @@ public class LogicTest {
 		assertEquals(HELP_VALID_TASKTYPE_FEEDBACK, logicObj.executeCommand(HELP_VALID_TASKTYPE));
 	}
 	
+	
+	
+	@Test(expected = Exception.class)
+	public void testDeleteCommand() throws Exception{
+		assertEquals(DELETE_VALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_VALID_INDEX));
+		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_LARGER));
+		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_NEGATIVE));
+		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_ZERO));
+	}
 	
 	
 	@Test
