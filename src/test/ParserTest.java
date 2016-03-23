@@ -38,18 +38,20 @@ public class ParserTest {
 	private static final String DELETE_COMMAND_VALID_INDEX = "delete 1";
 	private static final String DELETE_COMMAND_VALID_INDEX_FEEDBACK = "";
 	private static final String DELETE_COMMAND_INVALID_DUMMY_STRING = "delete go home";
-	private static final String DELETE_COMMAND_INVALID_WITH_NEGATIVE_INDEX = "delete go home";
-	private static final String DELETE_COMMAND_INVALID_WITH_ZERO_INDEX = "delete go home";
+	private static final String DELETE_COMMAND_INVALID_WITH_NEGATIVE_INDEX = "delete -9";
+	private static final String DELETE_COMMAND_INVALID_WITH_ZERO_INDEX = "delete 0";
 	private static final String DELETE_COMMAND_INVALID_FEEDBACK = "the index of deleting is invalid";
     
 	private static final String LOCATION_COMMAND_INVALID = "location ";
 	private static final String LOCATION_COMMAND_VALID = "location C:\"Users\"Ishpal\"Desktop\"Task Data";
-	private static final String LOCATION_COMMAND_FEEDBACK_INVALID = "The location for storing is invalid";
-	private static final String LOCATION_COMMAND_FEEDBACK_VALID = "";
+	private static final String LOCATION_COMMAND_INVALID_FEEDBACK = "The location for storing is invalid";
+	private static final String LOCATION_COMMAND_VALID_FEEDBACK = "";
 	
 	private static final String DONE_COMMAND_VALID = "done 1";
 	private static final String DONE_COMMAND_VALID_FEEDBACK = "";
 	private static final String DONE_COMMAND_INVALID_WRONG_KEYWORD = "done home";
+	private static final String DONE_COMMAND_INVALID_NEGATIVE_INDEX = "done -10";
+	private static final String DONE_COMMAND_INVALID_ZERO_INDEX = "done 0";
 	private static final String DONE_COMMAND_INVALID_FEEDBACK = "the index of done function is invalid.";
 	
 	private static Parser parser = new Parser();
@@ -66,6 +68,12 @@ public class ParserTest {
 		
 		assertEquals(ADD_COMMAND_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_WITH_ONLY_STARTTIME).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME).getFeedBack());
+	}
+	
+	@Test(expected = Exception.class)
+	public void testLocationCommand() throws Exception{
+		assertEquals(LOCATION_COMMAND_VALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_VALID).getFeedBack());
+		assertEquals(LOCATION_COMMAND_INVALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_INVALID).getFeedBack());
 	}
 	
 	
@@ -86,4 +94,16 @@ public class ParserTest {
 		assertEquals(DELETE_COMMAND_INVALID_FEEDBACK, parser.getHandler(DELETE_COMMAND_INVALID_WITH_NEGATIVE_INDEX).getFeedBack());
 		assertEquals(DELETE_COMMAND_INVALID_FEEDBACK, parser.getHandler(DELETE_COMMAND_INVALID_WITH_ZERO_INDEX).getFeedBack());
 	}
+	
+	@Test(expected = Exception.class)
+	public void testDoneCommand() throws Exception{
+		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID).getFeedBack());
+		assertEquals(DONE_COMMAND_INVALID_FEEDBACK, parser.getHandler(DONE_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
+		//these two test cases uses the Boundary value analysis
+		assertEquals(DONE_COMMAND_INVALID_FEEDBACK, parser.getHandler(DONE_COMMAND_INVALID_NEGATIVE_INDEX).getFeedBack());
+		assertEquals(DONE_COMMAND_INVALID_FEEDBACK, parser.getHandler(DONE_COMMAND_INVALID_ZERO_INDEX).getFeedBack());
+	}
+	
+	
+	
 }
