@@ -25,7 +25,7 @@ public class ParserAdd {
 	private static Logger logger = Logger.getLogger("ParserAdd");
 	
 	public Handler parseAddCommand(Handler handler, String taskInfo) throws Exception {
-		logger.log(Level.INFO, "going to start processing cmd");
+		//logger.log(Level.INFO, "going to start processing cmd");
 		checkValue = isAddingValid(taskInfo);
 		if (checkValue) {
 			if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO) && taskInfo.contains(STRING_TIME_FORMATTER)) { // For events
@@ -40,10 +40,10 @@ public class ParserAdd {
 			}
 		} else {
 			handler.setHasError(true);
-			logger.log(Level.WARNING, "error with the given input");
+			//logger.log(Level.WARNING, "error with the given input");
 			handler.setFeedBack(ERROR_MESSAGE);
 		}
-		logger.log(Level.INFO, "returning to parser");
+		//logger.log(Level.INFO, "returning to parser");
 		return handler;
 	}
 
