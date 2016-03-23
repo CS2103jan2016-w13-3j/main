@@ -4,7 +4,7 @@ public class ParserDelete {
 	private final String COMMAND_INVALID = "the index of deleting is invalid.";
 	
 	public Handler parserDeleteCommand(Handler handler, String taskInfo) throws Exception{
-		if (isInteger(taskInfo) && Integer.parseInt(taskInfo) >= 0){
+		if (isInteger(taskInfo)){
 			handler.setIndex(taskInfo);
 		}else{
 			handler.setHasError(true);

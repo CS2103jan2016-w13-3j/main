@@ -4,7 +4,7 @@ public class ParserDone {
 	private final String COMMAND_INVALID = "the index of done function is invalid.";
 
 	public Handler parserDoneCommand(Handler handler, String taskInfo) throws Exception {
-		if (isInteger(taskInfo) && Integer.parseInt(taskInfo) >= 0) {
+		if (isInteger(taskInfo)) {
 			handler.setIndex(taskInfo);
 		} else {
 			handler.setHasError(true);
