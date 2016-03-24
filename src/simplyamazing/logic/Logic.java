@@ -144,9 +144,11 @@ public class Logic {
 			default:
 				throw new Exception(ERROR_INVALID_COMMAND);
 		}
+		
 		logger.log(Level.INFO, "about to return to UI");
 		previousCommandKeyword = commandWord;
-		if (!commandType.equals(CommandType.VIEW_LIST) && !commandType.equals(CommandType.SEARCH_KEYWORD) && !commandType.equals(CommandType.UNDO_LAST)) {
+		
+		if (!commandType.equals(CommandType.VIEW_LIST) && !commandType.equals(CommandType.HELP) && !commandType.equals(CommandType.SEARCH_KEYWORD) && !commandType.equals(CommandType.UNDO_LAST)) {
 			previousCommandString = userCommand;
 		}
 		return feedback;
@@ -160,6 +162,7 @@ public class Logic {
 		} else {
 			logger.log(Level.INFO, "no error with add, interacting with storage now");
 			Task taskToAdd = commandHandler.getTask();
+			assert taskToAdd != null;
 			return storageObj.addTask(taskToAdd);
 		}
 	}
@@ -167,6 +170,7 @@ public class Logic {
 	
 	private static String executeViewCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in view");
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			logger.log(Level.INFO, "before executing view command");
@@ -180,9 +184,11 @@ public class Logic {
 	
 	private static String executeEditCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
+			logger.log(Level.WARNING, "list has not been shown previously");
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
 		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in edit");
 			throw new Exception(commandHandler.getFeedBack());
 		} else { 
 			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
@@ -198,8 +204,10 @@ public class Logic {
 				boolean isDateValid = checkDateValid(fieldsToChange, originalTask);
 				
 				if (isDateValid == true) {
+					logger.log(Level.INFO, "date field is valid, interacting with storage now");
 					return storageObj.editTask(originalTask, fieldsToChange);
 				} else {
+					logger.log(Level.WARNING, "invalid date field");
 					throw new Exception(ERROR_INVALID_DATE);
 				}
 			}
@@ -209,10 +217,12 @@ public class Logic {
 	
 	private static String executeDeleteCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
+			logger.log(Level.WARNING, "list has not been shown previously");
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
 		
 		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in delete");
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
@@ -231,6 +241,7 @@ public class Logic {
 	
 	private static String executeSearchCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in search");
 			throw new Exception(commandHandler.getFeedBack());
 		} else{
 			String keyword = commandHandler.getKeyWord();
@@ -243,11 +254,13 @@ public class Logic {
 	
 	private static String executeUndoCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in edit");
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			boolean hasPreviousCommand = isPreviousCommandValid();
 			
 			if (hasPreviousCommand == false) {
+				logger.log(Level.WARNING, "previous command is invalid");
 				throw new Exception(MESSAGE_PREVIOUS_COMMAND_INVALID);
 			} else {
 				return storageObj.restore(previousCommandString);
@@ -258,6 +271,7 @@ public class Logic {
 	
 	private static String executeSetLocationCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in location");
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			String directoryPath = commandHandler.getKeyWord();
@@ -269,10 +283,12 @@ public class Logic {
 	
 	private static String executeMarkCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
+			logger.log(Level.WARNING, "list has not been shown previously");
 			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
 		}
 		
 		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in edit");
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
@@ -289,6 +305,7 @@ public class Logic {
 	
 	private static String executeHelpCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in help");
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
 			if(commandHandler.getKeyWord().equals("")) {
