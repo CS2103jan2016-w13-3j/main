@@ -23,9 +23,15 @@ public class CommandBarController {
 		commandBar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					ui.executeUserCommand();
-					clear();
+				if(e.isActionKey()) {
+					if(e.getKeyCode() == KeyEvent.VK_UP) {
+						ui.getUserCommand();
+					}
+				} else {
+					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+						ui.executeUserCommand();
+						clear();
+					} 
 				}
 			}
 		});
@@ -37,6 +43,10 @@ public class CommandBarController {
 
 	public String getCommand() {
 		return commandBar.getText();
+	}
+	
+	public void setCommand(String command) {
+		commandBar.setText(command);
 	}
 	
 	public void clear() {

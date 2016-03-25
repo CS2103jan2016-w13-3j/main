@@ -142,4 +142,9 @@ public class UI {
 			feedbackAreaController.setFeedback(feedback);
 		}
 	}
+
+	public void getUserCommand() {
+		String command = logic.getPreviousCommand();
+		commandBarController.setCommand(command);
+	}
 }
