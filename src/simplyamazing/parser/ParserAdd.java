@@ -64,11 +64,14 @@ public class ParserAdd {
 				return false;
 			} else if (!startTime.equals(EMPTY_STRING) && !endTime.equals(EMPTY_STRING)) {
 				try {
-					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);
+					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
 					sdf.setLenient(true);
-					Date startingDate = sdf.parse(startTime);
-					Date endingDate = sdf.parse(endTime);
-					Date todayDate = sdf.parse(sdf.format(new Date()));
+					Date startingDate = null;
+					startingDate = (Date)sdf.parse(startTime);
+					Date endingDate = null;
+					endingDate = (Date)sdf.parse(endTime);
+					Date todayDate = null;
+					todayDate = (Date)sdf.parse(sdf.format(new Date()));
 
 					if (startingDate.after(endingDate)||startingDate.compareTo(endingDate) == 0) {
 						return false;
@@ -91,10 +94,12 @@ public class ParserAdd {
 				return false;
 			} else if (!endTime.equals(EMPTY_STRING)) {
 				try {
-					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT, Locale.US);
+					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT, Locale.ENGLISH);
 					sdf.setLenient(true);
-					Date endingDate = sdf.parse(endTime);
-					Date todayDate = sdf.parse(sdf.format(new Date()));
+					Date endingDate = null;
+					endingDate = (Date)sdf.parse(endTime);
+					Date todayDate = null;
+					todayDate = (Date)sdf.parse(sdf.format(new Date()));
 					if (endingDate.before(todayDate)) {
 						return false;
 					}

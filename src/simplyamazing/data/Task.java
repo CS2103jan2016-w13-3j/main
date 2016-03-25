@@ -2,6 +2,7 @@ package simplyamazing.data;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Task implements Comparable<Task>{
 	public static final int DEFAULT_PRIORITY_LEVEL = 0;
@@ -15,7 +16,7 @@ public class Task implements Comparable<Task>{
 	
 	public static final Date DEFAULT_DATE_VALUE = new Date(0);
 
-	private static final String TIME_FORMAT = "H:mm dd MMM yyyy";
+	private static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
 	public static final String FIELD_SEPARATOR = ",";
 	
 	private static final String CHARACTER_SPACE = " ";
@@ -75,14 +76,14 @@ public class Task implements Comparable<Task>{
 	}
 
 	public static Date convertStringToDate(String timeString) throws Exception {
-        SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
         Date date = formatter.parse(timeString);
         return date;
     }
 
     public static String convertDateToString(Date date) {
         String timeString = CHARACTER_SPACE;
-        SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
         timeString = formatter.format(date);
         return timeString;
     }
