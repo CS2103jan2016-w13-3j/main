@@ -17,7 +17,7 @@ public class ParserAdd {
 	private static final String ERROR_MESSAGE_FIELDS_NOT_CORRECT = "Error: Please ensure the fields are correct";
 	private static final String ERROR_MESSAGE_TIME_FORMAT_INVALID ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
 	private static final String ERROR_MESSAGE_START_AFTER_END ="Error: Start date and time cannot be after the End date and time";
-	private static final String ERROR_MESSAGE_DATE_BEFORE_CURRENT ="Error: Time provider must be after the current time";
+	private static final String ERROR_MESSAGE_DATE_BEFORE_CURRENT ="Error: Time provided must be after the current time";
 	private static String description = "";
 	private static String startTime = "";
 	private static String endTime = "";
