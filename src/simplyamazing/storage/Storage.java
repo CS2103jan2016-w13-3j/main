@@ -29,8 +29,8 @@ public class Storage {
 	private static final int INDEX_START_FOR_ARRAY = 0;
 	
 	private static final String MESSAGE_LOCATION_SET = "Storage location of task data has been sucessfully set as %1$s.";
-	private static final String MESSAGE_LOCATION_NOT_SET = "Storage location of task data is has not been set. Please enter \"location <directory>\" command to set the storage location.";
-	private static final String MESSAGE_NOT_DIRECTORY = "Provided storage location is not a valid directory.";
+	private static final String MESSAGE_LOCATION_NOT_SET = "Error: Storage location of task data is has not been set. Please enter \"location <directory>\" command to set the storage location.";
+	private static final String MESSAGE_NOT_DIRECTORY = "Error: Not a valid directory.";
 	private static final String MESSAGE_ADDED = "%1$s has been added.";
 	private static final String MESSAGE_RESTORED = "\"%1$s\" command has been successfully undone.";
 	private static final String MESSAGE_INVALID_TASK_TYPE = "Unrecognized task type!";
@@ -53,6 +53,8 @@ public class Storage {
 	
 	private static Logger logger = Logger.getLogger("Storage");
 	
+	private static boolean isEditing = false;
+	
 	private File storage, todo, done, todoBackup, doneBackup;
 	
 	private FileManager fileManager;
@@ -70,6 +72,14 @@ public class Storage {
 		taskList = new TaskList();
 	}
 	
+	public FileManager getFileManager() {
+		return fileManager;
+	}
+
+	public TaskList getTaskList() {
+		return taskList;
+	}
+
 	private boolean isLocationSet() {
 		return !fileManager.isEmptyFile(storage);
 	}
@@ -83,12 +93,14 @@ public class Storage {
 			if(fileManager.isFileExisting(storage)) { // When storage location has been set before
 				fileManager.cleanFile(storage);
 				
-				if(fileManager.isFileExisting(todo)) {
+				if(!fileManager.isEmptyFile(storage)) {
+					setupFiles();
+					
 					File todoNew = fileManager.createFile(location+FILENAME_TODO);
 					fileManager.createBackup(todo, todoNew);
 					todo.delete();
 					todo = todoNew;
-					
+	
 					File doneNew = fileManager.createFile(location+FILENAME_DONE);
 					fileManager.createBackup(done, doneNew);
 					done.delete();
@@ -123,10 +135,10 @@ public class Storage {
 		} else { 	
 			setupFiles();
 			assert(todo != null && todo.exists());
-			
-			fileManager.createBackup(todo, todoBackup);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
-			
+			if(!isEditing) {
+				fileManager.createBackup(todo, todoBackup);
+				logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+			}
 			updateTaskData();
 			
 			int taskListSizeBeforeAdding = taskList.getTasks().size();
@@ -191,41 +203,31 @@ public class Storage {
 		if(!isLocationSet()) {
 			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
 			throw new Exception(MESSAGE_LOCATION_NOT_SET);
-		} else { 	
-			setupFiles();
-			assert(todo != null && todo.exists());
-			
-			fileManager.createBackup(todo, todoBackup);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
-			
-			updateTaskData();
-			
+		} else { 
+			isEditing = true;			
 			throwExceptionIfCompletedTask(task);
 			
-			int taskIndex = taskList.getTasks().indexOf(task);
+			deleteTask(task);
 				
 			if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
-				taskList.getTasks().get(taskIndex).setDescription(editedTask.getDescription());
+				task.setDescription(editedTask.getDescription());
 			}
 			if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 && editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
-				taskList.getTasks().get(taskIndex).setStartTime(editedTask.getStartTime());
+				task.setStartTime(editedTask.getStartTime());
 			}
 			if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 && editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
-				taskList.getTasks().get(taskIndex).setEndTime(editedTask.getEndTime());
+				task.setEndTime(editedTask.getEndTime());
 			}
 			if (task.getPriority() != editedTask.getPriority()) {
-				taskList.getTasks().get(taskIndex).setPriority(editedTask.getPriority());
+				task.setPriority(editedTask.getPriority());
 			}
 	
-			taskList.sort();
-			
-			fileManager.importListToFile(taskList.getTasks(), todo);
-			assert(todo.length() > 0);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
+			addTask(task);
 			
 			String feedback = String.format(MESSAGE_UPDATED, task.toFilteredString());
 			assert(feedback != null && feedback.isEmpty() == false);
 			logger.log(Level.INFO, feedback);
+			isEditing = false;
 			return feedback;
 		}
 	}
