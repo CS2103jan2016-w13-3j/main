@@ -50,7 +50,7 @@ public class ParserEdit {
 				if (!startingDate.after(todayDate) || !endingDate.after(todayDate)){ 
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
-				}else if (!endingDate.after(todayDate)){
+				}else if (!endingDate.after(startingDate)){
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
 				}
@@ -62,7 +62,7 @@ public class ParserEdit {
 			} else if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // end time is modified
 				if (!endingDate.after(todayDate)) {
 					handler.setHasError(true);
-					handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
+					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 				}
 			}  
 			/*if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && startingDate.after(endingDate)) {
