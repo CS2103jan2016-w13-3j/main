@@ -468,6 +468,10 @@ public class Logic {
 		}
 	}
 	
+	public String getPreviousCommand(){
+		return previousCommandString;
+	}
+	
 	
 	private static String convertListToString(ArrayList<Task> list) throws Exception{
 		if (list.size() == 0) {
