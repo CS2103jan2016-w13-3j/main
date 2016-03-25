@@ -178,17 +178,25 @@ public class Task implements Comparable<Task>{
 	
 	@Override
 	public int compareTo(Task task) {
-		if(task.getPriority() == this.priority) {
-			if(task.getTaskType() == this.taskType) {
-				if(task.getEndTime().compareTo(this.endTime) == 0) {
-					if(task.getStartTime().compareTo(this.startTime) == 0) {
-						return this.description.compareToIgnoreCase(task.getDescription());
-					}
-					return this.startTime.compareTo(task.getStartTime());
+		if (task.getPriority() == this.priority) { // Same priority
+			if (task.getEndTime().compareTo(this.endTime) == 0) { // Same end time
+				if (task.getStartTime().compareTo(this.startTime) == 0) { // Same start time
+					return this.description.compareToIgnoreCase(task.getDescription());
 				} 
-				return this.endTime.compareTo(task.getEndTime());
+				return this.startTime.compareTo(task.getStartTime());	
+			} else { // Different end time
+				if(this.endTime.compareTo(DEFAULT_DATE_VALUE) == 0 || task.getEndTime().compareTo(DEFAULT_DATE_VALUE) == 0) {
+					if (task.getStartTime().compareTo(this.startTime) == 0) { // Same start time
+						return this.description.compareToIgnoreCase(task.getDescription());
+					} else {
+						if(this.startTime.compareTo(DEFAULT_DATE_VALUE) == 0 || task.getStartTime().compareTo(DEFAULT_DATE_VALUE) == 0) { 
+							return task.getTaskType() - this.taskType;
+						}
+						return this.startTime.compareTo(task.getStartTime());
+					}
+				}
+				return this.endTime.compareTo(task.getEndTime());		
 			}
-			return task.getTaskType() - this.taskType;
 		}
 		return task.getPriority() - this.priority;
 	}
