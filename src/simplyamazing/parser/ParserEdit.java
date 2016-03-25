@@ -45,7 +45,7 @@ public class ParserEdit {
 			Date todayDate = new Date();
 
 			if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && endingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // if both start time and end time are modified
-				if (startingDate.before(todayDate) || endingDate.before(todayDate) || startingDate.after(endingDate)) {
+				if (startingDate.before(todayDate) || endingDate.before(todayDate) || startingDate.after(endingDate)|| startingDate.equals(endingDate)) {
 					handler.setHasError(true);
 					handler.setFeedBack(MESSAGE_INVALID_FORMAT);
 				}
