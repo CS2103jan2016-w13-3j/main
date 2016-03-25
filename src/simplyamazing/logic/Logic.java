@@ -381,11 +381,17 @@ public class Logic {
 					if (newStartTime.after(previousEndTime)) {
 						return false;
 					}
+					if (newStartTime.equals(previousEndTime)) {
+						return false;
+					}
 
 				}
 			} else if (newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // end time is modified
 				if (previousStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // has start time => it's an event
 					if (newEndTime.before(previousStartTime)) {
+						return false;
+					}
+					if (newEndTime.equals(previousStartTime)) {
 						return false;
 					}
 				}
