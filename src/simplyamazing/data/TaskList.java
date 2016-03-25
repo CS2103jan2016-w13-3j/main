@@ -71,16 +71,24 @@ public class TaskList {
 	
 	public void addTaskToList(Task task, ArrayList<Task> taskList) throws Exception {
 		taskList.add(task);
-		Collections.sort(taskList);
+		sortTaskList(taskList);
 	}
 	
 	public void removeTaskFromList(Task task) throws Exception {
 		if (tasks.contains(task)) {
 			tasks.remove(task);
-			Collections.sort(tasks);
+			sortTaskList(tasks);
 		} else {
 			completedTasks.remove(task);
-			Collections.sort(completedTasks);
+			sortTaskList(completedTasks);
 		}
+	}
+
+	private void sortTaskList(ArrayList<Task> taskList) {
+		Collections.sort(taskList);
+	}
+	
+	public void sort() {
+		sortTaskList(tasks);
 	}
 }
