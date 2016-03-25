@@ -59,7 +59,7 @@ public class TaskList {
 			if (!status.matches(CHARACTER_SPACE)) {
 				task.setDone(true);
 			}
-			taskList.add(task);
+			addTaskToList(task, taskList);
 		}
 	}
 	
