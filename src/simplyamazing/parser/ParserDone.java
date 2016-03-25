@@ -1,7 +1,7 @@
 package simplyamazing.parser;
 
 public class ParserDone {
-	private final String COMMAND_INVALID = "the index of done function is invalid.";
+	private final String COMMAND_INVALID = "Error: Index provided is not an Integer.";
 
 	public Handler parserDoneCommand(Handler handler, String taskInfo) throws Exception {
 		if (isInteger(taskInfo)) {

@@ -12,7 +12,7 @@ public class ParserHelp {
 	private final String STRING_EXIT = "exit";
 	private final String STRING_EMPTY="";
 	
-	private final String COMMAND_INVALID = "the help command is invalid";
+	private final String COMMAND_INVALID = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
 
 	public Handler parserHelpCommand(Handler handler, String taskInfo) throws Exception {
 		switch (taskInfo.toLowerCase()) {
