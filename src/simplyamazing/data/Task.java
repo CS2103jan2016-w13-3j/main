@@ -84,6 +84,10 @@ public class Task implements Comparable<Task>{
         String timeString = CHARACTER_SPACE;
         SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT);
         timeString = formatter.format(date);
+        String[] fields = timeString.split(CHARACTER_SPACE);
+        String monthFirstWord = fields[2].toLowerCase().substring(0,1).toUpperCase();
+        String monthFormatted = monthFirstWord + fields[2].substring(1, 3);
+        timeString = fields[0] + CHARACTER_SPACE + fields[1] + CHARACTER_SPACE + monthFormatted + CHARACTER_SPACE + fields[3];
         return timeString;
     }
 	
