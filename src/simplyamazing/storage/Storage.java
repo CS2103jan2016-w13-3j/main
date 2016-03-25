@@ -83,15 +83,17 @@ public class Storage {
 			if(fileManager.isFileExisting(storage)) { // When storage location has been set before
 				fileManager.cleanFile(storage);
 				
-				File todoNew = fileManager.createFile(location+FILENAME_TODO);
-				fileManager.createBackup(todo, todoNew);
-				todo.delete();
-				todo = todoNew;
-				
-				File doneNew = fileManager.createFile(location+FILENAME_DONE);
-				fileManager.createBackup(done, doneNew);
-				done.delete();
-				done = doneNew;
+				if(fileManager.isFileExisting(todo)) {
+					File todoNew = fileManager.createFile(location+FILENAME_TODO);
+					fileManager.createBackup(todo, todoNew);
+					todo.delete();
+					todo = todoNew;
+					
+					File doneNew = fileManager.createFile(location+FILENAME_DONE);
+					fileManager.createBackup(done, doneNew);
+					done.delete();
+					done = doneNew;
+				}
 			}
 			fileManager.writeToFile(storage, location);
 			
@@ -186,29 +188,42 @@ public class Storage {
 	
 	public String editTask(Task task, Task editedTask) throws Exception {
 		assert(task != null);
-		throwExceptionIfCompletedTask(task);
-		
-		int taskIndex = taskList.getTasks().indexOf(task);
+		if(!isLocationSet()) {
+			logger.log(Level.WARNING, MESSAGE_LOCATION_NOT_SET);
+			throw new Exception(MESSAGE_LOCATION_NOT_SET);
+		} else { 	
+			setupFiles();
+			assert(todo != null && todo.exists());
 			
-		if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
-			taskList.getTasks().get(taskIndex).setDescription(editedTask.getDescription());
-		}
-		if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 && editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
-			taskList.getTasks().get(taskIndex).setStartTime(editedTask.getStartTime());
-		}
-		if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 && editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
-			taskList.getTasks().get(taskIndex).setEndTime(editedTask.getEndTime());
-		}
-		if (task.getPriority() != editedTask.getPriority()) {
-			if (editedTask.getPriority() > 2) {
-				taskList.getTasks().get(taskIndex).setPriority(editedTask.getPriority());
+			fileManager.createBackup(todo, todoBackup);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+			
+			updateTaskData();
+			
+			throwExceptionIfCompletedTask(task);
+			
+			int taskIndex = taskList.getTasks().indexOf(task);
+				
+			if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
+				taskList.getTasks().get(taskIndex).setDescription(editedTask.getDescription());
 			}
+			if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 && editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
+				taskList.getTasks().get(taskIndex).setStartTime(editedTask.getStartTime());
+			}
+			if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 && editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
+				taskList.getTasks().get(taskIndex).setEndTime(editedTask.getEndTime());
+			}
+			if (task.getPriority() != editedTask.getPriority()) {
+				if (editedTask.getPriority() > 2) {
+					taskList.getTasks().get(taskIndex).setPriority(editedTask.getPriority());
+				}
+			}
+	
+			String feedback = String.format(MESSAGE_UPDATED, task.toFilteredString());
+			assert(feedback != null && feedback.isEmpty() == false);
+			logger.log(Level.INFO, feedback);
+			return feedback;
 		}
-
-		String feedback = String.format(MESSAGE_UPDATED, task.toFilteredString());
-		assert(feedback != null && feedback.isEmpty() == false);
-		logger.log(Level.INFO, feedback);
-		return feedback;
 	}
 
 	private void throwExceptionIfCompletedTask(Task task) throws Exception {
