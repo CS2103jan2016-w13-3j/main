@@ -214,11 +214,15 @@ public class Storage {
 				taskList.getTasks().get(taskIndex).setEndTime(editedTask.getEndTime());
 			}
 			if (task.getPriority() != editedTask.getPriority()) {
-				if (editedTask.getPriority() > 2) {
-					taskList.getTasks().get(taskIndex).setPriority(editedTask.getPriority());
-				}
+				taskList.getTasks().get(taskIndex).setPriority(editedTask.getPriority());
 			}
 	
+			taskList.sort();
+			
+			fileManager.importListToFile(taskList.getTasks(), todo);
+			assert(todo.length() > 0);
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
+			
 			String feedback = String.format(MESSAGE_UPDATED, task.toFilteredString());
 			assert(feedback != null && feedback.isEmpty() == false);
 			logger.log(Level.INFO, feedback);
