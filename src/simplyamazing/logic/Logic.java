@@ -24,13 +24,14 @@ public class Logic {
 	private static final String STRING_EMPTY = "";
 	
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
-	private static final String ERROR_INVALID_INDEX = "Error: Invalid index entered";
+	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
 	private static final String ERROR_INVALID_DATE = "Error: Please make sure that given date and time fields are valid";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view command format";
+	private static final String ERROR_NO_TASK_FOUND = "Error: The list is empty";
+	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "There is no previous command to undo";
 	
 	private static final String MESSAGE_INPUT_LOCATION = "Directory location not set, please input directory location before running the program";
-	private static final String MESSAGE_NO_TASK_FOUND = "No task found.";
-	private static final String MESSAGE_PREVIOUS_COMMAND_INVALID = "There is no previous command to undo";
+	
 	
 	
 	private static final String MESSAGE_HELP_EXIT = "Exit SimplyAmazing\nCommand: exit\n";
@@ -67,7 +68,7 @@ public class Logic {
 	};
 	
 	
-	public Logic(){
+	public Logic() {
 		parserObj = new Parser();
 		storageObj = new Storage();
 		taskList = new ArrayList<Task>();
@@ -155,6 +156,7 @@ public class Logic {
 		if (!commandType.equals(CommandType.VIEW_LIST) && !commandType.equals(CommandType.HELP) && !commandType.equals(CommandType.SEARCH_KEYWORD) && !commandType.equals(CommandType.UNDO_LAST)) {
 			previousCommandString = userCommand;
 		}
+		
 		return feedback;
 	}
 	
@@ -163,11 +165,13 @@ public class Logic {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in add");
 			throw new Exception(commandHandler.getFeedBack());
+			
 		} else {
 			logger.log(Level.INFO, "no error with add, interacting with storage now");
 			Task taskToAdd = commandHandler.getTask();
 			assert taskToAdd != null;
 			return storageObj.addTask(taskToAdd);
+			
 		}
 	}
 	
@@ -176,12 +180,14 @@ public class Logic {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in view");
 			throw new Exception(commandHandler.getFeedBack());
+			
 		} else {
 			logger.log(Level.INFO, "before executing view command");
 			String keyWord = commandHandler.getKeyWord();
 			assert keyWord != null;
 			taskList = storageObj.viewTasks(keyWord);
-			return convertListToString(taskList);	
+			return convertListToString(taskList);
+			
 		}
 	}
 	
@@ -265,7 +271,7 @@ public class Logic {
 			
 			if (hasPreviousCommand == false) {
 				logger.log(Level.WARNING, "previous command is invalid");
-				throw new Exception(MESSAGE_PREVIOUS_COMMAND_INVALID);
+				throw new Exception(ERROR_PREVIOUS_COMMAND_INVALID);
 			} else {
 				return storageObj.restore(previousCommandString);
 			}
@@ -312,7 +318,7 @@ public class Logic {
 			logger.log(Level.WARNING, "handler has reported an error in help");
 			throw new Exception(commandHandler.getFeedBack());
 		} else {
-			if(commandHandler.getKeyWord().equals("")) {
+			if(commandHandler.getKeyWord().equals(STRING_EMPTY)) {
 				return MESSAGE_HELP;
 			} else if (commandHandler.getKeyWord().equals("add")) {
 				return MESSAGE_HELP_ADD_TASK;
@@ -341,15 +347,19 @@ public class Logic {
 		if (indexStr == null) {
 			return false;
 		} else {
-			int indexToDelete = Integer.parseInt(indexStr);
-			
-			assert indexToDelete >= 0;
-			assert indexToDelete <= list.size();
-			
-			if(indexToDelete <= 0 || indexToDelete > list.size()){
+			try {
+				int indexToDelete = Integer.parseInt(indexStr);
+
+				assert indexToDelete >= 0;
+				assert indexToDelete <= list.size();
+				
+				if(indexToDelete <= 0 || indexToDelete > list.size()){
+					return false;
+				} else {
+					return true;
+				}
+			} catch (NumberFormatException e) {
 				return false;
-			} else {
-				return true;
 			}
 		}
 	}
@@ -441,9 +451,9 @@ public class Logic {
 	}
 	
 	
-	private static String convertListToString(ArrayList<Task> list){
+	private static String convertListToString(ArrayList<Task> list) throws Exception{
 		if (list.size() == 0) {
-			return MESSAGE_NO_TASK_FOUND;
+			throw new Exception(ERROR_NO_TASK_FOUND);
 		}
 		String convertedList = STRING_EMPTY;
 		for (int i = 0; i < list.size(); i++) {
