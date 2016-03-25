@@ -14,9 +14,10 @@ public class ParserAdd {
 	private static final String KEYWORD_DEADLINE = "by";
 	private static final String EMPTY_STRING = "";
 	private static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
-	private static final String ERROR_MESSAGE = "the add command is not correct";
-	private static final String ERROR_MESSAGE_FIELDSNOTCORRECT = "Error: Please ensure the fields are correct";
-	private static final String ERROR_MESSAGE_TIMEFORMATINVALID ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
+	private static final String ERROR_MESSAGE_FIELDS_NOT_CORRECT = "Error: Please ensure the fields are correct";
+	private static final String ERROR_MESSAGE_TIME_FORMAT_INVALID ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
+	private static final String ERROR_MESSAGE_START_AFTER_END ="Error: Start date and time cannot be after the End date and time";
+	private static final String ERROR_MESSAGE_DATE_BEFORE_CURRENT ="Error: Time provider must be after the current time";
 	private static String description = "";
 	private static String startTime = "";
 	private static String endTime = "";
@@ -42,9 +43,6 @@ public class ParserAdd {
 				handler.getTask().setDescription(taskInfo.trim());
 			}
 		} else {
-			handler.setHasError(true);
-			//logger.log(Level.WARNING, "error with the given input");
-			handler.setFeedBack(ERROR_MESSAGE);
 		}
 		//logger.log(Level.INFO, "returning to parser");
 		return handler;
@@ -65,7 +63,7 @@ public class ParserAdd {
 
 			if (description.equals(EMPTY_STRING) || startTime.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
 				handler.setHasError(true);
-				handler.setFeedBack(ERROR_MESSAGE_FIELDSNOTCORRECT);
+				handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 				return false;
 			} else if (!startTime.equals(EMPTY_STRING) && !endTime.equals(EMPTY_STRING)) {
 				try {
@@ -79,15 +77,19 @@ public class ParserAdd {
 					todayDate = (Date)sdf.parse(sdf.format(new Date()));
 
 					if (startingDate.after(endingDate)||startingDate.compareTo(endingDate) == 0) {
+						handler.setHasError(true);
+						handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
 						return false;
-					} else if (startingDate.before(todayDate) || startingDate.before(todayDate)) {
+					} else if (!startingDate.after(todayDate) || !endingDate.after(todayDate)) {
+						handler.setHasError(true);
+						handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 						return false;
 					} else {
 						return true;
 					}
 				} catch (ParseException e) {
 					handler.setHasError(true);
-					handler.setFeedBack(ERROR_MESSAGE_TIMEFORMATINVALID);
+					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 					return false;
 				}
 			}
@@ -98,6 +100,8 @@ public class ParserAdd {
 			description = taskInfo.substring(0, endTimeIndex).trim();
 
 			if (description.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
+				handler.setHasError(true);
+				handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 				return false;
 			} else if (!endTime.equals(EMPTY_STRING)) {
 				try {
@@ -107,19 +111,26 @@ public class ParserAdd {
 					endingDate = (Date)sdf.parse(endTime);
 					Date todayDate = null;
 					todayDate = (Date)sdf.parse(sdf.format(new Date()));
-					if (endingDate.before(todayDate)) {
+					if (!endingDate.after(todayDate)) {
+						handler.setHasError(true);
+						handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 						return false;
 					}
 				} catch (ParseException e) {
+					handler.setHasError(true);
+					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 					return false;
 				}
 			}
 		} else {
 			if(taskInfo.contains(STRING_TIME_FORMATTER)) {
-				System.out.println("Found "+STRING_TIME_FORMATTER);
+				handler.setHasError(true);
+				handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 				return false;
 			} else {
-				if (taskInfo.equals(EMPTY_STRING)) {
+				if (taskInfo.trim().equals(EMPTY_STRING)) {
+					handler.setHasError(true);
+					handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 					return false;
 				}
 			}
