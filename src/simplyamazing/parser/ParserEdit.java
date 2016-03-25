@@ -5,14 +5,16 @@ import java.util.Date;
 import simplyamazing.data.Task;
 
 public class ParserEdit {
-	private static final String MESSAGE_INVALID_FORMAT = "The command of input's field is invalid";
-	
+	private static final String ERROR_MESSAGE_INVALID_INDEX = "Error: Index provided is not an Integer.";
+	private final String ERROR_MESSAGE_INVALID_FIELD = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
+	private static final String ERROR_MESSAGE_START_AFTER_END ="Error: Start date and time cannot be after the End date and time";
+	private static final String ERROR_MESSAGE_DATE_BEFORE_CURRENT ="Error: Time provided must be after the current time";
 	public Handler parseEditCommand(Handler handler, String taskIndex, String taskInfoWithoutIndex) throws Exception {
 		if (isInteger(taskIndex)) {
 			handler.setIndex(taskIndex);
 		} else {
 			handler.setHasError(true);
-			handler.setFeedBack(MESSAGE_INVALID_FORMAT);
+			handler.setFeedBack(ERROR_MESSAGE_INVALID_INDEX);
 			return handler;
 		}
 		String[] fieldValuePairs = taskInfoWithoutIndex.split(",");
@@ -36,7 +38,7 @@ public class ParserEdit {
 					break;
 				default :
 					handler.setHasError(true);
-					handler.setFeedBack(MESSAGE_INVALID_FORMAT);
+					handler.setFeedBack(ERROR_MESSAGE_INVALID_FIELD);
 				}
 			}
 			
@@ -45,19 +47,22 @@ public class ParserEdit {
 			Date todayDate = new Date();
 
 			if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && endingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // if both start time and end time are modified
-				if (startingDate.before(todayDate) || endingDate.before(todayDate) || startingDate.after(endingDate)|| startingDate.compareTo(endingDate) == 0) {
+				if (!startingDate.after(todayDate) || !endingDate.after(todayDate)){ 
 					handler.setHasError(true);
-					handler.setFeedBack(MESSAGE_INVALID_FORMAT);
+					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
+				}else if (!endingDate.after(todayDate)){
+					handler.setHasError(true);
+					handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
 				}
 			} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // start time is modified
-				if (startingDate.before(todayDate)) {
+				if (!startingDate.after(todayDate)) {
 					handler.setHasError(true);
-					handler.setFeedBack(MESSAGE_INVALID_FORMAT);
+					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 				}
 			} else if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // end time is modified
-				if (endingDate.before(todayDate)) {
+				if (!endingDate.after(todayDate)) {
 					handler.setHasError(true);
-					handler.setFeedBack(MESSAGE_INVALID_FORMAT);
+					handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
 				}
 			}  
 			/*if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && startingDate.after(endingDate)) {
