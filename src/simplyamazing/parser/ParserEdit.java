@@ -25,10 +25,10 @@ public class ParserEdit {
 				case "description" :
 					handler.getTask().setDescription(value);
 					break;
-				case "starttime" :
+				case "start" :
 					handler.getTask().setStartTime(value);
 					break;
-				case "endtime" :
+				case "end" :
 					handler.getTask().setEndTime(value);
 					break;
 				case "priority" :
