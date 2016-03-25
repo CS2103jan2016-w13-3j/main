@@ -94,7 +94,7 @@ public class ParserAdd {
 					sdf.setLenient(true);
 					Date endingDate = sdf.parse(endTime);
 					Date todayDate = sdf.parse(sdf.format(new Date()));
-					if (endingDate.before(todayDate)||startingDate.compareTo(endingDate) == 0) {
+					if (endingDate.before(todayDate)) {
 						return false;
 					}
 				} catch (ParseException e) {
