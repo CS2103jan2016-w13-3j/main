@@ -15,6 +15,8 @@ public class ParserAdd {
 	private static final String EMPTY_STRING = "";
 	private static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
 	private static final String ERROR_MESSAGE = "the add command is not correct";
+	private static final String ERROR_MESSAGE_FIELDSNOTCORRECT = "Error: Please ensure the fields are correct";
+	private static final String ERROR_MESSAGE_TIMEFORMATINVALID ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
 	private static String description = "";
 	private static String startTime = "";
 	private static String endTime = "";
@@ -27,7 +29,7 @@ public class ParserAdd {
 	
 	public Handler parseAddCommand(Handler handler, String taskInfo) throws Exception {
 		//logger.log(Level.INFO, "going to start processing cmd");
-		checkValue = isAddingValid(taskInfo);
+		checkValue = isAddingValid(handler,taskInfo);
 		if (checkValue) {
 			if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO) && taskInfo.contains(STRING_TIME_FORMATTER)) { // For events
 				handler.getTask().setDescription(description);
@@ -48,7 +50,8 @@ public class ParserAdd {
 		return handler;
 	}
 
-	public boolean isAddingValid(String taskInfo) throws Exception {
+	public boolean isAddingValid(Handler handler,String taskInfo) throws Exception {
+		
 		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO) && taskInfo.contains(STRING_TIME_FORMATTER)) {
 			System.out.println("Found "+KEYWORD_SCHEDULE_FROM+", "+KEYWORD_SCHEDULE_TO+","+STRING_TIME_FORMATTER);
 			startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
@@ -61,6 +64,8 @@ public class ParserAdd {
 			description = taskInfo.substring(0, startTimeIndex);
 
 			if (description.equals(EMPTY_STRING) || startTime.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
+				handler.setHasError(true);
+				handler.setFeedBack(ERROR_MESSAGE_FIELDSNOTCORRECT);
 				return false;
 			} else if (!startTime.equals(EMPTY_STRING) && !endTime.equals(EMPTY_STRING)) {
 				try {
@@ -81,6 +86,8 @@ public class ParserAdd {
 						return true;
 					}
 				} catch (ParseException e) {
+					handler.setHasError(true);
+					handler.setFeedBack(ERROR_MESSAGE_TIMEFORMATINVALID);
 					return false;
 				}
 			}

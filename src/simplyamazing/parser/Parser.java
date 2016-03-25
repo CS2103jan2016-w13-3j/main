@@ -17,7 +17,7 @@ public class Parser {
 	private static final String COMMAND_SET_LOCATION = "location";
 	private static final String COMMAND_MARK_AS_DONE = "done";
 	private static final String COMMAND_EXIT = "exit";
-	private static final String COMMAND_INVALID = "the input command is invalid";
+	private static final String COMMAND_INVALID = "Error: Invalid command entered. Please enter \"help\" to view command format";
 	
 	private static final String STRING_EMPTY = "";
 	private static final String CHARACTER_SPACE = "\\s";
