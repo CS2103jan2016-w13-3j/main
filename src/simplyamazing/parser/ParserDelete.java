@@ -1,7 +1,7 @@
 package simplyamazing.parser;
 
 public class ParserDelete {
-	private final String COMMAND_INVALID = "the index of deleting is invalid.";
+	private final String COMMAND_INVALID = "Error: Index provided is not an Integer.";
 	
 	public Handler parserDeleteCommand(Handler handler, String taskInfo) throws Exception{
 		if (isInteger(taskInfo)){
