@@ -38,7 +38,7 @@ public class StorageTest {
 	private static final String FEEDBACK_UPDATED = "%1$s has been successfully updated.";
 	private static final String FEEDBACK_MARKED_DONE = "%1$s has been marked as done.";
 	private static final String FEEDBACK_DELETED = "%1$s has been successfully deleted.";
-	
+	private static final String FEEDBACK_RESTORED = "\"%1$s\" command has been successfully undone.";
 	
 	/*
 	 * Operation to test: setLocation(String location): String
@@ -330,5 +330,48 @@ public class StorageTest {
 		assertEquals(1, storage.getTaskList().getTasks().size());
 		assertEquals(String.format(FEEDBACK_DELETED, task.toFilteredString()), storage.deleteTask(task));
 		assertEquals(0, storage.getTaskList().getCompletedTasks().size());
+	}
+	
+	/*
+	 * Operation to test: restore(String previousCommand): String
+	 * Equivalence partition: 
+	 * previousCommand: [null] [not null] 
+	 * Boundary values: Empty String, a String of some length
+	 */	
+	@Test(expected = Exception.class) 
+	public void testRestoreMethodForException() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		try {
+			/* This is for the ‘null’ partition */
+			storage.restore(PARAM_RESTORE_NULL);
+			
+			/* This is a boundary case for the ‘not null’ partition */
+			storage.restore(PARAM_RESTORE_EMPTY);
+		} catch (AssertionError ae) {
+			throw new Exception();
+		}
+		
+		/* This is for the ‘not a valid directory’ partition */
+		storage.setLocation(PARAM_SET_LOCATION_NOT_DIRECTORY);
+	}
+	
+	@Test
+	public void testRestoreMethod() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		assertEquals(0, storage.getTaskList().getTasks().size());
+		storage.addTask(new Task("go gym"));
+		assertEquals(1, storage.getTaskList().getTasks().size());
+		assertEquals(String.format(FEEDBACK_RESTORED, PARAM_RESTORE_COMMAND), storage.restore(PARAM_RESTORE_COMMAND));
+		//assertEquals(0, storage.getTaskList().getTasks().size());
 	}
 }
