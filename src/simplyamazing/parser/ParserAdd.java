@@ -12,7 +12,7 @@ public class ParserAdd {
 	private static final String KEYWORD_SCHEDULE_FROM = "from";
 	private static final String KEYWORD_DEADLINE = "by";
 	private static final String EMPTY_STRING = "";
-	private static final String TIME_FORMAT = "H:mm dd MMM yyyy";
+	private static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
 	private static final String ERROR_MESSAGE = "the add command is not correct";
 	private static String description = "";
 	private static String startTime = "";
@@ -69,7 +69,7 @@ public class ParserAdd {
 					Date endingDate = sdf.parse(endTime);
 					Date todayDate = sdf.parse(sdf.format(new Date()));
 
-					if (startingDate.after(endingDate)) {
+					if (startingDate.after(endingDate)||startingDate.compareTo(endingDate) == 0) {
 						return false;
 					} else if (startingDate.before(todayDate) || startingDate.before(todayDate)) {
 						return false;
@@ -84,7 +84,7 @@ public class ParserAdd {
 			System.out.println("Found "+KEYWORD_DEADLINE+", "+STRING_TIME_FORMATTER);
 			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
 			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex));
-			description = taskInfo.substring(0, endTimeIndex);
+			description = taskInfo.substring(0, endTimeIndex).trim();
 
 			if (description.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
 				return false;
@@ -94,7 +94,7 @@ public class ParserAdd {
 					sdf.setLenient(true);
 					Date endingDate = sdf.parse(endTime);
 					Date todayDate = sdf.parse(sdf.format(new Date()));
-					if (endingDate.before(todayDate)) {
+					if (endingDate.before(todayDate)||startingDate.compareTo(endingDate) == 0) {
 						return false;
 					}
 				} catch (ParseException e) {
