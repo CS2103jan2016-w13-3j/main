@@ -3,6 +3,7 @@ package simplyamazing.parser;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -90,7 +91,7 @@ public class ParserAdd {
 				return false;
 			} else if (!endTime.equals(EMPTY_STRING)) {
 				try {
-					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);
+					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT, Locale.US);
 					sdf.setLenient(true);
 					Date endingDate = sdf.parse(endTime);
 					Date todayDate = sdf.parse(sdf.format(new Date()));
