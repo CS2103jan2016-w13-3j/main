@@ -7,7 +7,7 @@ public class ParserView {
 	private final String STRING_DONE = "done";
 	private final String STRING_TASKS = "tasks";
 	private final String STRING_OVERDUE = "overdue";
-	private final String COMMAND_INVALID = "the view command is invalid";
+	private final String COMMAND_INVALID = "Error: Please input a valid keyword. Use the \"help view\" command to see all valid keywords";
 
 	public Handler parserViewCommand(Handler handler, String taskInfo) throws Exception {
 		switch (taskInfo.toLowerCase()) {
