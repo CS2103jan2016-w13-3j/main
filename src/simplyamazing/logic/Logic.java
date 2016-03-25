@@ -119,6 +119,8 @@ public class Logic {
 		CommandType commandType = getCommandType(commandWord);
 		
 		String feedback = STRING_EMPTY;
+		previousCommandString = userCommand;
+		
 		switch (commandType) {
 			case ADD_TASK :
 				feedback = executeAddCommand(commandHandler);
