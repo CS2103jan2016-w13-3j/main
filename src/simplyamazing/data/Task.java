@@ -23,6 +23,7 @@ public class Task implements Comparable<Task>{
 	private static final String STRING_HIGH_PRIORITY = "high";
 	private static final String STRING_MEDIUM_PRIORITY = "medium";
 	private static final String STRING_LOW_PRIORITY = "low";
+	private static final String STRING_NO_PRIORITY = "none";
 	
 	public static final int ARRAY_POSITION_FOR_DESCRIPTION = 0;
 	public static final int ARRAY_POSITION_FOR_START_TIME = 1;
@@ -30,7 +31,7 @@ public class Task implements Comparable<Task>{
 	public static final int ARRAY_POSITION_FOR_PRIORITY = 3;
 	public static final int ARRAY_POSITION_FOR_STATUS = 4;
 	
-	private static final String MESSAGE_INVALID_PRIORITY_LEVEL = "Priority level can be only high, medium or low.";
+	private static final String MESSAGE_INVALID_PRIORITY_LEVEL = "Priority level can be only high, medium, low or none.";
 	
 	private String description;
 	private Date startTime, endTime;
@@ -146,6 +147,9 @@ public class Task implements Comparable<Task>{
 				break;
 			case STRING_LOW_PRIORITY :
 				this.priority = DEFAULT_PRIORITY_LEVEL_LOW;
+				break;
+			case STRING_NO_PRIORITY :
+				this.priority = DEFAULT_PRIORITY_LEVEL;
 				break;
 			default :
 				throw new Exception(MESSAGE_INVALID_PRIORITY_LEVEL);
