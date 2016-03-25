@@ -33,27 +33,31 @@ public class Logic {
 	private static final String MESSAGE_PREVIOUS_COMMAND_INVALID = "There is no previous command to undo";
 	
 	
-	private static final String MESSAGE_HELP_EXIT = "Exit SimplyAmazing\ncommand: exit\n";
-	private static final String MESSAGE_HELP_SEARCH = "Search for tasks containing the given keyword\ncommand: search <keyword>\n";
-	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\ncommand: undo\n";
-	private static final String MESSAGE_HELP_DONE = "Marks task as completed\ncommand: done <task index>\n";
-	private static final String MESSAGE_HELP_DELETE = "Delete task from list\ncommand: delete <task index>\n";
-	private static final String MESSAGE_HELP_EDIT = "Edit content in a task\ncommand: edit <task index> <task header> <updated content>\n";
+	private static final String MESSAGE_HELP_EXIT = "Exit SimplyAmazing\nCommand: exit\n";
+	private static final String MESSAGE_HELP_SEARCH = "Search for tasks containing the given keyword\nCommand: search <keyword>\n\nExample:\nsearch meeting\n";
+	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";
+	private static final String MESSAGE_HELP_DONE = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n";
+	private static final String MESSAGE_HELP_DELETE = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1";
+	private static final String MESSAGE_HELP_EDIT = "Edit content in a task\nCommand: edit <task index> <task header> <updated content>\n\n"
+			+ "Example:\n1. edit 4 description send marketing report\n\n2. edit 3 start 22:00 26 may 2016, end 22:40 26 may 2016\n\n"
+			+ "3. edit 1 priority high";
 	
 	private static final String MESSAGE_HELP = "Key in the following to view specific command formats:\n"
 			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
 			+ "7. help location\n8. help undo\n9. help exit\n";
 	
-	private static final String MESSAGE_HELP_LOCATION = "Set storage location or folder for application data\n"
-			+ "command: location <path>";
+	private static final String MESSAGE_HELP_LOCATION = "Sets the storage location or folder for application data\n"
+			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data";
 	
-	private static final String MESSAGE_HELP_VIEW = "1.Display all tasks\n command: view\n\n2.Display tasks with deadlines\n"
-			+ "command: view deadlines\n\n3.Display events\ncommand: view events\n\n4.Display tasks without deadlines\ncommand: view tasks\n\n"
-			+ "5.Display completed tasks\ncommand: view done\n\n6.Display overdue tasks\ncommand: view overdue\n\n";
+	private static final String MESSAGE_HELP_VIEW = "1.Display all tasks\n Command: view\n\n2.Display tasks with deadlines\n"
+			+ "Command: view deadlines\n\n3.Display all events\nCommand: view events\n\n4.Display tasks without deadlines\nCommand: view tasks\n\n"
+			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n";
 
-	private static final String MESSAGE_HELP_ADD_TASK = "1.Add a task to the list\ncommand: add <task description>\n\n"
+	private static final String MESSAGE_HELP_ADD_TASK = "1.Add a task to the list\nCommand: add <task description>\n\nExample: add prepare presentation\n\n\n"
 			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to <end time hh:mm> <end date dd MMM yyyy>\n\n"
-			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>";
+			+ "Example: Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
+			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>\n\n"
+			+ "Example: submit marketing report by 17:00 20 Dec 2016\n";
 	
 	
 	enum CommandType {
