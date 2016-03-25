@@ -18,6 +18,7 @@ public class Logic {
 	private static Parser parserObj;
 	private static Storage storageObj;
 	private static ArrayList<Task> taskList;
+	private static String lastModifyCommand;
 	private static String previousCommandString;
 	private static String previousCommandKeyword;
 	private static Handler commandHandler;
@@ -74,6 +75,7 @@ public class Logic {
 		storageObj = new Storage();
 		taskList = new ArrayList<Task>();
 		commandHandler = new Handler();
+		lastModifyCommand = STRING_EMPTY;
 		previousCommandKeyword = STRING_EMPTY;
 		previousCommandString = STRING_EMPTY;
 	}
@@ -153,15 +155,19 @@ public class Logic {
 		
 		logger.log(Level.INFO, "about to return to UI");
 		previousCommandKeyword = commandWord;
+		previousCommandString = userCommand;
 		
-		if (!commandType.equals(CommandType.VIEW_LIST) && !commandType.equals(CommandType.HELP) && !commandType.equals(CommandType.SEARCH_KEYWORD) && !commandType.equals(CommandType.UNDO_LAST)) {
-			previousCommandString = userCommand;
+		boolean hasListBeenModified = isListModified(commandType);
+		
+		if(hasListBeenModified == true) {
+			logger.log(Level.INFO, "command has modified the list, setting new lastModify Command now");
+			lastModifyCommand = userCommand;
 		}
 		
 		return feedback;
 	}
-	
-	
+
+
 	private static String executeAddCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in add");
@@ -289,7 +295,7 @@ public class Logic {
 				throw new Exception(ERROR_PREVIOUS_COMMAND_INVALID);
 				
 			} else {			
-				return storageObj.restore(previousCommandString);
+				return storageObj.restore(lastModifyCommand);
 			}
 		}
 	}
@@ -365,6 +371,21 @@ public class Logic {
 	}
 	
 	
+	private boolean isListModified(CommandType commandType) {
+		if (commandType.equals(CommandType.ADD_TASK)) {
+			return true;
+		} else if (commandType.equals(CommandType.DELETE_TASK)) {
+			return true;
+		} else if (commandType.equals(CommandType.EDIT_TASK)) {
+			return true;
+		} else if (commandType.equals(CommandType.MARK_TASK)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
 	public static boolean checkIndexValid(String indexStr, ArrayList<Task> list){
 		if (indexStr == null) {
 			return false;
@@ -403,11 +424,6 @@ public class Logic {
 		Date newEndTime = fieldsToChange.getEndTime();
 		Date previousStartTime = originalTask.getStartTime();
 		Date previousEndTime = originalTask.getEndTime();
-		//Date currentTime =  new Date();
-		
-		
-		
-		
 		
 		if(!(newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0 && newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0)) { // if both start time and end time are not modified
 			if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // start time is modified
@@ -444,7 +460,7 @@ public class Logic {
 	
 	
 	private static boolean isPreviousCommandValid() {
-		if (previousCommandString.equals(STRING_EMPTY)) {
+		if (lastModifyCommand.equals(STRING_EMPTY)) {
 			return false;
 			
 		} else {
