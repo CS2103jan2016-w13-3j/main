@@ -1,9 +1,14 @@
+//@@author A0125136N 
+
 package simplyamazing.logic;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import simplyamazing.data.Task;
 import simplyamazing.parser.Handler;
@@ -12,9 +17,7 @@ import simplyamazing.storage.Storage;
 
 public class Logic {
 	
-	private static Logger logger = Logger.getLogger("Logic"); 
-	
-	
+	private static Logger logger;
 	private static Parser parserObj;
 	private static Storage storageObj;
 	private static ArrayList<Task> taskList;
@@ -26,7 +29,7 @@ public class Logic {
 	
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
 	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
-	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view command format";
+	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
 	private static final String ERROR_NO_TASK_FOUND = "Error: The list is empty";
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo";
 	private static final String ERROR_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
@@ -57,7 +60,7 @@ public class Logic {
 			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n";
 
 	private static final String MESSAGE_HELP_ADD_TASK = "1.Add a task to the list\nCommand: add <task description>\n\nExample: add prepare presentation\n\n\n"
-			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to <end time hh:mm> <end date dd MMM yyyy>\n\n"
+			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to\n<end time hh:mm> <end date dd MMM yyyy>\n\n"
 			+ "Example: Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
 			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>\n\n"
 			+ "Example: submit marketing report by 17:00 20 Dec 2016\n";
@@ -70,7 +73,7 @@ public class Logic {
 	};
 	
 	
-	public Logic() {
+	public Logic() throws Exception {
 		parserObj = new Parser();
 		storageObj = new Storage();
 		taskList = new ArrayList<Task>();
@@ -78,6 +81,11 @@ public class Logic {
 		lastModifyCommand = STRING_EMPTY;
 		previousCommandKeyword = STRING_EMPTY;
 		previousCommandString = STRING_EMPTY;
+		logger = Logger.getLogger("Logic"); 
+		FileHandler fh = new FileHandler("C:\\Users\\Ishpal\\Desktop\\Task Data\\logFile.log");
+		logger.addHandler(fh);
+		SimpleFormatter formatter = new SimpleFormatter();  
+        fh.setFormatter(formatter); 
 	}
 	
 	
@@ -109,11 +117,11 @@ public class Logic {
 	
 	
 	public String executeCommand(String userCommand) throws Exception {
+		logger.log(Level.INFO, "going to execute command");
 		commandHandler = parserObj.getHandler(userCommand);
-		
-		logger.log(Level.INFO, "at going to execute command");	
+	
 		assert commandHandler != null;                      
-		logger.log(Level.INFO, "commandHandler not null");
+		logger.log(Level.INFO, "commandHandler is not null");
 		
 		String commandWord = commandHandler.getCommandType();
 		CommandType commandType = getCommandType(commandWord);
@@ -155,9 +163,12 @@ public class Logic {
 				throw new Exception(ERROR_INVALID_COMMAND);
 		}
 		
-		logger.log(Level.INFO, "about to return to UI");
+		
 		previousCommandKeyword = commandWord;
 		previousCommandString = userCommand;
+		
+		assert previousCommandKeyword != null;
+		assert previousCommandString != null;
 		
 		boolean hasListBeenModified = isListModified(commandType);
 		
@@ -165,7 +176,7 @@ public class Logic {
 			logger.log(Level.INFO, "command has modified the list, setting new lastModify Command now");
 			lastModifyCommand = userCommand;
 		}
-		
+		logger.log(Level.INFO, "about to return to UI");
 		return feedback;
 	}
 
