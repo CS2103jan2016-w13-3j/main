@@ -29,7 +29,8 @@ public class Logic {
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
 	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
-	private static final String ERROR_NO_TASK_FOUND = "Error: No tasks found";
+	private static final String ERROR_EMPTY_LIST = "Error: List is empty";
+	private static final String ERROR_NO_TASKS_FOUND = "Error: There are no tasks containing the given keyword";
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo";
 	private static final String ERROR_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
 	private static final String ERROR_START_AFTER_END ="Error: New start time cannot be after the end time";
@@ -289,9 +290,15 @@ public class Logic {
 		} else{			
 			String keyword = commandHandler.getKeyWord();
 			taskList = storageObj.searchTasks(keyword);
-			String listInStringFormat = convertListToString(taskList);
-			return listInStringFormat;
 			
+			if(taskList.size() == 0){
+				logger.log(Level.WARNING, "There are no tasks containing the keyword");
+				throw new Exception(ERROR_NO_TASKS_FOUND);
+			} else {
+				logger.log(Level.INFO, "tasks have been retrieved, converting into a string now");
+				String listInStringFormat = convertListToString(taskList);
+				return listInStringFormat;
+			}
 		}
 	}
 	
@@ -489,7 +496,7 @@ public class Logic {
 	
 	private static String convertListToString(ArrayList<Task> list) throws Exception{
 		if (list.size() == 0) {
-			throw new Exception(ERROR_NO_TASK_FOUND);
+			throw new Exception(ERROR_EMPTY_LIST);
 		}
 		String convertedList = STRING_EMPTY;
 		
