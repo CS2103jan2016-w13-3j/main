@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class LogicTest {
-	private static ArrayList<Task> list = new ArrayList<Task>();;
-	private static Logic logicObj= new Logic();;
+	private static ArrayList<Task> list = new ArrayList<Task>();
+	private static Logic logicObj= new Logic();
 	
 	
 	private static final String LOCATION_COMMAND_FAIL = "location just a placeholder";
@@ -97,6 +97,11 @@ public class LogicTest {
 		assertEquals(HELP_VALID_TASKTYPE_FEEDBACK, logicObj.executeCommand(HELP_VALID_TASKTYPE));
 	}
 	
+	@Test(expected = Exception.class)
+	public void testSearchCommand() throws Exception{
+		assertEquals("Error: No tasks found",logicObj.executeCommand("seach bye"));
+		assertEquals("1. Task[hello world]", logicObj.executeCommand("search hello"));
+	}
 	
 	
 	@Test(expected = Exception.class)

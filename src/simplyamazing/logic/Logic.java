@@ -2,7 +2,6 @@
 
 package simplyamazing.logic;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.FileHandler;
@@ -30,7 +29,7 @@ public class Logic {
 	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
 	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
-	private static final String ERROR_NO_TASK_FOUND = "Error: The list is empty";
+	private static final String ERROR_NO_TASK_FOUND = "Error: No tasks found";
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo";
 	private static final String ERROR_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
 	private static final String ERROR_START_AFTER_END ="Error: New start time cannot be after the end time";
@@ -73,7 +72,7 @@ public class Logic {
 	};
 	
 	
-	public Logic() throws Exception {
+	public Logic(){
 		parserObj = new Parser();
 		storageObj = new Storage();
 		taskList = new ArrayList<Task>();
@@ -81,11 +80,13 @@ public class Logic {
 		lastModifyCommand = STRING_EMPTY;
 		previousCommandKeyword = STRING_EMPTY;
 		previousCommandString = STRING_EMPTY;
-		logger = Logger.getLogger("Logic"); 
-		FileHandler fh = new FileHandler("C:\\Users\\Ishpal\\Desktop\\Task Data\\logFile.log");
-		logger.addHandler(fh);
-		SimpleFormatter formatter = new SimpleFormatter();  
-        fh.setFormatter(formatter); 
+		logger = Logger.getLogger("Logic");
+		try{
+			FileHandler fh = new FileHandler("C:\\Users\\Ishpal\\Desktop\\Task Data\\logFile.log");
+			logger.addHandler(fh);
+			SimpleFormatter formatter = new SimpleFormatter();  
+			fh.setFormatter(formatter);
+		} catch (Exception e){};
 	}
 	
 	
