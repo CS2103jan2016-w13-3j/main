@@ -502,7 +502,7 @@ public class Logic {
 		
 		for (int i = 0; i < list.size(); i++) {
 			Task taskToPrint = list.get(i);
-			convertedList += (i+1) + ". " + taskToPrint.toFilteredString() + "\n";
+			convertedList += (i+1) + "," + taskToPrint.toString() + "\n";
 		}
 		return convertedList;
 	}

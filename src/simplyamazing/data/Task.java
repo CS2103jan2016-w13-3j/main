@@ -223,14 +223,9 @@ public class Task implements Comparable<Task>{
 	}
 	
 	public String toFilteredString() {
-		boolean hasStatusChecked = false;
 		String[] fields = this.toString().split(FIELD_SEPARATOR);
 		String filteredString = "Task [";
-		for (int i = 0; i <= ARRAY_POSITION_FOR_STATUS; i++) {
-			if(!hasStatusChecked && !fields[ARRAY_POSITION_FOR_STATUS].matches(CHARACTER_SPACE)) {
-				filteredString += fields[ARRAY_POSITION_FOR_STATUS].toUpperCase() + ": ";
-				hasStatusChecked = true;
-			}
+		for (int i = 0; i < ARRAY_POSITION_FOR_STATUS; i++) {
 			if (!fields[ARRAY_POSITION_FOR_START_TIME].matches(CHARACTER_SPACE)) {
 				if (i == ARRAY_POSITION_FOR_START_TIME) {
 					filteredString += " from ";
@@ -248,7 +243,7 @@ public class Task implements Comparable<Task>{
 			if (i == ARRAY_POSITION_FOR_PRIORITY && !fields[i].matches(CHARACTER_SPACE)) {
 				filteredString += " with " + fields[i] + " priority";
 			}
-			if (i != ARRAY_POSITION_FOR_PRIORITY && i != ARRAY_POSITION_FOR_STATUS) {
+			if (i != ARRAY_POSITION_FOR_PRIORITY) {
 				filteredString += fields[i].trim();
 			}
 		}

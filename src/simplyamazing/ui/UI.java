@@ -8,7 +8,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 import simplyamazing.logic.Logic;
@@ -18,7 +20,8 @@ public class UI {
 
 	private static final Color COLOR_DARK_GREEN = new Color(0, 128, 0);
 
-	private static final CharSequence CHARACTER_NEW_LINE = "\n";
+	private static final String CHARACTER_NEW_LINE = "\n";
+	public static final String FIELD_SEPARATOR = ",";
 	
 	private static Logger logger = Logger.getLogger("UI");
 	
@@ -67,7 +70,7 @@ public class UI {
 	private void initialize() {
 		setupFrame();
 		setupAppLogo();
-		setupTaskDataPanel();
+		//setupTaskDataPanel();
 		setupFeedbackArea();
 		setupCommandBar();
 		setupSeparators();
@@ -77,7 +80,7 @@ public class UI {
 		frame.getContentPane().add(txtrHeader);
 		frame.getContentPane().add(separator);
 		frame.getContentPane().add(separator_1);
-		frame.getContentPane().add(taskDataPanelController.getTaskDataPanel());
+		//frame.getContentPane().add(taskDataPanelController.getTaskDataPanel());
 		frame.getContentPane().add(commandBarController.getCommandBar());
 		frame.getContentPane().add(feedbackAreaController.getFeedbackArea());
 	}
@@ -88,6 +91,10 @@ public class UI {
 
 	private void setupTaskDataPanel() {
 		taskDataPanelController = new TaskDataPanelController();
+	}
+	
+	private void setupTaskDataPanel(Object[][] taskData) {
+		taskDataPanelController = new TaskDataPanelController(taskData);
 	}
 
 	private void setupAppLogo() {
@@ -126,10 +133,19 @@ public class UI {
 		try {
 			feedback = logic.executeCommand(commandBarController.getCommand());
 			logger.log(Level.INFO, MESSAGE_LOG_USER_COMMAND_EXECUTED);
-			if(feedback.contains(CHARACTER_NEW_LINE)) {
-				taskDataPanelController.setTaskData(feedback);
+			if (feedback.contains(CHARACTER_NEW_LINE)) {
+				String[] tasks = feedback.split(CHARACTER_NEW_LINE);
+				String[][] taskData = new String[tasks.length][5];
+				for (int i = 0; i < tasks.length; i++) {
+					taskData[i] = tasks[i].split(FIELD_SEPARATOR);
+				}
+				setupTaskDataPanel(taskData); 
+				frame.getContentPane().add(taskDataPanelController.getTaskDataPanel());
+				//taskDataPanelController.setTaskData(feedback);
 			} else {
-				taskDataPanelController.clear();
+				if (taskDataPanelController != null) {
+					taskDataPanelController.clear();
+				}
 				feedbackAreaController.colorCodeFeedback(COLOR_DARK_GREEN);
 				feedbackAreaController.setFeedback(feedback);
 				logger.log(Level.INFO, feedback);
