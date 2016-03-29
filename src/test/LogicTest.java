@@ -48,6 +48,32 @@ public class LogicTest {
 	private static final String DELETE_INVALID_INDEX_ZERO = "delete 0";
 	private static final String DELETE_INVALID_INDEX_NEGATIVE = "delete -1";
 	
+	private static final String SEARCH_VALID_KEYWORD = "search hello";
+	private static final String SEARCH_VALID_FEEDBACK = "1. Task[hello world]";
+	private static final String SEARCH_INVALID_KEYWORD = "search batman";
+	private static final String SEARCH_INVALID_FEEDBACK = "Error: No tasks found";
+	private static final String SEARCH_EMPTY_STRING = "search ";
+	private static final String SEARCH_ALL_TASKS = "1. Task [cs2103 team meeting from 17:00 30 Mar 2016 to 19:00 30 Mar 2016]"
+			+ "2. Task [prepare for 2103 tutorial demo by 22:00 30 Mar 2016]"
+			+ "3. Task [finish 2107 tutorial by 22:00 31 Mar 2016]"
+			+ "4. Task [attend cs2103 lecture from 16:00 01 Apr 2016 to 17:45 01 Apr 2016]"
+			+ "5. Task [watch batman vs superman from 19:00 01 Apr 2016 to 21:00 01 Apr 2016]"
+			+ "6. Task [football at cage kallang from 22:00 01 Apr 2016 to 01:00 02 Apr 2016]"
+			+ "7. Task [submit 2105 assignment by 18:00 02 Apr 2016]"
+			+ "8. Task [watch arsenal game from 20:00 02 Apr 2016 to 22:30 02 Apr 2016]"
+			+ "9. Task [blue man show at MBS from 13:30 03 Apr 2016 to 15:00 03 Apr 2016]"
+			+ "10. Task [2017 presentation by 14:00 16 Apr 2016]"
+			+ "11. Task [2103 final exam from 13:00 25 Apr 2016 to 15:00 25 Apr 2016]"
+			+ "12. Task [2107 final exam from 13:00 26 Apr 2016 to 15:00 26 Apr 2016]"
+			+ "13. Task [2105 final exam from 17:00 27 Apr 2016 to 19:00 27 Apr 2016]"
+			+ "14. Task [1302 final exam from 14:30 29 Apr 2016 to 16:00 29 Apr 2016]"
+			+ "15. Task [first day of work from 09:00 02 May 2016 to 17:00 02 May 2016]"
+			+ "16. Task [freedom from 16:00 29 Apr 2016 to 08:00 06 Aug 2016]"
+			+ "17. Task [buy dinner]"
+			+ "18. Task [hello world]"
+			+ "18. Task [go fishing]"
+			+ "19. Task [train for ippt someday]"
+			+ "20. Task [visit the gym someday]";
 	
 	
 	
@@ -84,8 +110,8 @@ public class LogicTest {
 		assertEquals(ADD_EVENT_PASS_FEEDBACK, logicObj.executeCommand(ADD_EVENT_PASS));
 		assertEquals(ADD_DEADLINE_PASS_FEEDBACK, logicObj.executeCommand(ADD_DEADLINE_PASS));
 		
-		assertEquals(ADD_ERROR_MESSAGE, logicObj.executeCommand(ADD_TASK_WITH_STARTIME_ONLY));
-		assertEquals(ADD_ERROR_MESSAGE, logicObj.executeCommand(ADD_TASK_ENDTIME_BEFORE_STARTIME));
+		assertEquals(new Exception(ADD_ERROR_MESSAGE), logicObj.executeCommand(ADD_TASK_WITH_STARTIME_ONLY));
+		assertEquals(new Exception(ADD_ERROR_MESSAGE), logicObj.executeCommand(ADD_TASK_ENDTIME_BEFORE_STARTIME));
 	}
 	
 	
@@ -99,11 +125,14 @@ public class LogicTest {
 	
 	@Test(expected = Exception.class)
 	public void testSearchCommand() throws Exception{
-		assertEquals("Error: No tasks found",logicObj.executeCommand("seach bye"));
-		assertEquals("1. Task[hello world]", logicObj.executeCommand("search hello"));
+		assertEquals(new Exception(SEARCH_INVALID_FEEDBACK),logicObj.executeCommand(SEARCH_VALID_KEYWORD));
+		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
+		assertEquals(SEARCH_ALL_TASKS,logicObj.executeCommand(SEARCH_EMPTY_STRING));
 	}
 	
-	
+	/*
+	 * The following 3 partitions are a negative partition, positive partition and an equal partition
+	 */
 	@Test(expected = Exception.class)
 	public void testDeleteCommand() throws Exception{
 		assertEquals(DELETE_VALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_VALID_INDEX));
@@ -116,7 +145,7 @@ public class LogicTest {
 	@Test
 	/*
 	 * The following test case contains 3 equivalent partitions, a negative partition where the value is below what is expected,
-	 * a positive partition, where the value is larger than expected and the final partition where the value is withing what is
+	 * a positive partition, where the value is larger than expected and the final partition where the value is within what is
 	 * expected
 	 */
 	public void testValidIndex(){
