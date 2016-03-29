@@ -64,31 +64,23 @@ public class TaskList {
 	}
 	
 	public void updateTaskList(ArrayList<String> lines, ArrayList<Task> taskList) throws Exception {
-		if(taskList.size() == SIZE_EMPTY) {
+		if (taskList.size() == SIZE_EMPTY) {
 			createTaskList(lines, taskList);
 		}
 	}
 	
 	public void addTaskToList(Task task, ArrayList<Task> taskList) throws Exception {
 		taskList.add(task);
-		sortTaskList(taskList);
+		Collections.sort(taskList);
 	}
 	
 	public void removeTaskFromList(Task task) throws Exception {
 		if (tasks.contains(task)) {
 			tasks.remove(task);
-			sortTaskList(tasks);
+			Collections.sort(tasks);
 		} else {
 			completedTasks.remove(task);
-			sortTaskList(completedTasks);
+			Collections.sort(completedTasks);
 		}
-	}
-
-	private void sortTaskList(ArrayList<Task> taskList) {
-		Collections.sort(taskList);
-	}
-	
-	public void sort() {
-		sortTaskList(tasks);
 	}
 }

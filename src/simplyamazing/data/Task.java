@@ -49,7 +49,7 @@ public class Task implements Comparable<Task>{
 	}
 	
 	public Task(String description) {
-		this.description = description;
+		this.description = description.trim();
 		this.startTime = DEFAULT_DATE_VALUE;
 		this.endTime = DEFAULT_DATE_VALUE;
 		this.priority = DEFAULT_PRIORITY_LEVEL;
@@ -58,18 +58,18 @@ public class Task implements Comparable<Task>{
 	}
 
 	public Task(String description, String endTime) throws Exception {
-		this.description = description;
+		this.description = description.trim();
 		this.startTime = DEFAULT_DATE_VALUE;
-		this.endTime = convertStringToDate(endTime);
+		this.endTime = convertStringToDate(endTime.trim());
 		this.priority = DEFAULT_PRIORITY_LEVEL;
 		this.taskType = DEFAULT_TASK_TYPE_FOR_EVENTS;
 		this.done = false;
 	}
 
 	public Task(String description, String startTime, String endTime) throws Exception {
-		this.description = description;
-		this.startTime = convertStringToDate(startTime);
-		this.endTime = convertStringToDate(endTime);
+		this.description = description.trim();
+		this.startTime = convertStringToDate(startTime.trim());
+		this.endTime = convertStringToDate(endTime.trim());
 		this.priority = DEFAULT_PRIORITY_LEVEL;
 		this.taskType = DEFAULT_TASK_TYPE_FOR_DEADLINES;
 		this.done = false;
@@ -97,7 +97,7 @@ public class Task implements Comparable<Task>{
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		this.description = description.trim();
 	}
 
 	public Date getStartTime() {
@@ -105,11 +105,8 @@ public class Task implements Comparable<Task>{
 	}
 
 	public void setStartTime(String startTime) throws Exception {
-		this.startTime = convertStringToDate(startTime);
+		this.startTime = convertStringToDate(startTime.trim());
 		this.taskType = DEFAULT_TASK_TYPE_FOR_EVENTS;
-		/*if (this.priority < DEFAULT_PRIORITY_LEVEL_EVENT) {
-			this.priority++;
-		}*/
 	}
 	
 	public void setStartTime(Date startTime) {
@@ -122,13 +119,10 @@ public class Task implements Comparable<Task>{
 	}
 
 	public void setEndTime(String endTime) throws Exception {
-		this.endTime = convertStringToDate(endTime);
+		this.endTime = convertStringToDate(endTime.trim());
 		if (this.startTime.compareTo(DEFAULT_DATE_VALUE) == 0) { // For floating tasks and deadlines
 			this.taskType = DEFAULT_TASK_TYPE_FOR_DEADLINES;
 		}
-		/*if (this.taskType < DEFAULT_TASK_TYPE_FOR_EVENTS) {
-			this.priority++;
-		}*/
 	}
 
 	public void setEndTime(Date endTime) {
@@ -143,7 +137,7 @@ public class Task implements Comparable<Task>{
 	}
 
 	public void setPriority(String priorityLevel) throws Exception {
-		switch(priorityLevel.toLowerCase()) {
+		switch (priorityLevel.trim().toLowerCase()) {
 			case STRING_HIGH_PRIORITY :
 				this.priority = DEFAULT_PRIORITY_LEVEL_HIGH;
 				break;
@@ -180,21 +174,14 @@ public class Task implements Comparable<Task>{
 	@Override
 	public int compareTo(Task task) {
 		if (task.getPriority() == this.priority) { // Same priority
-			if (task.getEndTime().compareTo(this.endTime) == 0) { // Same end time
+			if (task.getEndTime().compareTo(this.endTime) == 0) { // Same end time 
 				if (task.getStartTime().compareTo(this.startTime) == 0) { // Same start time
 					return this.description.compareToIgnoreCase(task.getDescription());
 				} 
 				return this.startTime.compareTo(task.getStartTime());	
 			} else { // Different end time
-				if(this.endTime.compareTo(DEFAULT_DATE_VALUE) == 0 || task.getEndTime().compareTo(DEFAULT_DATE_VALUE) == 0) {
-					if (task.getStartTime().compareTo(this.startTime) == 0) { // Same start time
-						return this.description.compareToIgnoreCase(task.getDescription());
-					} else {
-						if(this.startTime.compareTo(DEFAULT_DATE_VALUE) == 0 || task.getStartTime().compareTo(DEFAULT_DATE_VALUE) == 0) { 
-							return task.getTaskType() - this.taskType;
-						}
-						return this.startTime.compareTo(task.getStartTime());
-					}
+				if (this.endTime.compareTo(DEFAULT_DATE_VALUE) == 0 || task.getEndTime().compareTo(DEFAULT_DATE_VALUE) == 0) { // One floating task and other event/deadline
+					return task.getTaskType() - this.taskType;
 				}
 				return this.endTime.compareTo(task.getEndTime());		
 			}
@@ -215,7 +202,7 @@ public class Task implements Comparable<Task>{
 		if (this.endTime != DEFAULT_DATE_VALUE) {
 			endTimeString = convertDateToString(this.endTime);
 		}
-		switch(this.priority) {
+		switch (this.priority) {
 			case DEFAULT_PRIORITY_LEVEL_HIGH :
 				priorityLevel = STRING_HIGH_PRIORITY;
 				break;
@@ -232,13 +219,13 @@ public class Task implements Comparable<Task>{
 		if (this.isDone()) {
 			status = "done";
 		}
-		return this.description + FIELD_SEPARATOR + startTimeString + FIELD_SEPARATOR + endTimeString + FIELD_SEPARATOR + priorityLevel + FIELD_SEPARATOR + status;
+		return this.description.trim() + FIELD_SEPARATOR + startTimeString + FIELD_SEPARATOR + endTimeString + FIELD_SEPARATOR + priorityLevel + FIELD_SEPARATOR + status;
 	}
 	
 	public String toFilteredString() {
 		boolean hasStatusChecked = false;
 		String[] fields = this.toString().split(FIELD_SEPARATOR);
-		String filteredString = "Task[";
+		String filteredString = "Task [";
 		for (int i = 0; i <= ARRAY_POSITION_FOR_STATUS; i++) {
 			if(!hasStatusChecked && !fields[ARRAY_POSITION_FOR_STATUS].matches(CHARACTER_SPACE)) {
 				filteredString += fields[ARRAY_POSITION_FOR_STATUS].toUpperCase() + ": ";
