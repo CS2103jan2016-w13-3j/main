@@ -45,6 +45,10 @@ public class FileManager {
 		return fileVerifier.isFileExisting(file);
 	}
 	
+	public int getLineCount(File file) throws Exception {
+		return readManager.read(file).size();
+	}
+	
 	public void importListToFile(ArrayList<Task> tasks, File file) throws Exception {
 		if (!fileVerifier.isEmptyFile(file)) { 
 			cleanFile(file);

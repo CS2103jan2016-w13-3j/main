@@ -132,14 +132,30 @@ public class SystemTest {
 		Parser parser = new Parser();
 		Storage storage = new Storage();
 		logic.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
-		File todo = new File(COMMAND_SET_LOCATION_DIRECTORY+FILENAME_TODO);
-		File done = new File(COMMAND_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
 		
-		/* This is for the ‘not null’ partition */
-		assertEquals(0, storage.getTaskList().getTasks().size());
-		assertEquals(String.format(FEEDBACK_ADDED, parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()), logic.executeCommand(COMMAND_ADD_FLOATING_TASK));
-		assertEquals(1, storage.getTaskList().getTasks().size());
+		assertEquals(0, storage.getFileManager().getLineCount(todo));
+		
+		/* These are for the ‘not null’ partition */
+		assertEquals(String.format(FEEDBACK_ADDED, parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toFilteredString()), logic.executeCommand(COMMAND_ADD_FLOATING_TASK));
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
+		
+		assertEquals(String.format(FEEDBACK_ADDED, parser.getHandler(COMMAND_ADD_FLOATING_TASK_WITH_KEYWORDS).getTask().toFilteredString()), logic.executeCommand(COMMAND_ADD_FLOATING_TASK_WITH_KEYWORDS));
+		assertEquals(2, storage.getFileManager().getLineCount(todo));
+		
+		assertEquals(String.format(FEEDBACK_ADDED, parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toFilteredString()), logic.executeCommand(COMMAND_ADD_DEADLINE));
+		assertEquals(3, storage.getFileManager().getLineCount(todo));
+		
+		assertEquals(String.format(FEEDBACK_ADDED, parser.getHandler(COMMAND_ADD_DEADLINE_WITH_KEYWORDS).getTask().toFilteredString()), logic.executeCommand(COMMAND_ADD_DEADLINE_WITH_KEYWORDS));
+		assertEquals(4, storage.getFileManager().getLineCount(todo));
+		
+		assertEquals(String.format(FEEDBACK_ADDED, parser.getHandler(COMMAND_ADD_EVENT).getTask().toFilteredString()), logic.executeCommand(COMMAND_ADD_EVENT));
+		assertEquals(5, storage.getFileManager().getLineCount(todo));
+		
+		assertEquals(String.format(FEEDBACK_ADDED, parser.getHandler(COMMAND_ADD_EVENT_WITH_KEYWORDS).getTask().toFilteredString()), logic.executeCommand(COMMAND_ADD_EVENT_WITH_KEYWORDS));
+		assertEquals(6, storage.getFileManager().getLineCount(todo));
 	}
 }
