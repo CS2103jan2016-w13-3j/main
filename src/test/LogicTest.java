@@ -21,7 +21,7 @@ public class LogicTest {
 	private static final String LOCATION_FEEDBACK_PASS = "storage location of task data has been successfully set";
 	
 	private static final String ADD_TASK_PASS = "add hello world";
-	private static final String ADD_TASK_PASS_FEEDBACK = "Task[hello world] has been added.";
+	private static final String ADD_TASK_PASS_FEEDBACK = "Task [hello world] has been added.";
 	private static final String ADD_DEADLINE_PASS = "add cs2103 peer review by 23:59 25 Mar 2016";
 	private static final String ADD_DEADLINE_PASS_FEEDBACK = "Task[cs2103 peer review by 23:59 25 Mar 2016] has been added.";
 	private static final String ADD_EVENT_PASS = "add hackathon in SOC from 09:30 26 Mar 2016 to 10:00 27 Mar 2016";
@@ -48,9 +48,19 @@ public class LogicTest {
 	private static final String DELETE_INVALID_INDEX_ZERO = "delete 0";
 	private static final String DELETE_INVALID_INDEX_NEGATIVE = "delete -1";
 	
+	private static final String DONE_INVALID_INDEX_NEGATIVE = "done -1";
+	private static final String DONE_INVALID_INDEX_ZERO = "done 0";
+	private static final String DONE_INVALID_INDEX_LARGER = "done 30";
+	private static final String DONE_INVALID_INDEX_FEEDBACK = "Error: Invalid index entered";
+	private static final String DONE_INVALID_INDEX_STRING = "done abcd";
+	private static final String DONE_INVALID_COMMAND_FEEDBACK = "Error: Invalid command entered. Please enter \"help\" to view command format";
+	private static final String DONE_VALID_INDEX  = "done 19";
+	private static final String DONE_VALID_FEEDBACK = "Task [hello world] has been marked as done.";
+	
+	
 	private static final String SEARCH_VALID_KEYWORD = "search hello";
 	private static final String SEARCH_VALID_FEEDBACK = "1. Task[hello world]";
-	private static final String SEARCH_INVALID_KEYWORD = "search batman";
+	private static final String SEARCH_INVALID_KEYWORD = "search joke";
 	private static final String SEARCH_INVALID_FEEDBACK = "Error: No tasks found";
 	private static final String SEARCH_EMPTY_STRING = "search ";
 	private static final String SEARCH_ALL_TASKS = "1. Task [cs2103 team meeting from 17:00 30 Mar 2016 to 19:00 30 Mar 2016]"
@@ -123,15 +133,22 @@ public class LogicTest {
 		assertEquals(HELP_VALID_TASKTYPE_FEEDBACK, logicObj.executeCommand(HELP_VALID_TASKTYPE));
 	}
 	
+	/*
+	 * The following test case has 2 different partitions, based on whether the command is valid or invalid.
+	 * It also checks the corner case where the user does not give a keyword after the search command
+	 */
 	@Test(expected = Exception.class)
 	public void testSearchCommand() throws Exception{
-		assertEquals(new Exception(SEARCH_INVALID_FEEDBACK),logicObj.executeCommand(SEARCH_VALID_KEYWORD));
-		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
+		assertEquals(new Exception(SEARCH_INVALID_FEEDBACK),logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
+		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
 		assertEquals(SEARCH_ALL_TASKS,logicObj.executeCommand(SEARCH_EMPTY_STRING));
 	}
 	
+	
 	/*
-	 * The following 3 partitions are a negative partition, positive partition and an equal partition
+	 * The following test case contains 3 equivalent partitions, a negative partition where the value is below what is expected,
+	 * a positive partition, where the value is larger than expected and the final partition where the value is within what is
+	 * expected
 	 */
 	@Test(expected = Exception.class)
 	public void testDeleteCommand() throws Exception{
@@ -163,6 +180,20 @@ public class LogicTest {
 		assertFalse(Logic.checkIndexValid(new String("6"), list));
 	}
 	
+	
+	@Test(expected = Exception.class)
+	/*
+	 * The following test case contains 4 equivalent partitions, a negative partition where the value is below what is expected,
+	 * a positive partition, where the value is larger than expected and the third partition where the value is within what is
+	 * expected and the last one where a string is given instead of an integer
+	 */
+	public void testMarkCommand() throws Exception{
+		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_NEGATIVE));
+		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
+		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_LARGER));
+		assertEquals(DONE_INVALID_COMMAND_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_STRING));
+		assertEquals(DONE_VALID_FEEDBACK, logicObj.executeCommand(DONE_VALID_INDEX));
+	}
 	
 	
 	public void addItemsToList(int numItemsToAdd) {
