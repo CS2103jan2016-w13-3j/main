@@ -293,7 +293,7 @@ public class StorageTest {
 		// This is for the ‘not null’ partition
 		assertEquals(1, storage.getTaskList().getTasks().size());
 		assertEquals(0, storage.getTaskList().getCompletedTasks().size());
-		assertEquals(String.format(FEEDBACK_MARKED_DONE, task.toFilteredString().replace("[", "[DONE: ")), storage.markTaskDone(task));	
+		assertEquals(String.format(FEEDBACK_MARKED_DONE, task.toFilteredString()), storage.markTaskDone(task));	
 	}
 	
 	/*
