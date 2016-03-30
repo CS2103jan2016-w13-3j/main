@@ -1,37 +1,42 @@
 package simplyamazing.ui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Point;
 
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
-import javax.swing.border.MatteBorder;
 import javax.swing.table.TableColumnModel;
 
 public class TaskDataPanelController {
-	private final String STRING_NULL = "";
-	
 	private JScrollPane scrollPane;
-	private JTextPane taskDataPanel;
+	private JTextPane instructionPanel;
 	private JTable taskDataTable;
 	
 	private Object columnNames[] = { "#", "Task", "Start time", "End time", "Priority", "Status"};
 	
 	public TaskDataPanelController() {
 		scrollPane = new JScrollPane();
-		scrollPane.setBorder(null);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setBounds(10, 57, 664, 278);
+		taskDataTable = new JTable();
+		taskDataTable.setVisible(false);
+		instructionPanel = new JTextPane();
+		instructionPanel.setToolTipText("Feedback message will be shown here.");
+		instructionPanel.setForeground(Color.BLACK);
+		instructionPanel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		instructionPanel.setEditable(false);
+		instructionPanel.setBounds(10, 57, 664, 311);
+		scrollPane.setViewportView(instructionPanel);
 	}
 	
 	public TaskDataPanelController(Object[][] rowData) {
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setBounds(10, 57, 664, 278);
-		
+		instructionPanel = new JTextPane();
+		instructionPanel.setVisible(false);
 		taskDataTable = new JTable(rowData, columnNames);
 		taskDataTable.setToolTipText("Task Data will be shown here.");
 		taskDataTable.setForeground(Color.BLACK);
@@ -42,7 +47,7 @@ public class TaskDataPanelController {
 		taskDataTable.setBorder(BorderFactory.createEtchedBorder());
 		taskDataTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		TableColumnModel columnModel = taskDataTable.getColumnModel();
-		columnModel.getColumn(0).setPreferredWidth(30);
+		columnModel.getColumn(0).setPreferredWidth(29);
 		columnModel.getColumn(1).setPreferredWidth(280);
 		columnModel.getColumn(2).setPreferredWidth(125);
 		columnModel.getColumn(3).setPreferredWidth(125);
@@ -59,10 +64,12 @@ public class TaskDataPanelController {
 	}
 	
 	public void setTaskData(String taskData) {
-		taskDataPanel.setText(taskData);
+		instructionPanel.setText(taskData);
 	}
 	
 	public void clear() {
+		instructionPanel.setVisible(false);
+		taskDataTable.setVisible(false);
 		scrollPane.setVisible(false);
 	}
 }

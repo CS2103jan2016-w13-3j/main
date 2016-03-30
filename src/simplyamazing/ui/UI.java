@@ -8,9 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 import simplyamazing.logic.Logic;
@@ -135,17 +133,21 @@ public class UI {
 			logger.log(Level.INFO, MESSAGE_LOG_USER_COMMAND_EXECUTED);
 			if (feedback.contains(CHARACTER_NEW_LINE)) {
 				String[] tasks = feedback.split(CHARACTER_NEW_LINE);
-				String[][] taskData = new String[tasks.length][5];
-				for (int i = 0; i < tasks.length; i++) {
-					taskData[i] = tasks[i].split(FIELD_SEPARATOR);
+				
+				if (tasks[0].split(FIELD_SEPARATOR).length == 6) {
+					String[][] taskData = new String[tasks.length][6];
+					for (int i = 0; i < tasks.length; i++) {
+						taskData[i] = tasks[i].split(FIELD_SEPARATOR);
+					}
+					setupTaskDataPanel(taskData); 
+					frame.getContentPane().add(taskDataPanelController.getTaskDataPanel());
+				} else {
+					setupTaskDataPanel();
+					frame.getContentPane().add(taskDataPanelController.getTaskDataPanel());
+					taskDataPanelController.setTaskData(feedback);
 				}
-				setupTaskDataPanel(taskData); 
-				frame.getContentPane().add(taskDataPanelController.getTaskDataPanel());
-				//taskDataPanelController.setTaskData(feedback);
 			} else {
-				if (taskDataPanelController != null) {
-					taskDataPanelController.clear();
-				}
+				taskDataPanelController.clear();
 				feedbackAreaController.colorCodeFeedback(COLOR_DARK_GREEN);
 				feedbackAreaController.setFeedback(feedback);
 				logger.log(Level.INFO, feedback);
