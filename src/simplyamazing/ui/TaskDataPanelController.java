@@ -20,10 +20,8 @@ public class TaskDataPanelController {
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setBounds(10, 57, 664, 278);
-		taskDataTable = new JTable();
-		taskDataTable.setVisible(false);
+		
 		instructionPanel = new JTextPane();
-		instructionPanel.setToolTipText("Feedback message will be shown here.");
 		instructionPanel.setForeground(Color.BLACK);
 		instructionPanel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		instructionPanel.setEditable(false);
@@ -35,8 +33,7 @@ public class TaskDataPanelController {
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setBounds(10, 57, 664, 278);
-		instructionPanel = new JTextPane();
-		instructionPanel.setVisible(false);
+		
 		taskDataTable = new JTable(rowData, columnNames);
 		taskDataTable.setToolTipText("Task Data will be shown here.");
 		taskDataTable.setForeground(Color.BLACK);
@@ -68,8 +65,12 @@ public class TaskDataPanelController {
 	}
 	
 	public void clear() {
-		instructionPanel.setVisible(false);
-		taskDataTable.setVisible(false);
+		if (instructionPanel != null) {
+			instructionPanel.setVisible(false);
+		}
+		if (taskDataTable != null) {
+			taskDataTable.setVisible(false);
+		}
 		scrollPane.setVisible(false);
 	}
 }
