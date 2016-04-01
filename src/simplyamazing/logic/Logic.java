@@ -28,7 +28,7 @@ public class Logic {
 	
 	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
-	private static final String ERROR_EMPTY_LIST = "Error: List is empty";
+	private static final String MESSAGE_EMPTY_LIST = "List is empty";
 	private static final String ERROR_NO_TASKS_FOUND = "Error: There are no tasks containing the given keyword";
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo";
 	private static final String ERROR_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
@@ -428,7 +428,7 @@ public class Logic {
 		
 		if(!(newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0 && newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0)) { // if both start time and end time are not modified
 			if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // start time is modified
-				if (previousEndTime.compareTo(Task.DEFAULT_DATE_VALUE) == 0) { // no end time => it's a floating task
+				if (previousEndTime.compareTo(Task.DEFAULT_DATE_VALUE) == 0) { // no end time => it's a floating task 
 					return ERROR_NO_END_TIME;
 					
 				} else {
@@ -474,9 +474,9 @@ public class Logic {
 	}
 	
 	
-	private static String convertListToString(ArrayList<Task> list) throws Exception{
+	private static String convertListToString(ArrayList<Task> list) {
 		if (list.size() == 0) {
-			throw new Exception(ERROR_EMPTY_LIST);
+			return MESSAGE_EMPTY_LIST;
 		}
 		String convertedList = STRING_EMPTY;
 		
