@@ -43,6 +43,17 @@ public class ParserTest {
 	private static final String DONE_COMMAND_VALID_FEEDBACK = "";
 	private static final String DONE_COMMAND_INVALID_WRONG_KEYWORD = "done home";
 	private static final String DONE_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
+	
+	private static final String VIEW_COMMAND_VALID = "view";
+	private static final String VIEW_COMMAND_EVENT_VALID = "view events";
+	private static final String VIEW_COMMAND_DEADLINES_VALID = "view deadlines";
+	private static final String VIEW_COMMAND_TASKS_VALID = "view tasks";
+	private static final String VIEW_COMMAND_DONE_VALID = "view done";
+	private static final String VIEW_COMMAND_OVERDUE_VALID = "view overdue";
+	private static final String VIEW_COMMAND_VALID_FEEDBACK = "";
+	private static final String VIEW_COMMAND_INVALID_WRONG_KEYWORD = "view abc";
+	private static final String VIEW_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help view\" command to see all the valid keywords";
+
 
 	private static Parser parser = new Parser();
 
@@ -92,6 +103,18 @@ public class ParserTest {
 	public void testDoneCommand() throws Exception {
 		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID).getFeedBack());
 		assertEquals(DONE_COMMAND_INVALID_FEEDBACK,parser.getHandler(DONE_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
+	}
+	
+	@Test
+	public void testViewCommand() throws Exception {
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK, parser.getHandler(VIEW_COMMAND_VALID).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_EVENT_VALID).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_DEADLINES_VALID).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_TASKS_VALID).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_DONE_VALID).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_OVERDUE_VALID).getFeedBack());
+		assertEquals(VIEW_COMMAND_INVALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
+		
 	}
 
 }
