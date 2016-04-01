@@ -47,7 +47,15 @@ public class UI {
 					window.frame.setVisible(true);
 					commandBarController.getCommandBar().requestFocusInWindow();
 					logic = new Logic();
-					window.updateTaskTable();
+					String taskDataString = window.getTaskData();
+					if (taskDataString.contains(CHARACTER_NEW_LINE)) {
+						window.updateTaskTable();
+					} else {
+						window.scrollPane.setVisible(false);
+						feedbackArea.colorCodeFeedback(COLOR_DARK_GREEN);
+						feedbackArea.setFeedback(taskDataString);
+						logger.log(Level.INFO, taskDataString);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -152,16 +160,20 @@ public class UI {
 					for (int i = 0; i < tasks.length; i++) {
 						taskData[i] = tasks[i].split(FIELD_SEPARATOR);
 					}
+					scrollPane.setVisible(true);
 					setupTaskDataPanel(taskData); 
 					scrollPane.setViewportView(taskDataPanel.getTaskDataPanel());
 					scrollPane.getViewport().setBackground(Color.WHITE);
 				} else {
 					setupInstructionPanel();
+					scrollPane.setVisible(true);
 					scrollPane.setViewportView(instructionPanel.getInstrctionPanel());
 					instructionPanel.setInstruction(feedback);
 				}
 			} else { // only feedback
-				updateTaskTable();
+				if(getTaskData().contains(CHARACTER_NEW_LINE)) {
+					updateTaskTable();
+				} 
 				feedbackArea.colorCodeFeedback(COLOR_DARK_GREEN);
 				feedbackArea.setFeedback(feedback);
 				logger.log(Level.INFO, feedback);
@@ -174,17 +186,23 @@ public class UI {
 			feedbackArea.setFeedback(feedback);
 		}
 	}
-
+	
 	private void updateTaskTable() throws Exception {
-		String[] tasks = logic.getView().split(CHARACTER_NEW_LINE);
-
+		String[] tasks = getTaskData().split(CHARACTER_NEW_LINE);
+		
 		String[][] taskData = new String[tasks.length][6];
 		for (int i = 0; i < tasks.length; i++) {
 			taskData[i] = tasks[i].split(FIELD_SEPARATOR);
 		}
 		setupTaskDataPanel(taskData); 
+		scrollPane.setVisible(true);
 		scrollPane.setViewportView(taskDataPanel.getTaskDataPanel());
 		scrollPane.getViewport().setBackground(Color.WHITE);
+	}
+
+	private String getTaskData() throws Exception {
+		String taskDataString = logic.getView();
+		return taskDataString;
 	}
 
 	public void getUserCommand() {
