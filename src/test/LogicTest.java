@@ -47,6 +47,8 @@ public class LogicTest {
 	private static final String DELETE_INVALID_INDEX_FEEDBACK = "Error: Invalid index entered";
 	private static final String DELETE_INVALID_INDEX_ZERO = "delete 0";
 	private static final String DELETE_INVALID_INDEX_NEGATIVE = "delete -1";
+	private static final String DELETE_STRING = "delete hello";
+	private static final String DELETE_STRING_FEEDBACK = "Error: Index provided is not an Integer.";
 	
 	private static final String DONE_INVALID_INDEX_NEGATIVE = "done -1";
 	private static final String DONE_INVALID_INDEX_ZERO = "done 0";
@@ -95,7 +97,7 @@ public class LogicTest {
 	public void testSetLocation() throws Exception{
 		
 		assertEquals(new Exception(LOCATION_FEEDBACK_FAIL),logicObj.executeCommand(LOCATION_COMMAND_FAIL));
-		assertEquals(new Exception(LOCATION_FEEDBACK_PASS), logicObj.executeCommand(LOCATION_COMMAND_PASS));
+		assertEquals(LOCATION_FEEDBACK_PASS, logicObj.executeCommand(LOCATION_COMMAND_PASS));
 	}
 	
 	
@@ -153,6 +155,7 @@ public class LogicTest {
 	@Test(expected = Exception.class)
 	public void testDeleteCommand() throws Exception{
 		assertEquals(DELETE_VALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_VALID_INDEX));
+		assertEquals(DELETE_STRING_FEEDBACK, logicObj.executeCommand(DELETE_STRING));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_LARGER));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_ZERO));
