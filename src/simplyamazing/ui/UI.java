@@ -47,6 +47,7 @@ public class UI {
 					window.frame.setVisible(true);
 					commandBarController.getCommandBar().requestFocusInWindow();
 					logic = new Logic();
+					window.updateTaskTable();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -60,6 +61,7 @@ public class UI {
 
 	/**
 	 * Create the application.
+	 * @throws Exception 
 	 */
 	public UI() {
 		initialize();
@@ -82,7 +84,6 @@ public class UI {
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setBounds(10, 57, 664, 278);
-		scrollPane.setVisible(false);
 	}
 
 	private void addUIComponentsToFrame() {
@@ -152,12 +153,10 @@ public class UI {
 						taskData[i] = tasks[i].split(FIELD_SEPARATOR);
 					}
 					setupTaskDataPanel(taskData); 
-					scrollPane.setVisible(true);
 					scrollPane.setViewportView(taskDataPanel.getTaskDataPanel());
 					scrollPane.getViewport().setBackground(Color.WHITE);
 				} else {
 					setupInstructionPanel();
-					scrollPane.setVisible(true);
 					scrollPane.setViewportView(instructionPanel.getInstrctionPanel());
 					instructionPanel.setInstruction(feedback);
 				}
@@ -184,7 +183,6 @@ public class UI {
 			taskData[i] = tasks[i].split(FIELD_SEPARATOR);
 		}
 		setupTaskDataPanel(taskData); 
-		scrollPane.setVisible(true);
 		scrollPane.setViewportView(taskDataPanel.getTaskDataPanel());
 		scrollPane.getViewport().setBackground(Color.WHITE);
 	}
