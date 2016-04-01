@@ -55,8 +55,8 @@ public class ParserTest {
 		assertEquals(ADD_COMMAND_EVENT_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_VALID).getFeedBack());
 		assertEquals(ADD_COMMAND_DEADLINE_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINE_VALID).getFeedBack());
 
-		assertEquals(ADD_COMMAND_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_WITH_ONLY_STARTTIME).getFeedBack());
-		assertEquals(ADD_COMMAND_INVALID_FEEDBACK,
+		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_WITH_ONLY_STARTTIME).getFeedBack());
+		assertEquals(ADD_COMMAND_VALID_FEEDBACK,
 				parser.getHandler(ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME).getFeedBack());
 	}
 
