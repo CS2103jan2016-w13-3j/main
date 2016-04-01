@@ -29,7 +29,7 @@ public class ParserTest {
 
 	private static final String DELETE_COMMAND_VALID_INDEX = "delete 1";
 	private static final String DELETE_COMMAND_VALID_INDEX_FEEDBACK = "";
-	private static final String DELETE_COMMAND_INVALID_DUMMY_STRING = "Error: Index provided is not an Integer.";
+	private static final String DELETE_COMMAND_INVALID_DUMMY_STRING = "Error: Invalid command entered. Please enter \"help\" to view command format";
 	private static final String DELETE_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
 
 	private static final String LOCATION_COMMAND_INVALID = "location ";
