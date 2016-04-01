@@ -40,7 +40,7 @@ public class ParserTest {
 	private static final String DONE_COMMAND_VALID = "done 1";
 	private static final String DONE_COMMAND_VALID_FEEDBACK = "";
 	private static final String DONE_COMMAND_INVALID_WRONG_KEYWORD = "done home";
-	private static final String DONE_COMMAND_INVALID_FEEDBACK = "the index of done function is invalid.";
+	private static final String DONE_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
 
 	private static Parser parser = new Parser();
 
