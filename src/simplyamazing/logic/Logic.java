@@ -213,6 +213,10 @@ public class Logic {
 		}
 	}
 	
+	public static String getView() throws Exception{
+		return convertListToString(storageObj.viewTasks(STRING_EMPTY));
+	}
+	
 	
 	private static String executeEditCommand(Handler commandHandler) throws Exception {
 		if (isListShown() == false) {
