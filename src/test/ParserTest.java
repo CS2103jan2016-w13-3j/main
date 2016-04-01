@@ -24,23 +24,23 @@ public class ParserTest {
 	private static final String HELP_COMMAND_VALID = "help";
 	private static final String HELP_COMMAND_VALID_FEEDBACK = "";
 	private static final String HELP_COMMAND_INVALID_WITH_STRING = "help abc";
-	private static final String HELP_COMMAND_INVALID_FEEDBACK = "the help command is invalid";
+	private static final String HELP_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
 	private static final String HELP_COMMAND_VALID_TASKTYPE = "help search";
 
 	private static final String DELETE_COMMAND_VALID_INDEX = "delete 1";
 	private static final String DELETE_COMMAND_VALID_INDEX_FEEDBACK = "";
-	private static final String DELETE_COMMAND_INVALID_DUMMY_STRING = "delete go home";
-	private static final String DELETE_COMMAND_INVALID_FEEDBACK = "the index of deleting is invalid.";
+	private static final String DELETE_COMMAND_INVALID_DUMMY_STRING = "Error: Invalid command entered. Please enter \"help\" to view command format";
+	private static final String DELETE_COMMAND_INVALID_FEEDBACK = "Error: Invalid command entered. Please enter \"help\" to view command format";
 
 	private static final String LOCATION_COMMAND_INVALID = "location ";
 	private static final String LOCATION_COMMAND_VALID = "location C:\"Users\"Ishpal\"Desktop\"Task Data";
-	private static final String LOCATION_COMMAND_INVALID_FEEDBACK = "The location for storing is invalid";
+	private static final String LOCATION_COMMAND_INVALID_FEEDBACK = "Error: Location provided is invalid";
 	private static final String LOCATION_COMMAND_VALID_FEEDBACK = "";
 
 	private static final String DONE_COMMAND_VALID = "done 1";
 	private static final String DONE_COMMAND_VALID_FEEDBACK = "";
 	private static final String DONE_COMMAND_INVALID_WRONG_KEYWORD = "done home";
-	private static final String DONE_COMMAND_INVALID_FEEDBACK = "the index of done function is invalid.";
+	private static final String DONE_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
 
 	private static Parser parser = new Parser();
 
