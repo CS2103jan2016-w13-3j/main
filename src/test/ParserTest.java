@@ -29,12 +29,12 @@ public class ParserTest {
 
 	private static final String DELETE_COMMAND_VALID_INDEX = "delete 1";
 	private static final String DELETE_COMMAND_VALID_INDEX_FEEDBACK = "";
-	private static final String DELETE_COMMAND_INVALID_DUMMY_STRING = "delete go home";
-	private static final String DELETE_COMMAND_INVALID_FEEDBACK = "the index of deleting is invalid.";
+	private static final String DELETE_COMMAND_INVALID_DUMMY_STRING = "Error: Index provided is not an Integer.";
+	private static final String DELETE_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
 
 	private static final String LOCATION_COMMAND_INVALID = "location ";
 	private static final String LOCATION_COMMAND_VALID = "location C:\"Users\"Ishpal\"Desktop\"Task Data";
-	private static final String LOCATION_COMMAND_INVALID_FEEDBACK = "The location for storing is invalid";
+	private static final String LOCATION_COMMAND_INVALID_FEEDBACK = "Error: Location provided is invalid";
 	private static final String LOCATION_COMMAND_VALID_FEEDBACK = "";
 
 	private static final String DONE_COMMAND_VALID = "done 1";
