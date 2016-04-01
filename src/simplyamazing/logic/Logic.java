@@ -26,7 +26,6 @@ public class Logic {
 	private static Handler commandHandler;
 	private static final String STRING_EMPTY = "";
 	
-	private static final String ERROR_DISPLAY_LIST_BEFORE_EDIT = "Error: Please view or search the list before marking, editing or deleting";
 	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
 	private static final String ERROR_EMPTY_LIST = "Error: List is empty";
@@ -219,11 +218,6 @@ public class Logic {
 	
 	
 	private static String executeEditCommand(Handler commandHandler) throws Exception {
-		if (isListShown() == false) {
-			logger.log(Level.WARNING, "list has not been shown previously");
-			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
-		}
-		
 		
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in edit");
@@ -258,11 +252,7 @@ public class Logic {
 
 	
 	private static String executeDeleteCommand(Handler commandHandler) throws Exception {
-		if (isListShown() == false) {			
-			logger.log(Level.WARNING, "list has not been shown previously");
-			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
-			
-		}
+
 		
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in delete");
@@ -341,10 +331,6 @@ public class Logic {
 	
 	
 	private static String executeMarkCommand(Handler commandHandler) throws Exception {
-		if (isListShown() == false) {
-			logger.log(Level.WARNING, "list has not been shown previously");
-			throw new Exception(ERROR_DISPLAY_LIST_BEFORE_EDIT);
-		}
 		
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in edit");
@@ -429,17 +415,6 @@ public class Logic {
 			} catch (NumberFormatException e) {
 				return false;
 			}
-		}
-	}
-	
-	
-	private static boolean isListShown() {
-		if (previousCommandKeyword.toLowerCase().equals("search") || previousCommandKeyword.toLowerCase().equals("view")) {
-			logger.log(Level.INFO, "list has been shown");
-			return true;
-		} else {
-			logger.log(Level.WARNING, "list has not been shown ");
-			return false;
 		}
 	}
 	
