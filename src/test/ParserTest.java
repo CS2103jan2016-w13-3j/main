@@ -15,10 +15,11 @@ public class ParserTest {
 	private static final String ADD_COMMAND_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_DEADLINE_VALID = "add finish homework by 22:00 20 Apr 2017";
 	private static final String ADD_COMMAND_DEADLINE_VALID_FEEDBACK = "";
-	private static final String ADD_COMMAND_EVENT_VALID = "add have a dinner from 19:00 28 Mar 2016 to 21:00 28 Mar 2016";
+	private static final String ADD_COMMAND_EVENT_VALID = "add have a dinner from 19:00 28 Apr 2016 to 21:00 28 Apr 2016";
 	private static final String ADD_COMMAND_EVENT_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_WITH_ONLY_STARTTIME = "add walk from 14:00 10 May 2017";
 	private static final String ADD_COMMAND_INVALID_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
+	private static final String ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT = "Error: Please ensure the fields are correct";
 	private static final String ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME = "add swim from 21:00 22 Mar 2017 to 17:00 10 Mar 2016";
 
 	private static final String HELP_COMMAND_VALID = "help";
@@ -55,8 +56,8 @@ public class ParserTest {
 		assertEquals(ADD_COMMAND_EVENT_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_VALID).getFeedBack());
 		assertEquals(ADD_COMMAND_DEADLINE_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINE_VALID).getFeedBack());
 
-		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_WITH_ONLY_STARTTIME).getFeedBack());
-		assertEquals(ADD_COMMAND_VALID_FEEDBACK,
+		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT , parser.getHandler(ADD_COMMAND_WITH_ONLY_STARTTIME).getFeedBack());
+		assertEquals(ADD_COMMAND_INVALID_FEEDBACK,
 				parser.getHandler(ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME).getFeedBack());
 	}
 
