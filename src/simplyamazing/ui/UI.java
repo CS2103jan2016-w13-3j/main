@@ -7,7 +7,9 @@ import java.awt.SystemColor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 
@@ -26,11 +28,13 @@ public class UI {
 	private JFrame frame;
 	private JSeparator separator, separator_1;
 	private JTextArea txtrHeader;
+	private JScrollPane scrollPane;
 	
 	private static Logic logic;
 	private static CommandBarController commandBarController;
-	private static TaskDataPanelController taskDataPanelController;
-	private static FeedbackAreaController feedbackAreaController;
+	private static TaskDataPanel taskDataPanel;
+	private static FeedbackArea feedbackArea;
+	private static InstructionPanel instructionPanel;
 
 	/**
 	 * Launch the application.
@@ -68,31 +72,38 @@ public class UI {
 	private void initialize() {
 		setupFrame();
 		setupAppLogo();
-		//setupTaskDataPanel();
 		setupFeedbackArea();
 		setupCommandBar();
+		setupScrollPane();
 		setupSeparators();
+	}
+
+	private void setupScrollPane() {
+		scrollPane = new JScrollPane();
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setBounds(10, 57, 664, 278);
+		scrollPane.setVisible(false);
 	}
 
 	private void addUIComponentsToFrame() {
 		frame.getContentPane().add(txtrHeader);
 		frame.getContentPane().add(separator);
 		frame.getContentPane().add(separator_1);
-		//frame.getContentPane().add(taskDataPanelController.getTaskDataPanel());
+		frame.getContentPane().add(scrollPane);
 		frame.getContentPane().add(commandBarController.getCommandBar());
-		frame.getContentPane().add(feedbackAreaController.getFeedbackArea());
+		frame.getContentPane().add(feedbackArea.getFeedbackArea());
 	}
 
 	private void setupFeedbackArea() {
-		feedbackAreaController = new FeedbackAreaController();
+		feedbackArea = new FeedbackArea();
 	}
 
-	private void setupTaskDataPanel() {
-		taskDataPanelController = new TaskDataPanelController();
+	private void setupInstructionPanel() {
+		instructionPanel = new InstructionPanel();
 	}
 	
 	private void setupTaskDataPanel(Object[][] taskData) {
-		taskDataPanelController = new TaskDataPanelController(taskData);
+		taskDataPanel = new TaskDataPanel(taskData);
 	}
 
 	private void setupAppLogo() {
@@ -127,9 +138,10 @@ public class UI {
 
 	public void executeUserCommand() {
 		String feedback = null;
-		feedbackAreaController.clear();
+		String command = commandBarController.getCommand();
+		feedbackArea.clear();
 		try {
-			feedback = logic.executeCommand(commandBarController.getCommand());
+			feedback = logic.executeCommand(command);
 			logger.log(Level.INFO, MESSAGE_LOG_USER_COMMAND_EXECUTED);
 			if (feedback.contains(CHARACTER_NEW_LINE)) {
 				String[] tasks = feedback.split(CHARACTER_NEW_LINE);
@@ -140,25 +152,41 @@ public class UI {
 						taskData[i] = tasks[i].split(FIELD_SEPARATOR);
 					}
 					setupTaskDataPanel(taskData); 
-					frame.getContentPane().add(taskDataPanelController.getTaskDataPanel());
+					scrollPane.setVisible(true);
+					scrollPane.setViewportView(taskDataPanel.getTaskDataPanel());
+					scrollPane.getViewport().setBackground(Color.WHITE);
 				} else {
-					setupTaskDataPanel();
-					frame.getContentPane().add(taskDataPanelController.getTaskDataPanel());
-					taskDataPanelController.setTaskData(feedback);
+					setupInstructionPanel();
+					scrollPane.setVisible(true);
+					scrollPane.setViewportView(instructionPanel.getInstrctionPanel());
+					instructionPanel.setInstruction(feedback);
 				}
-			} else {
-				taskDataPanelController.clear();
-				feedbackAreaController.colorCodeFeedback(COLOR_DARK_GREEN);
-				feedbackAreaController.setFeedback(feedback);
+			} else { // only feedback
+				updateTaskTable();
+				feedbackArea.colorCodeFeedback(COLOR_DARK_GREEN);
+				feedbackArea.setFeedback(feedback);
 				logger.log(Level.INFO, feedback);
 			}
-			commandBarController.clear();
+			commandBarController.clear(); 
 		} catch (Exception e1) {
 			feedback = getErrorMessage(e1);
 			logger.log(Level.WARNING, feedback);
-			feedbackAreaController.colorCodeFeedback(Color.RED);
-			feedbackAreaController.setFeedback(feedback);
+			feedbackArea.colorCodeFeedback(Color.RED);
+			feedbackArea.setFeedback(feedback);
 		}
+	}
+
+	private void updateTaskTable() throws Exception {
+		String[] tasks = logic.getView().split(CHARACTER_NEW_LINE);
+
+		String[][] taskData = new String[tasks.length][6];
+		for (int i = 0; i < tasks.length; i++) {
+			taskData[i] = tasks[i].split(FIELD_SEPARATOR);
+		}
+		setupTaskDataPanel(taskData); 
+		scrollPane.setVisible(true);
+		scrollPane.setViewportView(taskDataPanel.getTaskDataPanel());
+		scrollPane.getViewport().setBackground(Color.WHITE);
 	}
 
 	public void getUserCommand() {

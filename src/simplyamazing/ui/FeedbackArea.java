@@ -4,12 +4,12 @@ import java.awt.Color;
 
 import javax.swing.JTextArea;
 
-public class FeedbackAreaController {
+public class FeedbackArea {
 	private final String STRING_NULL = "";
 	
 	private JTextArea feedbackArea;
 	
-	public FeedbackAreaController() {
+	public FeedbackArea() {
 		feedbackArea = new JTextArea();
 		feedbackArea.setEditable(false);
 		feedbackArea.setBounds(10, 346, 664, 22);
