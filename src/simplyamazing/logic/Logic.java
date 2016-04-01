@@ -213,7 +213,8 @@ public class Logic {
 	}
 	
 	public static String getView() throws Exception{
-		return convertListToString(storageObj.viewTasks(STRING_EMPTY));
+		taskList = storageObj.viewTasks(STRING_EMPTY);
+		return convertListToString(taskList);
 	}
 	
 	
