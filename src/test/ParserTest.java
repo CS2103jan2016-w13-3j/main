@@ -7,8 +7,8 @@ import simplyamazing.parser.Parser;
 public class ParserTest {
 	private static final String EDIT_COMMAND_VALID = "edit 1 description dancing";
 	private static final String EDIT_COMMAND_VALID_FEEDBACK = "";
-	private static final String EDIT_COMMAND_INVALID_WRONG_KEYWORD = "edit 2 attribute flying";
-	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "The command of input's field is invalid";
+	private static final String EDIT_COMMAND_INVALID_WRONG_KEYWORD = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
+	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
 	private static final String EDIT_COMMAND_INVALID_WITHOUT_INDEX = "edit startTime 12:00 20 Mar 2016";
 
 	private static final String ADD_COMMAND_FLOATING_VALID = "add go home";
