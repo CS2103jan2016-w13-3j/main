@@ -404,9 +404,6 @@ public class Logic {
 		} else {
 			try {
 				int indexToDelete = Integer.parseInt(indexStr);
-
-				assert indexToDelete >= 0;
-				assert indexToDelete <= list.size();
 				
 				if(indexToDelete <= 0 || indexToDelete > list.size()){
 					return false;
