@@ -18,16 +18,26 @@ public class ParserTest {
 	private static final String ADD_COMMAND_DEADLINE_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_EVENT_VALID = "add have a dinner from 19:00 28 Apr 2016 to 21:00 28 Apr 2016";
 	private static final String ADD_COMMAND_EVENT_VALID_FEEDBACK = "";
-	private static final String ADD_COMMAND_WITH_ONLY_STARTTIME = "add walk from 14:00 10 May 2017";
+	private static final String ADD_COMMAND_WITH_ONLY_STARTTIME_INVALID = "add walk from 14:00 10 May 2017";
+	private static final String ADD_COMMAND_STARTTIME_BEFORE_CURRENTTIME ="add test from 13:00 12 Mar 2016 to 14:00 11 Apr 2016";
 	private static final String ADD_COMMAND_INVALID_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
-	private static final String ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT = "Error: Please ensure the fields are correct";
+	private static final String ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK = "Error: Please ensure the fields are correct";
+	private static final String ADD_COMMAND_ERROR_MESSAGE_DATE_BEFORE_CURRENT ="Error: Time provided must be after the current time";
 	private static final String ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME = "add swim from 21:00 22 Mar 2017 to 17:00 10 Mar 2016";
-
+     
 	private static final String HELP_COMMAND_VALID = "help";
+	private static final String HELP_COMMAND_ADD_VALID = "help add";
+	private static final String HELP_COMMAND_DELETE_VALID = "help delete";
+	private static final String HELP_COMMAND_EDIT_VALID = "help edit";
+	private static final String HELP_COMMAND_VIEW_VALID = "help view";
+	private static final String HELP_COMMAND_DONE_VALID = "help done";
+	private static final String HELP_COMMAND_SEARCH_VALID = "help search";
+	private static final String HELP_COMMAND_UNDO_VALID = "help undo";
+	private static final String HELP_COMMAND_LOCATION_VALID = "help location";
+	private static final String HELP_COMMAND_EXIT_VALID = "help exit";
 	private static final String HELP_COMMAND_VALID_FEEDBACK = "";
 	private static final String HELP_COMMAND_INVALID_WITH_STRING = "help abc";
 	private static final String HELP_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
-	private static final String HELP_COMMAND_VALID_TASKTYPE = "help search";
 
 	private static final String DELETE_COMMAND_VALID_INDEX = "delete 1";
 	private static final String DELETE_COMMAND_VALID_INDEX_FEEDBACK = "";
@@ -54,7 +64,7 @@ public class ParserTest {
 	private static final String VIEW_COMMAND_INVALID_WRONG_KEYWORD = "view abc";
 	private static final String VIEW_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help view\" command to see all the valid keywords";
 
-
+    
 	private static Parser parser = new Parser();
 
 	@Test//(expected = Exception.class)
@@ -68,9 +78,11 @@ public class ParserTest {
 		assertEquals(ADD_COMMAND_EVENT_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_VALID).getFeedBack());
 		assertEquals(ADD_COMMAND_DEADLINE_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINE_VALID).getFeedBack());
 
-		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT , parser.getHandler(ADD_COMMAND_WITH_ONLY_STARTTIME).getFeedBack());
+		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_WITH_ONLY_STARTTIME_INVALID).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FEEDBACK,
 				parser.getHandler(ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME).getFeedBack());
+		assertEquals(ADD_COMMAND_ERROR_MESSAGE_DATE_BEFORE_CURRENT, parser.getHandler(ADD_COMMAND_STARTTIME_BEFORE_CURRENTTIME).getFeedBack());
+		
 	}
 
 	@Test//(expected = Exception.class)
@@ -89,7 +101,15 @@ public class ParserTest {
 	@Test//(expected = Exception.class)
 	public void testHelpCommand() throws Exception {
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_VALID).getFeedBack());
-		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_VALID_TASKTYPE).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_ADD_VALID).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_DELETE_VALID).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_VIEW_VALID).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_LOCATION_VALID).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_DONE_VALID).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_EXIT_VALID).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_SEARCH_VALID).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_EDIT_VALID).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_UNDO_VALID).getFeedBack());
 		assertEquals(HELP_COMMAND_INVALID_FEEDBACK, parser.getHandler(HELP_COMMAND_INVALID_WITH_STRING).getFeedBack());
 	}
 
@@ -113,8 +133,7 @@ public class ParserTest {
 		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_TASKS_VALID).getFeedBack());
 		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_DONE_VALID).getFeedBack());
 		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_OVERDUE_VALID).getFeedBack());
-		assertEquals(VIEW_COMMAND_INVALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
-		
+		assertEquals(VIEW_COMMAND_INVALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());	
 	}
 
 }
