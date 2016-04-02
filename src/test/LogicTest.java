@@ -2,12 +2,9 @@ package test;
 
 import static org.junit.Assert.*;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import simplyamazing.data.Task;
 import simplyamazing.logic.Logic;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class LogicTest {
@@ -25,13 +22,19 @@ public class LogicTest {
 	
 	private static final String ADD_TASK_PASS = "add hello world";
 	private static final String ADD_TASK_PASS_FEEDBACK = "Task [hello world] has been added.";
-	private static final String ADD_DEADLINE_PASS = "add cs2103 peer review by 23:59 25 Mar 2016";
-	private static final String ADD_DEADLINE_PASS_FEEDBACK = "Task[cs2103 peer review by 23:59 25 Mar 2016] has been added.";
-	private static final String ADD_EVENT_PASS = "add hackathon in SOC from 09:30 26 Mar 2016 to 10:00 27 Mar 2016";
-	private static final String ADD_EVENT_PASS_FEEDBACK = "Task[hahckathon in SOC from 9:30 26 Mar 2016 to 10:00 27 Mar 2016] has been added.";
-	private static final String ADD_TASK_WITH_STARTIME_ONLY = "add sleep from 03:00 24 Mar 2016";
-	private static final String ADD_ERROR_MESSAGE = "the add command is not correct";
-	private static final String ADD_TASK_ENDTIME_BEFORE_STARTIME = "add play fifa from 14:00 30 Mar 2016 to 13:00 30 Mar 2016";
+	private static final String ADD_DEADLINE_PASS = "add cs2103 peer review by 23:59 25 May 2016";
+	private static final String ADD_DEADLINE_PASS_FEEDBACK = "Task [cs2103 peer review by 23:59 25 May 2016] has been added.";
+	private static final String ADD_EVENT_PASS = "add hackathon in SOC from 09:30 26 May 2016 to 10:00 27 May 2016";
+	private static final String ADD_EVENT_PASS_FEEDBACK = "Task [hackathon in SOC from 09:30 26 May 2016 to 10:00 27 May 2016] has been added.";
+	private static final String ADD_TASK_WITH_STARTIME_ONLY = "add sleep from 03:00 24 May 2016";
+	private static final String ADD_ERROR_MESSAGE = "Error: Please ensure the fields are correct";
+	private static final String ADD_TASK_ENDTIME_BEFORE_STARTIME = "add play fifa from 14:00 30 May 2016 to 13:00 30 May 2016";
+	private static final String ADD_TASK_ENDTIME_BEFORE_STARTIME_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
+	private static final String ADD_END_BEFORE_CURRENT = "add visit the dentist by 22:00 2 Apr 2016";
+	private static final String ADD_START_BEFORE_CURRENT = "add visit the dentist from 22:00 2 Apr 2016 to 23:00 2 Apr 2016";
+	private static final String ADD_BEFORE_CURRENT_FEEDBACK = "Error: Time provided must be after the current time";
+	
+	
 	
 	private static final String DELETE_VALID_INDEX = "delete 2";
 	private static final String DELETE_VALID_INDEX_FEEDBACK = "Task[hackathon in SOC from 9:30 26 Mar 2016 to 10:00 27 Mar 2016] has been successfully deleted.";
@@ -120,20 +123,20 @@ public class LogicTest {
 	}
 	
 	
-	//@Test (expected = Exception.class)
+	@Test (expected = Exception.class)
 	/*
 	 * The following test has 2 equivalent partitions, valid and invalid commands.
 	 */
-	/*
 	public void testAddCommand() throws Exception{
 		assertEquals(ADD_TASK_PASS_FEEDBACK, logicObj.executeCommand(ADD_TASK_PASS));
-		assertEquals(ADD_EVENT_PASS_FEEDBACK, logicObj.executeCommand(ADD_EVENT_PASS));
 		assertEquals(ADD_DEADLINE_PASS_FEEDBACK, logicObj.executeCommand(ADD_DEADLINE_PASS));
+		assertEquals(ADD_EVENT_PASS_FEEDBACK, logicObj.executeCommand(ADD_EVENT_PASS));
 		
-		assertEquals(new Exception(ADD_ERROR_MESSAGE), logicObj.executeCommand(ADD_TASK_WITH_STARTIME_ONLY));
-		assertEquals(new Exception(ADD_ERROR_MESSAGE), logicObj.executeCommand(ADD_TASK_ENDTIME_BEFORE_STARTIME));
+		assertEquals(ADD_ERROR_MESSAGE, logicObj.executeCommand(ADD_TASK_WITH_STARTIME_ONLY));
+		assertEquals(ADD_TASK_ENDTIME_BEFORE_STARTIME_FEEDBACK, logicObj.executeCommand(ADD_TASK_ENDTIME_BEFORE_STARTIME));
+		assertEquals(ADD_BEFORE_CURRENT_FEEDBACK, logicObj.executeCommand(ADD_END_BEFORE_CURRENT));
+		assertEquals(ADD_BEFORE_CURRENT_FEEDBACK, logicObj.executeCommand(ADD_START_BEFORE_CURRENT));
 	}
-	*/
 	
 	
 	@Test
