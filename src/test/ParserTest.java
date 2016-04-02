@@ -12,11 +12,15 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_VALID_FEEDBACK = "";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_BEFORE_CURRENT = "edit 2 start 12:00 30 Mar 2016";
 	private static final String EDIT_COMMAND_INVALID_ENDTIME_BEFORE_CURRENT = "edit 3 end 14:00 01 Apr 2016";
+	private static final String EDIT_COMMAND_INVALID_TWO_KEYWORDS = "edit 3 start 12:00 24 Mar 2016,end 15:00 26 Mar 2016";
 	private static final String EDIT_COMMAND_INVALID_WRONG_KEYWORD = "edit 2 drink";	
 	private static final String EDIT_COMMAND_INVALID_WITHOUT_INDEX = "edit startTime 12:00 20 Mar 2016";
 	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
+	private static final String EDIT_COMMAND_INVALID_STARTTIME_AFTER_ENDTIME = "edit 2 start 23:00 18 Apr 2017, end 21:00 19 Apr 2016";
+	private static final String EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME = "edit 1 start 11:00 20 Apr 2016, end 11:00 20 Apr 2016";
 	private static final String EDIT_COMMAND_INVALID_INDEX_FEEDBACK = "Error: Index provided is not an Integer.";
 	private static final String EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK ="Error: Time provided must be after the current time";
+	private static final String EDII_COMMAND_INVALID_START_AFTER_END_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
 	
 	private static final String ADD_COMMAND_FLOATING_VALID = "add go home";
 	private static final String ADD_COMMAND_VALID_FEEDBACK = "";
@@ -107,6 +111,9 @@ public class ParserTest {
 		assertEquals(EDIT_COMMAND_INVALID_INDEX_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_WITHOUT_INDEX).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_BEFORE_CURRENT).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_ENDTIME_BEFORE_CURRENT).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_TWO_KEYWORDS).getFeedBack());
+		assertEquals(EDII_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_AFTER_ENDTIME).getFeedBack());
+		assertEquals(EDII_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME).getFeedBack());
 	}
 
 	@Test//(expected = Exception.class)
