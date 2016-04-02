@@ -264,7 +264,7 @@ public class Logic {
 			
 			if (isIndexValid == false) {				
 				logger.log(Level.WARNING, "index given is invalid");
-				throw new Exception(ERROR_INVALID_INDEX);
+				return ERROR_INVALID_INDEX;
 				
 			} else {			
 				logger.log(Level.INFO, "index valid, deleting now");

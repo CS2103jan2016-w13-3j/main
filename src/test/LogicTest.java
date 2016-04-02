@@ -3,10 +3,13 @@ package test;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 import simplyamazing.data.Task;
 import simplyamazing.logic.Logic;
 import java.util.ArrayList;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LogicTest {
 	private static ArrayList<Task> list = new ArrayList<Task>();
 	private static Logic logicObj= new Logic();
@@ -36,10 +39,10 @@ public class LogicTest {
 	
 	
 	
-	private static final String DELETE_VALID_INDEX = "delete 2";
+	private static final String DELETE_VALID_INDEX = "delete 1";
 	private static final String DELETE_VALID_INDEX_FEEDBACK = "Task[hackathon in SOC from 9:30 26 Mar 2016 to 10:00 27 Mar 2016] has been successfully deleted.";
 	private static final String DELETE_INVALID_INDEX_LARGER = "delete 5";
-	private static final String DELETE_INVALID_INDEX_FEEDBACK = "Error: Invalid index entered";
+	private static final String DELETE_INVALID_INDEX_FEEDBACK = "Error: The Index entered is invalid";
 	private static final String DELETE_INVALID_INDEX_ZERO = "delete 0";
 	private static final String DELETE_INVALID_INDEX_NEGATIVE = "delete -1";
 	private static final String DELETE_STRING = "delete hello";
@@ -97,8 +100,8 @@ public class LogicTest {
 	
 	
 	@Test
-	public void testValidCommandTypes() throws Exception{
-		assertEquals("Error: There is no previous command to undo", logicObj.executeCommand("undo"));      // prob
+	public void test1ValidCommandTypes() throws Exception{
+		//assertEquals("Error: There is no previous command to undo", logicObj.executeCommand("undo"));      // prob
 		assertEquals("Error: Please ensure the fields are correct",logicObj.executeCommand("add "));
 		assertEquals("Error: Invalid command entered. Please enter \"help\" to view all commands and their format", logicObj.executeCommand("hi"));
 		assertEquals("Error: Index provided is not an Integer.", logicObj.executeCommand("delete"));
@@ -106,9 +109,8 @@ public class LogicTest {
 		
 	}
 	
-	
 	@Test
-	public void testSetLocationPass() throws Exception {
+	public void test2SetLocationPass() throws Exception {
 		assertEquals(LOCATION_FEEDBACK_PASS, logicObj.executeCommand(LOCATION_COMMAND_PASS));
 	}
 	
@@ -117,17 +119,17 @@ public class LogicTest {
 	 * This test case has 2 partitions, namely correct and incorrect. These refer to the validity of the command input
 	 * The correct partition encompasses all valid file paths while the incorrect encompasses all invalid file paths
 	 */
-	public void testSetLocationFail() throws Exception{
+	public void test3SetLocationFail() throws Exception{
 			assertEquals(LOCATION_FEEDBACK_FAIL, logicObj.executeCommand(LOCATION_COMMAND_FAIL));
 			assertEquals(LOCATION_EMPTY_STRING_FEEDBACK, logicObj.executeCommand(LOCATION_EMPTY_STRING));
 	}
 	
 	
-	@Test (expected = Exception.class)
+	@Test
 	/*
 	 * The following test has 2 equivalent partitions, valid and invalid commands.
 	 */
-	public void testAddCommand() throws Exception{
+	public void test4AddCommand() throws Exception{
 		assertEquals(ADD_TASK_PASS_FEEDBACK, logicObj.executeCommand(ADD_TASK_PASS));
 		assertEquals(ADD_DEADLINE_PASS_FEEDBACK, logicObj.executeCommand(ADD_DEADLINE_PASS));
 		assertEquals(ADD_EVENT_PASS_FEEDBACK, logicObj.executeCommand(ADD_EVENT_PASS));
@@ -140,7 +142,7 @@ public class LogicTest {
 	
 	
 	@Test
-	public void testHelpCommand() throws Exception{
+	public void test5HelpCommand() throws Exception{
 		assertEquals(HELP_VALID_FEEDBACK, logicObj.executeCommand(HELP_VALID));
 		assertEquals(HELP_INVALID_FEEDBACK, logicObj.executeCommand(HELP_INVALID));
 		assertEquals(HELP_VALID_UNDO_FEEDBACK, logicObj.executeCommand(HELP_VALID_UNDO));
@@ -160,7 +162,7 @@ public class LogicTest {
 	
 	/*
 	@Test(expected = Exception.class)
-	public void testSearchCommand() throws Exception{
+	public void test6SearchCommand() throws Exception{
 		assertEquals(new Exception(SEARCH_INVALID_FEEDBACK),logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
 		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
 		assertEquals(SEARCH_ALL_TASKS,logicObj.executeCommand(SEARCH_EMPTY_STRING));
@@ -173,16 +175,14 @@ public class LogicTest {
 	 * expected
 	 */
 	
-	/*
-	@Test(expected = Exception.class)
-	public void testDeleteCommand() throws Exception{
-		assertEquals(DELETE_VALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_VALID_INDEX));
+	@Test
+	public void test7DeleteCommand() throws Exception{
 		assertEquals(DELETE_STRING_FEEDBACK, logicObj.executeCommand(DELETE_STRING));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_LARGER));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_ZERO));
+		assertEquals(DELETE_VALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_VALID_INDEX));
 	}
-	
 	
 	@Test
 	/*
@@ -191,8 +191,7 @@ public class LogicTest {
 	 * expected
 	 */
 	
-	/*
-	public void testValidIndex(){
+	public void test8ValidIndex(){
 		list.clear();
 		addItemsToList(5);
 		
@@ -207,7 +206,7 @@ public class LogicTest {
 		assertFalse(Logic.checkIndexValid(new String("6"), list));
 	}
 	
-	
+	/*
 	@Test(expected = Exception.class)
 	/*
 	 * The following test case contains 4 equivalent partitions, a negative partition where the value is below what is expected,
@@ -216,18 +215,18 @@ public class LogicTest {
 	 */
 	
 	/*
-	public void testMarkCommand() throws Exception{
+	public void test9MarkCommand() throws Exception{
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_LARGER));
 		assertEquals(DONE_INVALID_COMMAND_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_STRING));
 		assertEquals(DONE_VALID_FEEDBACK, logicObj.executeCommand(DONE_VALID_INDEX));
 	}
-	
-	
+	*/
+
 	public void addItemsToList(int numItemsToAdd) {
 		for(int i=0; i<numItemsToAdd; i++) {
 			list.add(new Task());
 		}
-	}*/
+	}
 }
