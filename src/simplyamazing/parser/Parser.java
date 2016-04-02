@@ -46,7 +46,7 @@ public class Parser {
 	}	
 	private Handler parserEditCommand(Handler handler, String taskInfo) throws Exception {
 		ParserEdit parserEdit = new ParserEdit();
-		//assert parserEdit !=  null;						//assert
+		//assert parserEdit !=  null;					//assert
 		taskIndex =  getFirstWord(taskInfo);
 		taskInfoWithoutIndex = removeFirstWord(taskInfo);
 		
