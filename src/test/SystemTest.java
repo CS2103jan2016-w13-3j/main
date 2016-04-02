@@ -176,7 +176,7 @@ public class SystemTest {
 		assertEquals(true, parser.getHandler(COMMAND_ADD_TASK_WITH_STARTIME_AFTER_ENDTIME).getHasError());
 		assertEquals(FEEDBACK_ADD_TASK_START_AFTER_END, logic.executeCommand(COMMAND_ADD_TASK_WITH_STARTIME_AFTER_ENDTIME));
 		
-		/* This are for the ‘valid’ partition */
+		/* These are for the ‘valid’ partition */
 		assertEquals(false, parser.getHandler(COMMAND_ADD_FLOATING_TASK).getHasError());
 		assertEquals(COMMAND_ADD, parser.getHandler(COMMAND_ADD_FLOATING_TASK).getCommandType());
 		assertEquals(String.format(FEEDBACK_ADDED, parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toFilteredString()), logic.executeCommand(COMMAND_ADD_FLOATING_TASK));
@@ -225,7 +225,12 @@ public class SystemTest {
 		logic.executeCommand(COMMAND_ADD_EVENT); // add event
 		assertEquals(3, storage.getFileManager().getLineCount(todo));
 		
-		// This is for the ‘empty String’ partition 
+		/* This is for the ‘invalid’ partition */
+		assertEquals(true, parser.getHandler(COMMAND_VIEW_TASKS_OTHERS).getHasError());
+		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_OTHERS).getCommandType());
+		assertEquals(parser.getHandler(COMMAND_VIEW_TASKS_OTHERS).getFeedBack(), logic.executeCommand(COMMAND_VIEW_TASKS_OTHERS));
+		
+		// These are for the ‘valid’ partition 
 		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_EMPTY).getHasError());
 		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_EMPTY).getCommandType());
 		assertEquals("1,"+parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toString()+"\n"
@@ -233,31 +238,26 @@ public class SystemTest {
 				+"3,"+parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_EMPTY));	
 		assertEquals(3, storage.viewTasks(PARAM_VIEW_TASKS_EMPTY).size());	
 		
-		// This is for the ‘events’ partition 
 		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_EVENTS).getHasError());
 		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_EVENTS).getCommandType());
 		assertEquals("1,"+parser.getHandler(COMMAND_ADD_EVENT).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_EVENTS));
 		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_EVENTS).size());
 		
-		// This is for the ‘deadlines’ partition 
 		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_DEADLINES).getHasError());
 		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_DEADLINES).getCommandType());
 		assertEquals("1,"+parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_DEADLINES));
 		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_DEADLINES).size());
 		
-		// This is for the ‘tasks’ partition 
 		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_FLOATING).getHasError());
 		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_FLOATING).getCommandType());
 		assertEquals("1,"+parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_FLOATING));	
 		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_FLOATING).size());
 		
-		// This is for the ‘overdue’ partition 
 		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_OVERDUE).getHasError());
 		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_OVERDUE).getCommandType());
 		assertEquals(FEEDBACK_EMPTY_LIST, logic.executeCommand(COMMAND_VIEW_TASKS_OVERDUE));
 		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_OVERDUE).size());
 		
-		// This is for the ‘done’ partition 
 		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_DONE).getHasError());
 		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_DONE).getCommandType());
 		assertEquals(FEEDBACK_EMPTY_LIST, logic.executeCommand(COMMAND_VIEW_TASKS_DONE));	
@@ -280,17 +280,15 @@ public class SystemTest {
 		logic.executeCommand(COMMAND_ADD_FLOATING_TASK); // add floating task
 		assertEquals(1, storage.getFileManager().getLineCount(todo));
 		
-		// This is a boundary case for the ‘not null’ partition 
+		// These are for the ‘valid’ partition 
 		assertEquals(false, parser.getHandler(COMMAND_SEARCH_TASKS_EMPTY).getHasError());
 		assertEquals(COMMAND_SEARCH, parser.getHandler(COMMAND_SEARCH_TASKS_EMPTY).getCommandType());
 		assertEquals("1,"+parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()+"\n", logic.executeCommand(COMMAND_SEARCH_TASKS_EMPTY));
 		
-		// This is for the ‘not null’ partition 
 		assertEquals(false, parser.getHandler(COMMAND_SEARCH_TASKS_KEYWORD).getHasError());
 		assertEquals(COMMAND_SEARCH, parser.getHandler(COMMAND_SEARCH_TASKS_KEYWORD).getCommandType());
 		assertEquals("1,"+parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()+"\n", logic.executeCommand(COMMAND_SEARCH_TASKS_KEYWORD));
 	
-		// This is for the ‘not null’ partition 
 		assertEquals(false, parser.getHandler(COMMAND_SEARCH_TASKS_OTHER_KEYWORD).getHasError());
 		assertEquals(COMMAND_SEARCH, parser.getHandler(COMMAND_SEARCH_TASKS_OTHER_KEYWORD).getCommandType());
 		assertEquals(FEEDBACK_NO_TASK_FOUND, logic.executeCommand(COMMAND_SEARCH_TASKS_OTHER_KEYWORD));
