@@ -83,17 +83,6 @@ public class StorageTest {
 		storage.setLocation(PARAM_SET_LOCATION_EMPTY);
 	}
 	
-	@Test(expected = Exception.class) 
-	public void testSetLocationMethodForLocationException() throws Exception {
-		Storage storage = new Storage();
-		
-		/* This is for the first launch of program where user hasn't set the storage location */
-		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
-		storage.getFileManager().createNewFile(location);
-		
-		storage.getLocation();
-	}
-	
 	@Test
 	public void testSetLocationMethod() throws Exception {
 		Storage storage = new Storage();
@@ -136,26 +125,16 @@ public class StorageTest {
 		}
 	}
 	
-	@Test(expected = Exception.class) 
-	public void testAddTaskMethodForLocationException() throws Exception {
+	@Test
+	public void testAddTaskMethod() throws Exception {
 		Storage storage = new Storage();
 		
 		/* This is for the first launch of program where user hasn't set the storage location */
 		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
 		storage.getFileManager().createNewFile(location);
 		
-		Task task = new Task(PARAM_DESCRIPTION);
-		
-		/* This is for the ‘null’ partition */
-		storage.addTask(task);
-	}
-	
-	@Test
-	public void testAddTaskMethod() throws Exception {
-		Storage storage = new Storage();
-		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
-		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
-		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		File todo = new File(DIRECTORY_SYSTEM+FILENAME_TODO);
+		File done = new File(DIRECTORY_SYSTEM+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
 		Task task = new Task(PARAM_DESCRIPTION);
@@ -196,18 +175,6 @@ public class StorageTest {
 		}
 	}
 	
-	@Test(expected = Exception.class) 
-	public void testEditTaskMethodForLocationException() throws Exception {
-		Storage storage = new Storage();
-		
-		/* This is for the first launch of program where user hasn't set the storage location */
-		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
-		storage.getFileManager().createNewFile(location);
-		
-		Task task = new Task(PARAM_DESCRIPTION), editedTask = new Task(PARAM_DESCRIPTION1);
-		storage.editTask(task, editedTask);
-	}
-	
 	@Test
 	public void testEditTaskMethod() throws Exception {
 		Storage storage = new Storage();
@@ -245,17 +212,6 @@ public class StorageTest {
 		
 		/* This is for the ‘any other String’ partition */
 		storage.viewTasks(PARAM_VIEW_TASKS_OTHERS);
-	}
-	
-	@Test(expected = Exception.class) 
-	public void testViewTasksMethodForLocationException() throws Exception {
-		Storage storage = new Storage();
-		
-		/* This is for the first launch of program where user hasn't set the storage location */
-		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
-		storage.getFileManager().createNewFile(location);
-		
-		storage.viewTasks(PARAM_VIEW_TASKS_EMPTY);
 	}
 	
 	@Test
@@ -312,17 +268,6 @@ public class StorageTest {
 		} catch(AssertionError ae) {
 			throw new Exception();
 		}
-	}
-	
-	@Test(expected = Exception.class) 
-	public void testSearchTasksMethodForLocationException() throws Exception {
-		Storage storage = new Storage();
-		
-		/* This is for the first launch of program where user hasn't set the storage location */
-		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
-		storage.getFileManager().createNewFile(location);
-		
-		storage.searchTasks(PARAM_VIEW_TASKS_EMPTY);
 	}
 	
 	@Test
@@ -382,18 +327,6 @@ public class StorageTest {
 		storage.markTaskDone(task);
 	}
 	
-	@Test(expected = Exception.class) 
-	public void testMarkTaskDoneMethodForLocationException() throws Exception {
-		Storage storage = new Storage();
-		
-		/* This is for the first launch of program where user hasn't set the storage location */
-		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
-		storage.getFileManager().createNewFile(location);
-		
-		Task task = new Task(PARAM_DESCRIPTION);
-		storage.markTaskDone(task);
-	}
-	
 	@Test
 	public void testMarkTaskDoneMethod() throws Exception {
 		Storage storage = new Storage();
@@ -437,18 +370,6 @@ public class StorageTest {
 		/* This is for the 'null' partition */
 		storage.deleteTask(task);
 	}	
-	
-	@Test(expected = Exception.class) 
-	public void testDeleteTaskMethodForLocationException() throws Exception {
-		Storage storage = new Storage();
-		
-		/* This is for the first launch of program where user hasn't set the storage location */
-		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
-		storage.getFileManager().createNewFile(location);
-		
-		Task task = new Task(PARAM_DESCRIPTION);
-		storage.deleteTask(task);
-	}
 	
 	@Test
 	public void testDeleteTaskMethod() throws Exception {
@@ -497,17 +418,6 @@ public class StorageTest {
 		
 		/* This is for the ‘not a valid directory’ partition */
 		storage.setLocation(PARAM_SET_LOCATION_NOT_DIRECTORY);
-	}
-	
-	@Test(expected = Exception.class) 
-	public void testRestoreMethodForLocationException() throws Exception {
-		Storage storage = new Storage();
-		
-		/* This is for the first launch of program where user hasn't set the storage location */
-		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
-		storage.getFileManager().createNewFile(location);
-		
-		storage.restore(PARAM_RESTORE_COMMAND);
 	}
 	
 	@Test

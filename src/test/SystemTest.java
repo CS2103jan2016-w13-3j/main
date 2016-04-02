@@ -141,8 +141,8 @@ public class SystemTest {
 		assertEquals(PARAM_SET_LOCATION_DIRECTORY, storage.getLocation());
 	}
 	
-	@Test(expected = Exception.class) 
-	public void testAddTaskMethodForLocationException() throws Exception {
+	@Test
+	public void testAddTaskCommand() throws Exception {
 		Logic logic = new Logic();
 		Parser parser = new Parser();
 		Storage storage = new Storage();
@@ -150,21 +150,8 @@ public class SystemTest {
 		/* This is for the first launch of program where user hasn't set the storage location */
 		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
 		storage.getFileManager().createNewFile(location);
-		
-		/* This is for the ‘valid’ partition */
-		assertEquals(false, parser.getHandler(COMMAND_ADD_FLOATING_TASK).getHasError());
-		assertEquals(COMMAND_ADD, parser.getHandler(COMMAND_ADD_FLOATING_TASK).getCommandType());
-		logic.executeCommand(COMMAND_ADD_FLOATING_TASK);
-	}
-	
-	@Test
-	public void testAddTaskCommand() throws Exception {
-		Logic logic = new Logic();
-		Parser parser = new Parser();
-		Storage storage = new Storage();
-		logic.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
-		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
-		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		File todo = new File(DIRECTORY_SYSTEM+FILENAME_TODO);
+		File done = new File(DIRECTORY_SYSTEM+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
 		
