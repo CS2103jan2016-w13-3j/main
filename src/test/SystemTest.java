@@ -3,9 +3,11 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.Date;
 
 import org.junit.Test;
 
+import simplyamazing.data.Task;
 import simplyamazing.logic.Logic;
 import simplyamazing.parser.Parser;
 import simplyamazing.storage.Storage;
@@ -44,15 +46,15 @@ public class SystemTest {
 	private static final String COMMAND_SET_LOCATION_NOT_DIRECTORY = COMMAND_SET_LOCATION + CHARACTER_SPACE + "C:\\Users\\Public\\Documents\\SimplyAmazing";
 	private static final String COMMAND_SET_LOCATION_DIRECTORY = COMMAND_SET_LOCATION + CHARACTER_SPACE + "C:\\Users\\Public\\Documents";
 	private static final String COMMAND_ADD_TASK_EMPTY = COMMAND_ADD;
-	private static final String COMMAND_ADD_TASK_WITH_PASSED_DEADLINE = COMMAND_ADD + CHARACTER_SPACE + "sleep by 3:00 24 Mar 2016";
-	private static final String COMMAND_ADD_TASK_WITH_STARTIME_ONLY = COMMAND_ADD + CHARACTER_SPACE + "sleep from 3:00 24 Mar 2017";
-	private static final String COMMAND_ADD_TASK_WITH_STARTIME_AFTER_ENDTIME = COMMAND_ADD + CHARACTER_SPACE + "sleep from 3:00 24 Mar 2017 to 2:00 24 Mar 2017";
+	private static final String COMMAND_ADD_TASK_WITH_PASSED_DEADLINE = COMMAND_ADD + CHARACTER_SPACE + "sleep by 3:00 24 Mar 2016";;
+	private static final String COMMAND_ADD_TASK_WITH_STARTIME_ONLY = COMMAND_ADD + CHARACTER_SPACE + "sleep from 13:00 24 May 2017";
+	private static final String COMMAND_ADD_TASK_WITH_STARTIME_AFTER_ENDTIME = COMMAND_ADD + CHARACTER_SPACE + "sleep from 10:00 24 May 2017 to 8:00 24 May 2017";
 	private static final String COMMAND_ADD_FLOATING_TASK = COMMAND_ADD + CHARACTER_SPACE + "hello world";
 	private static final String COMMAND_ADD_FLOATING_TASK_WITH_KEYWORDS = COMMAND_ADD + CHARACTER_SPACE + "drop by post office to deliver parcel received from Landon";
-	private static final String COMMAND_ADD_DEADLINE = COMMAND_ADD + CHARACTER_SPACE + "cs2103 peer review by 23:59 25 Mar 2017";
-	private static final String COMMAND_ADD_DEADLINE_WITH_KEYWORDS = COMMAND_ADD + CHARACTER_SPACE + "drop by post office to deliver parcel received from Landon by 23:59 25 Mar 2017";
-	private static final String COMMAND_ADD_EVENT = COMMAND_ADD + CHARACTER_SPACE + "hackathon in SOC from 09:30 26 Mar 2017 to 10:00 27 Mar 2017";
-	private static final String COMMAND_ADD_EVENT_WITH_KEYWORDS = COMMAND_ADD + CHARACTER_SPACE + "drop by post office to deliver parcel received from Landon from 09:30 26 Mar 2017 to 10:00 27 Mar 2017";
+	private static final String COMMAND_ADD_DEADLINE = COMMAND_ADD + CHARACTER_SPACE + "cs2103 peer review by 23:59 25 May 2017";
+	private static final String COMMAND_ADD_DEADLINE_WITH_KEYWORDS = COMMAND_ADD + CHARACTER_SPACE + "drop by post office to deliver parcel received from Landon by 23:59 25 May 2017";
+	private static final String COMMAND_ADD_EVENT = COMMAND_ADD + CHARACTER_SPACE + "hackathon in SOC from 09:30 26 May 2017 to 10:00 27 May 2017";
+	private static final String COMMAND_ADD_EVENT_WITH_KEYWORDS = COMMAND_ADD + CHARACTER_SPACE + "drop by post office to deliver parcel received from Landon from 09:30 26 May 2017 to 10:00 27 May 2017";
 	private static final String COMMAND_VIEW_TASKS_EMPTY = COMMAND_VIEW;
 	private static final String COMMAND_VIEW_TASKS_EVENTS = COMMAND_VIEW + CHARACTER_SPACE + TASK_TYPE_EVENTS;
 	private static final String COMMAND_VIEW_TASKS_DEADLINES = COMMAND_VIEW + CHARACTER_SPACE + TASK_TYPE_DEADLINES;
@@ -66,6 +68,7 @@ public class SystemTest {
 	private static final String COMMAND_RESTORE = "restore";
 	
 	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:\\Users\\Public\\Documents";
+	private static final String PARAM_DESCRIPTION = "go swimming";
 	private static final String PARAM_VIEW_TASKS_EMPTY = "";
 	private static final String PARAM_VIEW_TASKS_EVENTS = "events";
 	private static final String PARAM_VIEW_TASKS_DEADLINES = "deadlines";
@@ -90,6 +93,7 @@ public class SystemTest {
 	private static final String FEEDBACK_MARKED_DONE = "%1$s has been marked as done.";
 	private static final String FEEDBACK_DELETED = "%1$s has been successfully deleted.";
 	private static final String FEEDBACK_RESTORED = "\"%1$s\" command has been successfully undone.";
+	private static final Object FEEDBACK_EMPTY_LIST = "List is empty";
 	
 	
 	/*
@@ -199,5 +203,49 @@ public class SystemTest {
 		assertEquals(false, parser.getHandler(COMMAND_ADD_EVENT_WITH_KEYWORDS).getHasError());
 		assertEquals(String.format(FEEDBACK_ADDED, parser.getHandler(COMMAND_ADD_EVENT_WITH_KEYWORDS).getTask().toFilteredString()), logic.executeCommand(COMMAND_ADD_EVENT_WITH_KEYWORDS));
 		assertEquals(6, storage.getFileManager().getLineCount(todo));
+	}
+	
+	@Test
+	public void testViewTasksMethod() throws Exception {
+		Logic logic = new Logic();
+		Parser parser = new Parser();
+		Storage storage = new Storage();
+		
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		
+		logic.executeCommand(COMMAND_ADD_FLOATING_TASK); // add floating task
+		logic.executeCommand(COMMAND_ADD_DEADLINE); // add deadline
+		logic.executeCommand(COMMAND_ADD_EVENT); // add event
+		assertEquals(3, storage.getFileManager().getLineCount(todo));
+		
+		// This is for the ‘empty String’ partition 
+		assertEquals("1,"+parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toString()+"\n"
+				+"2,"+parser.getHandler(COMMAND_ADD_EVENT).getTask().toString()+"\n"
+				+"3,"+parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_EMPTY));	
+		assertEquals(3, storage.viewTasks(PARAM_VIEW_TASKS_EMPTY).size());	
+		
+		// This is for the ‘events’ partition 
+		assertEquals("1,"+parser.getHandler(COMMAND_ADD_EVENT).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_EVENTS));
+		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_EVENTS).size());
+		
+		// This is for the ‘deadlines’ partition 
+		assertEquals("1,"+parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_DEADLINES));
+		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_DEADLINES).size());
+		
+		// This is for the ‘tasks’ partition 
+		assertEquals("1,"+parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_FLOATING));	
+		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_FLOATING).size());
+		
+		// This is for the ‘overdue’ partition 
+		assertEquals(FEEDBACK_EMPTY_LIST, logic.executeCommand(COMMAND_VIEW_TASKS_OVERDUE));
+		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_OVERDUE).size());
+		
+		// This is for the ‘done’ partition 
+		assertEquals(FEEDBACK_EMPTY_LIST, logic.executeCommand(COMMAND_VIEW_TASKS_DONE));	
+		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_DONE).size());	
 	}
 }
