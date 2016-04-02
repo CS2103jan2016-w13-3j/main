@@ -22,6 +22,7 @@ public class UI {
 
 	private static final String CHARACTER_NEW_LINE = "\n";
 	public static final String FIELD_SEPARATOR = ",";
+	private static final String STRING_ERROR = "Error";
 	
 	private static Logger logger = Logger.getLogger("UI");
 	
@@ -171,12 +172,17 @@ public class UI {
 					instructionPanel.setInstruction(feedback);
 				}
 			} else { // only feedback
-				if(getTaskData().contains(CHARACTER_NEW_LINE)) {
+				if (getTaskData().contains(CHARACTER_NEW_LINE)) {
 					updateTaskTable();
 				} 
-				feedbackArea.colorCodeFeedback(COLOR_DARK_GREEN);
+				if (feedback.contains(STRING_ERROR)) {
+					feedbackArea.colorCodeFeedback(Color.RED);
+					logger.log(Level.WARNING, feedback);
+				} else {
+					feedbackArea.colorCodeFeedback(COLOR_DARK_GREEN);
+					logger.log(Level.INFO, feedback);
+				}
 				feedbackArea.setFeedback(feedback);
-				logger.log(Level.INFO, feedback);
 			}
 			commandBarController.clear(); 
 		} catch (Exception e1) {
