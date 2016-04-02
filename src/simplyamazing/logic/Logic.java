@@ -200,7 +200,7 @@ public class Logic {
 	private static String executeViewCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in view");
-			throw new Exception(commandHandler.getFeedBack());
+			return commandHandler.getFeedBack();
 			
 		} else {
 			logger.log(Level.INFO, "before executing view command");
@@ -208,7 +208,6 @@ public class Logic {
 			assert keyWord != null;
 			taskList = storageObj.viewTasks(keyWord);
 			return convertListToString(taskList);
-			
 		}
 	}
 	
@@ -338,13 +337,13 @@ public class Logic {
 		
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in edit");
-			throw new Exception(commandHandler.getFeedBack());
+			return commandHandler.getFeedBack();
 			
 		} else {
 			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
 			
 			if (isIndexValid == false) {
-				throw new Exception(ERROR_INVALID_INDEX);
+				return ERROR_INVALID_INDEX;
 				
 			} else{
 				int indexToMark = Integer.parseInt(commandHandler.getIndex());
