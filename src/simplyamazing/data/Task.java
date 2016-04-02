@@ -86,6 +86,7 @@ public class Task implements Comparable<Task>{
         SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
         timeString = formatter.format(date);
         String[] fields = timeString.split(CHARACTER_SPACE);
+        assert(fields.length > 0);
         String monthFirstWord = fields[2].toLowerCase().substring(0,1).toUpperCase();
         String monthFormatted = monthFirstWord + fields[2].substring(1, 3);
         timeString = fields[0] + CHARACTER_SPACE + fields[1] + CHARACTER_SPACE + monthFormatted + CHARACTER_SPACE + fields[3];
@@ -198,9 +199,11 @@ public class Task implements Comparable<Task>{
 		
 		if (this.startTime != DEFAULT_DATE_VALUE) {
 			startTimeString = convertDateToString(this.startTime);
+			assert(!startTimeString.matches(CHARACTER_SPACE));
 		}
 		if (this.endTime != DEFAULT_DATE_VALUE) {
 			endTimeString = convertDateToString(this.endTime);
+			assert(!endTimeString.matches(CHARACTER_SPACE));
 		}
 		switch (this.priority) {
 			case DEFAULT_PRIORITY_LEVEL_HIGH :
@@ -218,12 +221,14 @@ public class Task implements Comparable<Task>{
 		}
 		if (this.isDone()) {
 			status = "done";
+			assert(!status.matches(CHARACTER_SPACE));
 		}
 		return this.description.trim() + FIELD_SEPARATOR + startTimeString + FIELD_SEPARATOR + endTimeString + FIELD_SEPARATOR + priorityLevel + FIELD_SEPARATOR + status;
 	}
 	
 	public String toFilteredString() {
 		String[] fields = this.toString().split(FIELD_SEPARATOR);
+		assert(fields.length == 5);
 		String filteredString = "Task [";
 		for (int i = 0; i < ARRAY_POSITION_FOR_STATUS; i++) {
 			if (!fields[ARRAY_POSITION_FOR_START_TIME].matches(CHARACTER_SPACE)) {
@@ -247,6 +252,7 @@ public class Task implements Comparable<Task>{
 				filteredString += fields[i].trim();
 			}
 		}
-		return filteredString+"]";
+		filteredString += filteredString+"]";
+		return filteredString;
 	}
 }

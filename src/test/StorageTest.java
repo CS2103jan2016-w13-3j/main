@@ -3,6 +3,7 @@ package test;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.Date;
 
 import org.junit.Test;
 
@@ -11,9 +12,18 @@ import simplyamazing.storage.Storage;
 
 public class StorageTest {
 	
+	private static final String DIRECTORY_SYSTEM = "C:\\Users\\Public\\SimplyAmzing";
+	private static final String FILENAME_STORAGE = "\\storage.txt";
 	private static final String FILENAME_TODO = "\\todo.txt";
 	private static final String FILENAME_DONE = "\\done.txt";
+	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
+	private static final String FILENAME_DONE_BACKUP = "\\doneBackup.txt";
 	
+	private static final String PARAM_DESCRIPTION1 = "go gym";
+	private static final String PARAM_DESCRIPTION = "go swimming";
+	private static final String PARAM_PRIORITY = "high";
+	private static final String PARAM_END_TIME = "15:00 16 May 2016";
+	private static final String PARAM_START_TIME = "13:00 16 May 2016";
 	private static final String PARAM_SET_LOCATION_NULL = null;
 	private static final String PARAM_SET_LOCATION_EMPTY = "";
 	private static final String PARAM_SET_LOCATION_NOT_DIRECTORY = "C:\\Users\\Public\\Documents\\SimplyAmazing";
@@ -31,7 +41,7 @@ public class StorageTest {
 	private static final String PARAM_SEARCH_TASKS_KEYWORD = "gym";
 	private static final String PARAM_RESTORE_NULL = null;
 	private static final String PARAM_RESTORE_EMPTY = "";
-	private static final String PARAM_RESTORE_COMMAND = "delete 1";
+	private static final String PARAM_RESTORE_COMMAND = "done 1";
 	
 	private static final String FEEDBACK_LOCATION_SET = "Storage location of task data has been sucessfully set as %1$s.";
 	private static final String FEEDBACK_ADDED = "%1$s has been added.";
@@ -49,26 +59,56 @@ public class StorageTest {
 	@Test(expected = Exception.class) 
 	public void testSetLocationMethodForException() throws Exception {
 		Storage storage = new Storage();
-		try {
-			/* This is for the ‘null’ partition */
-			storage.setLocation(PARAM_SET_LOCATION_NULL);
-			
-			/* This is a boundary case for the ‘not null’ partition */
-			storage.setLocation(PARAM_SET_LOCATION_EMPTY);
-		} catch (AssertionError ae) {
-			throw new Exception();
-		}
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		storage.getFileManager().createNewFile(location);
 		
 		/* This is for the ‘not a valid directory’ partition */
 		storage.setLocation(PARAM_SET_LOCATION_NOT_DIRECTORY);
 	}
 	
+	@Test(expected = Exception.class) 
+	public void testSetLocationMethodForAssertionError() throws Exception {
+		Storage storage = new Storage();
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		storage.getFileManager().createNewFile(location);
+		
+		/* This is for the ‘null’ partition */
+		storage.setLocation(PARAM_SET_LOCATION_NULL);
+			
+		/* This is a boundary case for the ‘not null’ partition */
+		storage.setLocation(PARAM_SET_LOCATION_EMPTY);
+	}
+	
+	@Test(expected = Exception.class) 
+	public void testSetLocationMethodForLocationException() throws Exception {
+		Storage storage = new Storage();
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		storage.getFileManager().createNewFile(location);
+		
+		storage.getLocation();
+	}
+	
 	@Test
 	public void testSetLocationMethod() throws Exception {
 		Storage storage = new Storage();
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		if (storage.getFileManager().isFileExisting(location)) {
+			location.delete();
+		}
+		assertEquals(false, storage.getFileManager().isFileExisting(location));
+		
 		/* This is for the ‘a valid directory’ partition */
 		assertEquals(String.format(FEEDBACK_LOCATION_SET, PARAM_SET_LOCATION_DIRECTORY), storage.setLocation(PARAM_SET_LOCATION_DIRECTORY));
 		assertEquals(PARAM_SET_LOCATION_DIRECTORY, storage.getLocation());
+		assertEquals(1, storage.getFileManager().getLineCount(location));
 	}
 	
 	/*
@@ -79,6 +119,8 @@ public class StorageTest {
 	@Test(expected = Exception.class) 
 	public void testAddTaskMethodForException() throws Exception {
 		Storage storage = new Storage();
+		
+		/* This is for the successive launch of program where user has set the storage location before */
 		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
 		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
@@ -94,6 +136,20 @@ public class StorageTest {
 		}
 	}
 	
+	@Test(expected = Exception.class) 
+	public void testAddTaskMethodForLocationException() throws Exception {
+		Storage storage = new Storage();
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		storage.getFileManager().createNewFile(location);
+		
+		Task task = new Task(PARAM_DESCRIPTION);
+		
+		/* This is for the ‘null’ partition */
+		storage.addTask(task);
+	}
+	
 	@Test
 	public void testAddTaskMethod() throws Exception {
 		Storage storage = new Storage();
@@ -102,12 +158,14 @@ public class StorageTest {
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
-		Task task = new Task("go swimming");
+		Task task = new Task(PARAM_DESCRIPTION);
 		
 		/* This is for the ‘not null’ partition */
 		assertEquals(0, storage.getTaskList().getTasks().size());
+		assertEquals(0, storage.getFileManager().getLineCount(todo));
 		assertEquals(String.format(FEEDBACK_ADDED, task.toFilteredString()), storage.addTask(task));
 		assertEquals(1, storage.getTaskList().getTasks().size());
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
 	}
 
 	/*
@@ -129,7 +187,7 @@ public class StorageTest {
 			/* This is for the ‘task_null’ partition */
 			storage.editTask(task, editedTask);
 			
-			task = new Task("go swimming");
+			task = new Task(PARAM_DESCRIPTION);
 			
 			/* This is for the ‘editedTask_null’ partition */
 			storage.editTask(task, editedTask);	
@@ -138,17 +196,31 @@ public class StorageTest {
 		}
 	}
 	
+	@Test(expected = Exception.class) 
+	public void testEditTaskMethodForLocationException() throws Exception {
+		Storage storage = new Storage();
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		storage.getFileManager().createNewFile(location);
+		
+		Task task = new Task(PARAM_DESCRIPTION), editedTask = new Task(PARAM_DESCRIPTION1);
+		storage.editTask(task, editedTask);
+	}
 	
 	@Test
 	public void testEditTaskMethod() throws Exception {
 		Storage storage = new Storage();
 		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		
+		/* This is for program run where user hasn't added any task */
 		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
-		storage.getFileManager().cleanFile(todo);
-		storage.getFileManager().cleanFile(done);
-		storage.addTask(new Task("go swimming"));
-		Task task = new Task("go swimming"), editedTask = new Task("go gym");
+		todo.delete();
+		done.delete();
+		storage.addTask(new Task(PARAM_DESCRIPTION));
+		Task task = new Task(PARAM_DESCRIPTION), editedTask = new Task(PARAM_DESCRIPTION1, PARAM_START_TIME, PARAM_END_TIME);
+		editedTask.setPriority(PARAM_PRIORITY);
 		
 		// This is for the ‘not null’ partition 
 		assertEquals(String.format(FEEDBACK_UPDATED, editedTask.toFilteredString()), storage.editTask(task, editedTask));
@@ -175,6 +247,17 @@ public class StorageTest {
 		storage.viewTasks(PARAM_VIEW_TASKS_OTHERS);
 	}
 	
+	@Test(expected = Exception.class) 
+	public void testViewTasksMethodForLocationException() throws Exception {
+		Storage storage = new Storage();
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		storage.getFileManager().createNewFile(location);
+		
+		storage.viewTasks(PARAM_VIEW_TASKS_EMPTY);
+	}
+	
 	@Test
 	public void testViewTasksMethod() throws Exception {
 		Storage storage = new Storage();
@@ -183,23 +266,27 @@ public class StorageTest {
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
-		storage.addTask(new Task("go gym"));
-		assertEquals(1, storage.getTaskList().getTasks().size());
+		storage.addTask(new Task(PARAM_DESCRIPTION1)); // floating task
+		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME)); // deadline
+		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_START_TIME, PARAM_END_TIME)); // event
+		storage.addTask(new Task(PARAM_DESCRIPTION1, Task.convertDateToString(new Date()), Task.convertDateToString(new Date()))); // overdue
+		assertEquals(4, storage.getFileManager().getLineCount(todo));
+		assertEquals(4, storage.getTaskList().getTasks().size());
 		
 		// This is for the ‘empty String’ partition 
-		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_EMPTY).size());	
+		assertEquals(3, storage.viewTasks(PARAM_VIEW_TASKS_EMPTY).size());	
 		
 		// This is for the ‘events’ partition 
-		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_EVENTS).size());
+		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_EVENTS).size());
 		
 		// This is for the ‘deadlines’ partition 
-		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_DEADLINES).size());
+		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_DEADLINES).size());
 		
 		// This is for the ‘tasks’ partition 
 		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_FLOATING).size());	
 		
 		// This is for the ‘overdue’ partition 
-		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_OVERDUE).size());
+		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_OVERDUE).size());
 		
 		// This is for the ‘done’ partition 
 		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_DONE).size());		
@@ -227,6 +314,17 @@ public class StorageTest {
 		}
 	}
 	
+	@Test(expected = Exception.class) 
+	public void testSearchTasksMethodForLocationException() throws Exception {
+		Storage storage = new Storage();
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		storage.getFileManager().createNewFile(location);
+		
+		storage.searchTasks(PARAM_VIEW_TASKS_EMPTY);
+	}
+	
 	@Test
 	public void testSearchTasksMethod() throws Exception {
 		Storage storage = new Storage();
@@ -235,8 +333,9 @@ public class StorageTest {
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
-		storage.addTask(new Task("go gym"));
+		storage.addTask(new Task(PARAM_DESCRIPTION1));
 		assertEquals(1, storage.getTaskList().getTasks().size());
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
 		
 		// This is a boundary case for the ‘not null’ partition 
 		assertEquals(1, storage.searchTasks(PARAM_SEARCH_TASKS_EMPTY).size());
@@ -265,17 +364,33 @@ public class StorageTest {
 	}
 	
 	@Test(expected = Exception.class) 
-	public void testMarkTaskDoneMethodForException1() throws Exception {
+	public void testMarkTaskDoneMethodForDoneTaskException() throws Exception {
 		Storage storage = new Storage();
 		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
 		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
-		storage.addTask(new Task("go gym"));
-		Task task = new Task("go gym");
+		storage.addTask(new Task(PARAM_DESCRIPTION1));
+		Task task = new Task(PARAM_DESCRIPTION1);
+		
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
+		assertEquals(0, storage.getFileManager().getLineCount(done));
 		storage.markTaskDone(task);
+		
 		// This is for the ‘already done’ partition 
+		storage.markTaskDone(task);
+	}
+	
+	@Test(expected = Exception.class) 
+	public void testMarkTaskDoneMethodForLocationException() throws Exception {
+		Storage storage = new Storage();
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		storage.getFileManager().createNewFile(location);
+		
+		Task task = new Task(PARAM_DESCRIPTION);
 		storage.markTaskDone(task);
 	}
 	
@@ -287,13 +402,21 @@ public class StorageTest {
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
-		storage.addTask(new Task("go gym"));
-		Task task = new Task("go gym");
+		storage.addTask(new Task(PARAM_DESCRIPTION));
+		Task task = new Task(PARAM_DESCRIPTION);
 		
 		// This is for the ‘not null’ partition
 		assertEquals(1, storage.getTaskList().getTasks().size());
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
 		assertEquals(0, storage.getTaskList().getCompletedTasks().size());
+		assertEquals(0, storage.getFileManager().getLineCount(done));
 		assertEquals(String.format(FEEDBACK_MARKED_DONE, task.toFilteredString()), storage.markTaskDone(task));	
+		assertEquals(1, storage.getFileManager().getLineCount(done));
+		
+		task = new Task(PARAM_DESCRIPTION1);
+		storage.addTask(new Task(PARAM_DESCRIPTION1));
+		assertEquals(String.format(FEEDBACK_MARKED_DONE, task.toFilteredString()), storage.markTaskDone(task));	
+		assertEquals(2, storage.getFileManager().getLineCount(done));
 	}
 	
 	/*
@@ -315,16 +438,32 @@ public class StorageTest {
 		storage.deleteTask(task);
 	}	
 	
+	@Test(expected = Exception.class) 
+	public void testDeleteTaskMethodForLocationException() throws Exception {
+		Storage storage = new Storage();
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		storage.getFileManager().createNewFile(location);
+		
+		Task task = new Task(PARAM_DESCRIPTION);
+		storage.deleteTask(task);
+	}
+	
 	@Test
 	public void testDeleteTaskMethod() throws Exception {
 		Storage storage = new Storage();
 		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
 		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		File todoBackup = new File(DIRECTORY_SYSTEM+FILENAME_TODO_BACKUP);
+		File doneBackup = new File(DIRECTORY_SYSTEM+FILENAME_DONE_BACKUP);
+		todoBackup.delete();
+		doneBackup.delete();
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
-		storage.addTask(new Task("go gym"));
-		Task task = new Task("go gym");
+		storage.addTask(new Task(PARAM_DESCRIPTION));
+		Task task = new Task(PARAM_DESCRIPTION);
 		
 		// This is for the 'not null' partition 
 		assertEquals(1, storage.getTaskList().getTasks().size());
@@ -360,6 +499,17 @@ public class StorageTest {
 		storage.setLocation(PARAM_SET_LOCATION_NOT_DIRECTORY);
 	}
 	
+	@Test(expected = Exception.class) 
+	public void testRestoreMethodForLocationException() throws Exception {
+		Storage storage = new Storage();
+		
+		/* This is for the first launch of program where user hasn't set the storage location */
+		File location = new File(DIRECTORY_SYSTEM+FILENAME_STORAGE);
+		storage.getFileManager().createNewFile(location);
+		
+		storage.restore(PARAM_RESTORE_COMMAND);
+	}
+	
 	@Test
 	public void testRestoreMethod() throws Exception {
 		Storage storage = new Storage();
@@ -368,10 +518,23 @@ public class StorageTest {
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
+		Task task = new Task(PARAM_DESCRIPTION);
+		
 		assertEquals(0, storage.getTaskList().getTasks().size());
-		storage.addTask(new Task("go gym"));
+		assertEquals(0, storage.getFileManager().getLineCount(todo));
+		assertEquals(0, storage.getFileManager().getLineCount(done));
+		storage.addTask(task);
 		assertEquals(1, storage.getTaskList().getTasks().size());
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
+		assertEquals(0, storage.getFileManager().getLineCount(done));
+		
+		
+		storage.markTaskDone(task);	
+		assertEquals(0, storage.getFileManager().getLineCount(todo));
+		assertEquals(1, storage.getFileManager().getLineCount(done));
+		
 		assertEquals(String.format(FEEDBACK_RESTORED, PARAM_RESTORE_COMMAND), storage.restore(PARAM_RESTORE_COMMAND));
-		//assertEquals(0, storage.getTaskList().getTasks().size());
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
+		assertEquals(0, storage.getFileManager().getLineCount(done));
 	}
 }

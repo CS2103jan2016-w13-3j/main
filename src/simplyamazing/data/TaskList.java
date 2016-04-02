@@ -27,15 +27,18 @@ public class TaskList {
 
 	public void resetTaskList() {
 		tasks = new ArrayList<Task>();
+		assert(tasks.size()==0);
 	}
 
 	public void resetCompletedTaskList() {
 		completedTasks = new ArrayList<Task>();
+		assert(completedTasks.size()==0);
 	}
 	
 	public void createTaskList(ArrayList<String> lines, ArrayList<Task> taskList) throws Exception {
 		for (int i = 0; i < lines.size(); i++) {
 			String[] fields = lines.get(i).split(Task.FIELD_SEPARATOR);
+			assert(fields.length == 5);
 			
 			String description = fields[Task.ARRAY_POSITION_FOR_DESCRIPTION];
 			String startTimeString = fields[Task.ARRAY_POSITION_FOR_START_TIME];
@@ -70,17 +73,27 @@ public class TaskList {
 	}
 	
 	public void addTaskToList(Task task, ArrayList<Task> taskList) throws Exception {
+		int taskListSizeBeforeAdding = taskList.size();
 		taskList.add(task);
+		int taskListSizeAfterAdding = taskList.size();
+		assert(taskListSizeAfterAdding == taskListSizeBeforeAdding + 1);
 		Collections.sort(taskList);
 	}
 	
 	public void removeTaskFromList(Task task) throws Exception {
+		int taskListSizeBeforeRemoving = 0, taskListSizeAfterRemoving = 0;
+		
 		if (tasks.contains(task)) {
+			taskListSizeBeforeRemoving = tasks.size();
 			tasks.remove(task);
+			taskListSizeAfterRemoving = tasks.size();
 			Collections.sort(tasks);
 		} else {
+			taskListSizeBeforeRemoving = completedTasks.size();
 			completedTasks.remove(task);
+			taskListSizeAfterRemoving = completedTasks.size();
 			Collections.sort(completedTasks);
 		}
+		assert(taskListSizeAfterRemoving == taskListSizeBeforeRemoving - 1);
 	}
 }

@@ -14,9 +14,10 @@ public class ReadManager {
 		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 		String line = null;
 		ArrayList<String> lines = new ArrayList<String>();
-			
+		
 		while ((line = bufferedReader.readLine()) != null) {	
 			lines.add(line);
+			assert(lines.size()!=0);
 		}
 		bufferedReader.close();
 		return lines;	 
