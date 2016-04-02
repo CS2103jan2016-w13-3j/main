@@ -10,10 +10,13 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_VALID_STARTTIME = "edit 1 start 29:00 05 Apr 2016";
 	private static final String EDIT_COMMAND_VALID_PRIORITY = "edit 1 priority high";
 	private static final String EDIT_COMMAND_VALID_FEEDBACK = "";
-	private static final String EDIT_COMMAND_INVALID_WRONG_KEYWORD = "edit 2 drink";
-	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
+	private static final String EDIT_COMMAND_INVALID_STARTTIME_BEFORE_CURRENT = "edit 2 start 12:00 30 Mar 2016";
+	private static final String EDIT_COMMAND_INVALID_ENDTIME_BEFORE_CURRENT = "edit 3 end 14:00 01 Apr 2016";
+	private static final String EDIT_COMMAND_INVALID_WRONG_KEYWORD = "edit 2 drink";	
 	private static final String EDIT_COMMAND_INVALID_WITHOUT_INDEX = "edit startTime 12:00 20 Mar 2016";
-	private static final String EDIT_COMMAND_INVALID_INDEX = "Error: Index provided is not an Integer.";
+	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
+	private static final String EDIT_COMMAND_INVALID_INDEX_FEEDBACK = "Error: Index provided is not an Integer.";
+	private static final String EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK ="Error: Time provided must be after the current time";
 	
 	private static final String ADD_COMMAND_FLOATING_VALID = "add go home";
 	private static final String ADD_COMMAND_VALID_FEEDBACK = "";
@@ -101,7 +104,9 @@ public class ParserTest {
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_STARTTIME).getFeedBack());
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_PRIORITY).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
-		assertEquals(EDIT_COMMAND_INVALID_INDEX,parser.getHandler(EDIT_COMMAND_INVALID_WITHOUT_INDEX).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_INDEX_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_WITHOUT_INDEX).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_BEFORE_CURRENT).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_ENDTIME_BEFORE_CURRENT).getFeedBack());
 	}
 
 	@Test//(expected = Exception.class)

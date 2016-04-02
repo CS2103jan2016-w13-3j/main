@@ -80,8 +80,6 @@ public class ParserEdit {
 			Integer.parseInt(taskInfo);
 		} catch (NumberFormatException e) {
 			return false;
-		} catch (NullPointerException e) {
-			return false;
 		}
 		// only got here if we didn't return false
 		return true;
