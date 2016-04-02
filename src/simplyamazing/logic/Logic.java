@@ -30,7 +30,7 @@ public class Logic {
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
 	private static final String MESSAGE_EMPTY_LIST = "List is empty";
 	private static final String ERROR_NO_TASKS_FOUND = "Error: There are no tasks containing the given keyword";
-	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo";
+	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo"; 
 	private static final String ERROR_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
 	private static final String ERROR_START_AFTER_END ="Error: New start time cannot be after the end time";
 	private static final String ERROR_START_SAME_AS_END ="Error: New start time cannot be the same as the end time";
@@ -161,7 +161,7 @@ public class Logic {
 			case EXIT :
 				System.exit(0);
 			default:
-				throw new Exception(ERROR_INVALID_COMMAND);
+				return ERROR_INVALID_COMMAND;
 		}
 		
 		
@@ -185,7 +185,7 @@ public class Logic {
 	private static String executeAddCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in add");
-			throw new Exception(commandHandler.getFeedBack());
+			return commandHandler.getFeedBack();
 			
 		} else {
 			logger.log(Level.INFO, "no error with add, interacting with storage now");
@@ -257,7 +257,7 @@ public class Logic {
 		
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in delete");
-			throw new Exception(commandHandler.getFeedBack());
+			return commandHandler.getFeedBack();
 			
 		} else {		
 			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
@@ -299,33 +299,36 @@ public class Logic {
 	
 	
 	private static String executeUndoCommand(Handler commandHandler) throws Exception {
-		if (commandHandler.getHasError() == true) {			
-			logger.log(Level.WARNING, "handler has reported an error in edit");
-			throw new Exception(commandHandler.getFeedBack());
+		boolean hasPreviousCommand = isPreviousCommandValid();
 			
-		} else {
-			boolean hasPreviousCommand = isPreviousCommandValid();
+		if (hasPreviousCommand == false) {				
+			logger.log(Level.WARNING, "previous command is invalid");
+			return ERROR_PREVIOUS_COMMAND_INVALID;
 			
-			if (hasPreviousCommand == false) {				
-				logger.log(Level.WARNING, "previous command is invalid");
-				throw new Exception(ERROR_PREVIOUS_COMMAND_INVALID);
-				
-			} else {			
-				return storageObj.restore(lastModifyCommand);
-			}
+		} else {			
+			return storageObj.restore(lastModifyCommand);
 		}
 	}
 	
 	
 	private static String executeSetLocationCommand(Handler commandHandler) throws Exception {
+		
 		if (commandHandler.getHasError() == true) {			
 			logger.log(Level.WARNING, "handler has reported an error in location");
-			throw new Exception(commandHandler.getFeedBack());
+			return commandHandler.getFeedBack();
 			
 		} else {			
 			String directoryPath = commandHandler.getKeyWord();
 			assert directoryPath != null;
-			return storageObj.setLocation(directoryPath);
+			String feedback = "";
+			
+			try{
+				feedback = storageObj.setLocation(directoryPath);
+			} catch (Exception e){
+				feedback = "Error: Not a valid directory.";
+				//throw new Exception(feedback);
+			}
+			return feedback;
 		
 		}
 	}
@@ -355,7 +358,7 @@ public class Logic {
 	private static String executeHelpCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in help");
-			throw new Exception(commandHandler.getFeedBack());
+			return commandHandler.getFeedBack();
 			
 		} else {
 			if(commandHandler.getKeyWord().equals(STRING_EMPTY)) {
