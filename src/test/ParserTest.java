@@ -5,7 +5,10 @@ import org.junit.Test;
 import simplyamazing.parser.Parser;
 
 public class ParserTest {
-	private static final String EDIT_COMMAND_VALID = "edit 1 description dancing";
+	private static final String EDIT_COMMAND_VALID_DESCRIPTION = "edit 1 description dancing";
+	private static final String EDIT_COMMAND_VALID_ENDTIME = "edit 1 end 22:00 05 Apr 2016";
+	private static final String EDIT_COMMAND_VALID_STARTTIME = "edit 1 start 29:00 05 Apr 2016";
+	private static final String EDIT_COMMAND_VALID_PRIORITY = "edit 1 priority high";
 	private static final String EDIT_COMMAND_VALID_FEEDBACK = "";
 	private static final String EDIT_COMMAND_INVALID_WRONG_KEYWORD = "edit 2 drink";
 	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
@@ -41,8 +44,8 @@ public class ParserTest {
 
 	private static final String DELETE_COMMAND_VALID_INDEX = "delete 1";
 	private static final String DELETE_COMMAND_VALID_INDEX_FEEDBACK = "";
-	private static final String DELETE_COMMAND_INVALID_DUMMY_STRING = "Error: Invalid command entered. Please enter \"help\" to view command format";
-	private static final String DELETE_COMMAND_INVALID_FEEDBACK = "Error: Invalid command entered. Please enter \"help\" to view command format";
+	private static final String DELETE_COMMAND_INVALID_DUMMY_STRING = "delete cba";
+	private static final String DELETE_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
 
 	private static final String LOCATION_COMMAND_INVALID = "location ";
 	private static final String LOCATION_COMMAND_VALID = "location C:\"Users\"Ishpal\"Desktop\"Task Data";
@@ -93,7 +96,10 @@ public class ParserTest {
 	
     @Test
 	public void testEditCommand() throws Exception {
-		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_ENDTIME).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_STARTTIME).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_PRIORITY).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_INDEX,parser.getHandler(EDIT_COMMAND_INVALID_WITHOUT_INDEX).getFeedBack());
 	}
