@@ -62,8 +62,9 @@ public class SystemTest {
 	private static final String COMMAND_VIEW_TASKS_OVERDUE = COMMAND_VIEW + CHARACTER_SPACE + TASK_TYPE_OVERDUE;
 	private static final String COMMAND_VIEW_TASKS_DONE = COMMAND_VIEW + CHARACTER_SPACE + TASK_TYPE_DONE;
 	private static final String COMMAND_VIEW_TASKS_OTHERS = COMMAND_VIEW + CHARACTER_SPACE + "other";
-	private static final String COMMAND_SEARCH_TASKS_EMPTY = "search";
-	private static final String COMMAND_SEARCH_TASKS_KEYWORD = "search gym";
+	private static final String COMMAND_SEARCH_TASKS_EMPTY = COMMAND_SEARCH;
+	private static final String COMMAND_SEARCH_TASKS_KEYWORD =  COMMAND_SEARCH + CHARACTER_SPACE + "hello";
+	private static final String COMMAND_SEARCH_TASKS_OTHER_KEYWORD =  COMMAND_SEARCH + CHARACTER_SPACE + "other";
 	private static final String COMMAND_RESTORE_EMPTY = "";
 	private static final String COMMAND_RESTORE = "restore";
 	
@@ -94,6 +95,7 @@ public class SystemTest {
 	private static final String FEEDBACK_DELETED = "%1$s has been successfully deleted.";
 	private static final String FEEDBACK_RESTORED = "\"%1$s\" command has been successfully undone.";
 	private static final Object FEEDBACK_EMPTY_LIST = "List is empty";
+	private static final Object FEEDBACK_NO_TASK_FOUND = "There are no tasks containing the keyword";
 	
 	
 	/*
@@ -211,7 +213,8 @@ public class SystemTest {
 		Parser parser = new Parser();
 		Storage storage = new Storage();
 		
-		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		logic.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
+		
 		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
@@ -223,29 +226,73 @@ public class SystemTest {
 		assertEquals(3, storage.getFileManager().getLineCount(todo));
 		
 		// This is for the ‘empty String’ partition 
+		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_EMPTY).getHasError());
+		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_EMPTY).getCommandType());
 		assertEquals("1,"+parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toString()+"\n"
 				+"2,"+parser.getHandler(COMMAND_ADD_EVENT).getTask().toString()+"\n"
 				+"3,"+parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_EMPTY));	
 		assertEquals(3, storage.viewTasks(PARAM_VIEW_TASKS_EMPTY).size());	
 		
 		// This is for the ‘events’ partition 
+		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_EVENTS).getHasError());
+		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_EVENTS).getCommandType());
 		assertEquals("1,"+parser.getHandler(COMMAND_ADD_EVENT).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_EVENTS));
 		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_EVENTS).size());
 		
 		// This is for the ‘deadlines’ partition 
+		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_DEADLINES).getHasError());
+		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_DEADLINES).getCommandType());
 		assertEquals("1,"+parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_DEADLINES));
 		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_DEADLINES).size());
 		
 		// This is for the ‘tasks’ partition 
+		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_FLOATING).getHasError());
+		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_FLOATING).getCommandType());
 		assertEquals("1,"+parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()+"\n", logic.executeCommand(COMMAND_VIEW_TASKS_FLOATING));	
 		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_FLOATING).size());
 		
 		// This is for the ‘overdue’ partition 
+		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_OVERDUE).getHasError());
+		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_OVERDUE).getCommandType());
 		assertEquals(FEEDBACK_EMPTY_LIST, logic.executeCommand(COMMAND_VIEW_TASKS_OVERDUE));
 		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_OVERDUE).size());
 		
 		// This is for the ‘done’ partition 
+		assertEquals(false, parser.getHandler(COMMAND_VIEW_TASKS_DONE).getHasError());
+		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_DONE).getCommandType());
 		assertEquals(FEEDBACK_EMPTY_LIST, logic.executeCommand(COMMAND_VIEW_TASKS_DONE));	
 		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_DONE).size());	
+	}
+	
+	@Test
+	public void testSearchTasksMethod() throws Exception {
+		Logic logic = new Logic();
+		Parser parser = new Parser();
+		Storage storage = new Storage();
+		
+		logic.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
+		
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		
+		logic.executeCommand(COMMAND_ADD_FLOATING_TASK); // add floating task
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
+		
+		// This is a boundary case for the ‘not null’ partition 
+		assertEquals(false, parser.getHandler(COMMAND_SEARCH_TASKS_EMPTY).getHasError());
+		assertEquals(COMMAND_SEARCH, parser.getHandler(COMMAND_SEARCH_TASKS_EMPTY).getCommandType());
+		assertEquals("1,"+parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()+"\n", logic.executeCommand(COMMAND_SEARCH_TASKS_EMPTY));
+		
+		// This is for the ‘not null’ partition 
+		assertEquals(false, parser.getHandler(COMMAND_SEARCH_TASKS_KEYWORD).getHasError());
+		assertEquals(COMMAND_SEARCH, parser.getHandler(COMMAND_SEARCH_TASKS_KEYWORD).getCommandType());
+		assertEquals("1,"+parser.getHandler(COMMAND_ADD_FLOATING_TASK).getTask().toString()+"\n", logic.executeCommand(COMMAND_SEARCH_TASKS_KEYWORD));
+	
+		// This is for the ‘not null’ partition 
+		assertEquals(false, parser.getHandler(COMMAND_SEARCH_TASKS_OTHER_KEYWORD).getHasError());
+		assertEquals(COMMAND_SEARCH, parser.getHandler(COMMAND_SEARCH_TASKS_OTHER_KEYWORD).getCommandType());
+		assertEquals(FEEDBACK_NO_TASK_FOUND, logic.executeCommand(COMMAND_SEARCH_TASKS_OTHER_KEYWORD));
 	}
 }
