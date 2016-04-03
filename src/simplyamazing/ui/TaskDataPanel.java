@@ -23,7 +23,7 @@ public class TaskDataPanel {
 		taskDataTable.getTableHeader().setBackground(Color.WHITE);
 		taskDataTable.getTableHeader().setBorder(BorderFactory.createEtchedBorder());
 		taskDataTable.setBorder(BorderFactory.createEtchedBorder());
-		taskDataTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		//taskDataTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		TableColumnModel columnModel = taskDataTable.getColumnModel();
 		columnModel.getColumn(0).setPreferredWidth(29);
 		columnModel.getColumn(1).setPreferredWidth(280);

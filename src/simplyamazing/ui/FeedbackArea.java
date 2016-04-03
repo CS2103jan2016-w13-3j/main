@@ -12,7 +12,6 @@ public class FeedbackArea {
 	public FeedbackArea() {
 		feedbackArea = new JTextArea();
 		feedbackArea.setEditable(false);
-		feedbackArea.setBounds(10, 346, 664, 22);
 	}
 
 	public JTextArea getFeedbackArea() {		

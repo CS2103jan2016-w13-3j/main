@@ -15,7 +15,6 @@ public class InstructionPanel {
 		instructionPanel.setForeground(Color.BLACK);
 		instructionPanel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		instructionPanel.setEditable(false);
-		instructionPanel.setBounds(10, 57, 664, 311);
 	}
 	
 	public JTextPane getInstrctionPanel() {
