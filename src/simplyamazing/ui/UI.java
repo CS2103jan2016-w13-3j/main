@@ -17,7 +17,8 @@ import simplyamazing.logic.Logic;
 
 public class UI {
 	private static final String MESSAGE_LOG_USER_COMMAND_EXECUTED = "user command is successfully executed.";
-
+	private static final String MESSAGE_EMPTY_LIST = "List is empty";
+	
 	private static final Color COLOR_DARK_GREEN = new Color(0, 128, 0);
 
 	private static final String CHARACTER_NEW_LINE = "\n";
@@ -183,6 +184,9 @@ public class UI {
 					feedbackArea.colorCodeFeedback(Color.RED);
 					logger.log(Level.WARNING, feedback);
 				} else {
+					if (feedback.matches(MESSAGE_EMPTY_LIST)) {
+						scrollPane.setVisible(false);
+					}
 					feedbackArea.colorCodeFeedback(COLOR_DARK_GREEN);
 					logger.log(Level.INFO, feedback);
 				}
