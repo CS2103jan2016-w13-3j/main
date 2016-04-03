@@ -55,16 +55,16 @@ public class LogicTest {
 	private static final String DONE_INVALID_INDEX_FEEDBACK = "Error: The Index entered is invalid";
 	private static final String DONE_INVALID_INDEX_STRING = "done abcd";
 	private static final String DONE_INVALID_COMMAND_FEEDBACK = "Error: Index provided is not an Integer.";
-	private static final String DONE_VALID_INDEX  = "done 2";
+	private static final String DONE_VALID_INDEX  = "done 1";
 	private static final String DONE_VALID_FEEDBACK = "Task [hello world] has been marked as done.";
 	
 	
 	private static final String SEARCH_VALID_KEYWORD = "search hello";
-	private static final String SEARCH_VALID_FEEDBACK = "1. Task[hello world]";
+	private static final String SEARCH_VALID_FEEDBACK = "1,hello world, , , , \n";
 	private static final String SEARCH_INVALID_KEYWORD = "search joke";
-	private static final String SEARCH_INVALID_FEEDBACK = "Error: No tasks found";
+	private static final String SEARCH_INVALID_FEEDBACK = "Error: There are no tasks containing the given keyword";
 	private static final String SEARCH_EMPTY_STRING = "search ";
-	private static final String SEARCH_ALL_TASKS = "";
+	private static final String SEARCH_ALL_TASKS = "1,cs2103 peer review, ,23:59 25 May 2016, , \n2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, , \n3,hello world, , , , \n";
 	
 	
 	private static final String HELP_VALID = "help";
@@ -161,12 +161,12 @@ public class LogicTest {
 	 * The following test case has 2 different partitions, based on whether the command is valid or invalid.
 	 * It also checks the corner case where the user does not give a keyword after the search command
 	 */
-	/*@Test(expected = Exception.class)
+	@Test
 	public void test6SearchCommand() throws Exception{
-		assertEquals(new Exception(SEARCH_INVALID_FEEDBACK),logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
+		assertEquals(SEARCH_INVALID_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
 		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
 		assertEquals(SEARCH_ALL_TASKS,logicObj.executeCommand(SEARCH_EMPTY_STRING));
-	}*/
+	}
 	
 	
 	@Test
@@ -194,7 +194,25 @@ public class LogicTest {
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_ZERO));
 		assertEquals(DELETE_VALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_VALID_INDEX));
 	}
+
+	@Test
+	/*
+	 * The following test case contains 4 equivalent partitions, a negative partition where the value is below what is expected,
+	 * a positive partition, where the value is larger than expected and the third partition where the value is within what is
+	 * expected and the last one where a string is given instead of an integer
+	 */
 	
+	public void test9MarkCommand() throws Exception{
+		logicObj.executeCommand("view");
+		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_NEGATIVE));
+		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
+		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_LARGER));
+		assertEquals(DONE_INVALID_COMMAND_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_STRING));
+		logicObj.executeCommand("view");
+		assertEquals(DONE_VALID_FEEDBACK, logicObj.executeCommand(DONE_VALID_INDEX));
+	}
+	
+
 	@Test
 	/*
 	 * The following test case contains 3 equivalent partitions, a negative partition where the value is below what is expected,
@@ -202,7 +220,7 @@ public class LogicTest {
 	 * expected
 	 */
 	
-	public void test9ValidIndex(){
+	public void test91ValidIndex(){
 		list.clear();
 		addItemsToList(5);
 		
@@ -217,23 +235,12 @@ public class LogicTest {
 		assertFalse(Logic.checkIndexValid(new String("6"), list));
 	}
 	
-
+/*	
 	@Test
-	/*
-	 * The following test case contains 4 equivalent partitions, a negative partition where the value is below what is expected,
-	 * a positive partition, where the value is larger than expected and the third partition where the value is within what is
-	 * expected and the last one where a string is given instead of an integer
-	 */
-	
-	public void test10MarkCommand() throws Exception{
-		logicObj.executeCommand("view");
-		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_NEGATIVE));
-		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
-		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_LARGER));
-		assertEquals(DONE_INVALID_COMMAND_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_STRING));
-		assertEquals(DONE_VALID_FEEDBACK, logicObj.executeCommand(DONE_VALID_INDEX));
+	public void test11UndoCommand() throws Exception {
+		assertEquals("\"done 1\" command has been successfully undone.", logicObj.executeCommand("undo"));
 	}
-
+*/
 	public void addItemsToList(int numItemsToAdd) {
 		for(int i=0; i<numItemsToAdd; i++) {
 			list.add(new Task());

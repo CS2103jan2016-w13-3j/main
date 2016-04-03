@@ -252,7 +252,7 @@ public class Task implements Comparable<Task>{
 				filteredString += fields[i].trim();
 			}
 		}
-		filteredString += filteredString+"]";
+		filteredString = filteredString+"]";
 		return filteredString;
 	}
 }
