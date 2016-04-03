@@ -27,13 +27,19 @@ public class ParserTest {
 	private static final String ADD_COMMAND_DEADLINE_VALID = "add finish homework by 22:00 20 Apr 2017";
 	private static final String ADD_COMMAND_DEADLINE_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_EVENT_VALID = "add have a dinner from 19:00 28 Apr 2016 to 21:00 28 Apr 2016";
-	private static final String ADD_COMMAND_EVENT_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_WITH_ONLY_STARTTIME_INVALID = "add walk from 14:00 10 May 2017";
 	private static final String ADD_COMMAND_STARTTIME_BEFORE_CURRENTTIME ="add test from 13:00 12 Mar 2016 to 14:00 11 Apr 2016";
+	private static final String ADD_COMMAND_DEADLINE_NO_DESCRIPTION = "add by 23:00 01 May 2016";
+	private static final String ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME = "add swim from 21:00 22 Mar 2017 to 17:00 10 Mar 2016";
+	private static final String ADD_COMMAND_EVENT_NO_DESCRIPTION = "add from 13:00 02 May 2016 to 16:00 02 May 2016";
+	private static final String ADD_COMMAND_EVENT_FROM_AFTER_TO = "add go to nus to 12:00 04 May 2016 from 13:00 05 May 2016";
+	private static final String ADD_COMMAND_EVENT_WRONG_TIME_FORMAT = "add testing from e:rr to b:ca";
+	private static final String ADD_COMMAND_DEADLINES_ENDTIME_BEFORE_CURRENT = "add demo by 14:00 23 Mar 2016";
+	private static final String ADD_COMMAND_EVENT_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_INVALID_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
 	private static final String ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK = "Error: Please ensure the fields are correct";
-	private static final String ADD_COMMAND_ERROR_MESSAGE_DATE_BEFORE_CURRENT ="Error: Time provided must be after the current time";
-	private static final String ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME = "add swim from 21:00 22 Mar 2017 to 17:00 10 Mar 2016";
+	private static final String ADD_COMMAND_ERROR_MESSAGE_DATE_BEFORE_CURRENT_FEEDBACK ="Error: Time provided must be after the current time";
+	private static final String ADD_COMMAND_ERROR_TIME_FORMAT_INVALID_FEEDBACK="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
      
 	private static final String HELP_COMMAND_VALID = "help";
 	private static final String HELP_COMMAND_ADD_VALID = "help add";
@@ -91,8 +97,12 @@ public class ParserTest {
 		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_WITH_ONLY_STARTTIME_INVALID).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FEEDBACK,
 				parser.getHandler(ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME).getFeedBack());
-		assertEquals(ADD_COMMAND_ERROR_MESSAGE_DATE_BEFORE_CURRENT, parser.getHandler(ADD_COMMAND_STARTTIME_BEFORE_CURRENTTIME).getFeedBack());
-		
+		assertEquals(ADD_COMMAND_ERROR_MESSAGE_DATE_BEFORE_CURRENT_FEEDBACK, parser.getHandler(ADD_COMMAND_STARTTIME_BEFORE_CURRENTTIME).getFeedBack());
+		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINE_NO_DESCRIPTION).getFeedBack());
+		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_NO_DESCRIPTION).getFeedBack());
+		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_FROM_AFTER_TO).getFeedBack());
+	  //assertEquals(ADD_COMMAND_ERROR_TIME_FORMAT_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_WRONG_TIME_FORMAT).getFeedBack());
+		assertEquals(ADD_COMMAND_ERROR_MESSAGE_DATE_BEFORE_CURRENT_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINES_ENDTIME_BEFORE_CURRENT).getFeedBack());
 	}
 
 	@Test//(expected = Exception.class)

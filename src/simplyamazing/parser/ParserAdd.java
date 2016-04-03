@@ -59,6 +59,8 @@ public class ParserAdd {
 			startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
 			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
 			if (startTimeIndex > endTimeIndex) {
+				handler.setHasError(true);
+				handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 				return false;
 			}
 			startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
@@ -73,14 +75,12 @@ public class ParserAdd {
 				List<DateGroup> dateGroup1 = dateParser.parse(startTime);
 				List<DateGroup> dateGroup2 = dateParser.parse(endTime);
 				
-				if(dateGroup1.isEmpty()||dateGroup2.isEmpty()){
+				/*if(dateGroup1.isEmpty()||dateGroup2.isEmpty()){
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-				}
-				List<Date> date1 = dateGroup1.get(0).getDates();
-				startingDate = date1.get(0);
-				List<Date> date2 = dateGroup2.get(0).getDates();
-			    endingDate = date2.get(0);
+				}*/
+				
+				
 				
 				try {
 					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
@@ -89,6 +89,10 @@ public class ParserAdd {
 					startingDate = (Date)sdf.parse(startTime);
 					Date endingDate = null;
 					endingDate = (Date)sdf.parse(endTime); */
+					List<Date> date1 = dateGroup1.get(0).getDates();
+					startingDate = date1.get(0);
+					List<Date> date2 = dateGroup2.get(0).getDates();
+				    endingDate = date2.get(0);
 					Date todayDate = null;
 					todayDate = (Date)sdf.parse(sdf.format(new Date()));
 
@@ -122,13 +126,10 @@ public class ParserAdd {
 			} else if (!endTime.equals(EMPTY_STRING)) {
                 List<DateGroup> dateGroup3 = dateParser.parse(endTime);
 				
-				if(dateGroup3.isEmpty()){
+				/*if(dateGroup3.isEmpty()){
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-				}
-				List<Date> date3 = dateGroup3.get(0).getDates();
-				endingDate = date3.get(0);
-				
+				}*/
 				try {
 					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT, Locale.ENGLISH);
 					sdf.setLenient(true);
@@ -136,6 +137,8 @@ public class ParserAdd {
 					endingDate = (Date)sdf.parse(endTime);*/
 					Date todayDate = null;
 					todayDate = (Date)sdf.parse(sdf.format(new Date()));
+					List<Date> date3 = dateGroup3.get(0).getDates();
+					endingDate = date3.get(0);
 					if (!endingDate.after(todayDate)) {
 						handler.setHasError(true);
 						handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
