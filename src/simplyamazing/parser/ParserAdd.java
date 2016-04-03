@@ -27,22 +27,24 @@ public class ParserAdd {
 	private static int startTimeIndex;
 	private static int endTimeIndex;
 
-	private boolean checkValue;
+	private boolean checkValue = false, isEvent = false, isDeadline = false, isFloatingTask = false;
 
 	private static Logger logger = Logger.getLogger("ParserAdd");
-	
+
 	public Handler parseAddCommand(Handler handler, String taskInfo) throws Exception {
 		//logger.log(Level.INFO, "going to start processing cmd");
 		checkValue = isAddingValid(handler,taskInfo);
 		if (checkValue) {
-			if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO) && taskInfo.contains(STRING_TIME_FORMATTER)) { // For events
+			if (isEvent) { // For events
 				handler.getTask().setDescription(description);
 				handler.getTask().setStartTime(startingDate);
 				handler.getTask().setEndTime(endingDate);
-			} else if (taskInfo.contains(KEYWORD_DEADLINE) && taskInfo.contains(STRING_TIME_FORMATTER)) { // For deadlines
+			} 
+			if (isDeadline) { // For deadlines
 				handler.getTask().setDescription(description);
 				handler.getTask().setEndTime(endingDate);
-			} else {
+			} 
+			if (isFloatingTask) {
 				handler.getTask().setDescription(taskInfo.trim());
 			}
 		} else {
@@ -53,69 +55,81 @@ public class ParserAdd {
 
 	public boolean isAddingValid(Handler handler,String taskInfo) throws Exception {
 		com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
-		
+
 		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO) && taskInfo.contains(STRING_TIME_FORMATTER)) {
 			System.out.println("Found "+KEYWORD_SCHEDULE_FROM+", "+KEYWORD_SCHEDULE_TO+","+STRING_TIME_FORMATTER);
 			startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
 			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
-			if (startTimeIndex > endTimeIndex) {
-				handler.setHasError(true);
-				handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
-				return false;
-			}
-			startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
-			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
-			description = taskInfo.substring(0, startTimeIndex);
+			if (startTimeIndex < endTimeIndex) {
 
-			if (description.equals(EMPTY_STRING) || startTime.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
-				handler.setHasError(true);
-				handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
-				return false;
-			} else if (!startTime.equals(EMPTY_STRING) && !endTime.equals(EMPTY_STRING)) {
-				List<DateGroup> dateGroup1 = dateParser.parse(startTime);
-				List<DateGroup> dateGroup2 = dateParser.parse(endTime);
-				
-				if(dateGroup1.isEmpty()||dateGroup2.isEmpty()){
+				startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
+				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
+				description = taskInfo.substring(0, startTimeIndex);
+
+				if (description.equals(EMPTY_STRING) || startTime.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
 					handler.setHasError(true);
-					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+					handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 					return false;
-				}
-				
-				
-				
-				try {
-					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
-					sdf.setLenient(true);
-					/*Date startingDate = null;
+				} else if (!startTime.equals(EMPTY_STRING) && !endTime.equals(EMPTY_STRING)) {
+					List<DateGroup> dateGroup1 = dateParser.parse(startTime);
+					List<DateGroup> dateGroup2 = dateParser.parse(endTime);
+
+					if(dateGroup1.isEmpty()||dateGroup2.isEmpty()){
+						handler.setHasError(true);
+						handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+						return false;
+					}
+
+
+
+					try {
+						SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
+						sdf.setLenient(true);
+						/*Date startingDate = null;
 					startingDate = (Date)sdf.parse(startTime);
 					Date endingDate = null;
 					endingDate = (Date)sdf.parse(endTime); */
-					List<Date> date1 = dateGroup1.get(0).getDates();
-					startingDate = date1.get(0);
-					List<Date> date2 = dateGroup2.get(0).getDates();
-				    endingDate = date2.get(0);
-					Date todayDate = null;
-					todayDate = (Date)sdf.parse(sdf.format(new Date()));
+						List<Date> date1 = dateGroup1.get(0).getDates();
+						startingDate = date1.get(0);
+						List<Date> date2 = dateGroup2.get(0).getDates();
+						endingDate = date2.get(0);
+						Date todayDate = null;
+						todayDate = (Date)sdf.parse(sdf.format(new Date()));
 
-					if (startingDate.after(endingDate)||startingDate.compareTo(endingDate) == 0) {
+						if (startingDate.after(endingDate)||startingDate.compareTo(endingDate) == 0) {
+							handler.setHasError(true);
+							handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
+							return false;
+						} else if (!startingDate.after(todayDate) || !endingDate.after(todayDate)) {
+							handler.setHasError(true);
+							handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
+							return false;
+						} else {
+							isEvent = true;
+							return true;
+						}
+					} catch (ParseException e) {
 						handler.setHasError(true);
-						handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
+						handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 						return false;
-					} else if (!startingDate.after(todayDate) || !endingDate.after(todayDate)) {
-						handler.setHasError(true);
-						handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
-						return false;
-					} else {
-						return true;
 					}
-				} catch (ParseException e) {
+				}
+			} else if(taskInfo.contains(KEYWORD_DEADLINE)){
+				endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
+				startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
+				System.out.println(startTimeIndex);
+				System.out.println(endTimeIndex);
+				if(endTimeIndex < startTimeIndex){
+					System.out.println("This is not an event");
 					handler.setHasError(true);
-					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+					handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 					return false;
 				}
 			}
-		} else if (taskInfo.contains(KEYWORD_DEADLINE) && taskInfo.contains(STRING_TIME_FORMATTER)) {
+		}
+		if (taskInfo.contains(KEYWORD_DEADLINE) && taskInfo.contains(STRING_TIME_FORMATTER)) {
 			System.out.println("Found "+KEYWORD_DEADLINE+", "+STRING_TIME_FORMATTER);
+			System.out.println("This is a deadline task");
 			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
 			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex));
 			description = taskInfo.substring(0, endTimeIndex).trim();
@@ -125,8 +139,8 @@ public class ParserAdd {
 				handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 				return false;
 			} else if (!endTime.equals(EMPTY_STRING)) {
-                List<DateGroup> dateGroup3 = dateParser.parse(endTime);
-				
+				List<DateGroup> dateGroup3 = dateParser.parse(endTime);
+
 				if(dateGroup3.isEmpty()){
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
@@ -145,13 +159,15 @@ public class ParserAdd {
 						handler.setHasError(true);
 						handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 						return false;
-					}
+					} 
 				} catch (ParseException e) {
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 					return false;
 				}
 			}
+			isDeadline = true;
+			return true;
 		} else {
 			if(taskInfo.contains(STRING_TIME_FORMATTER)) {
 				handler.setHasError(true);
@@ -165,6 +181,7 @@ public class ParserAdd {
 				}
 			}
 		}
+		isFloatingTask = true;
 		return true;
 	}
 }
