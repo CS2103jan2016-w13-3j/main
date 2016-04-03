@@ -53,6 +53,24 @@ public class CommandBarController {
 			}
 		});
 	}
+	
+	public void handleKeyPressedEvent(final FixedSizedUI ui) {
+		commandBar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.isActionKey()) {
+					if(e.getKeyCode() == KeyEvent.VK_UP) {
+						ui.getUserCommand();
+					}
+				} else {
+					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+						ui.executeUserCommand();
+						clear();
+					} 
+				}
+			}
+		});
+	}
 
 	public JTextField getCommandBar() {
 		return commandBar;
