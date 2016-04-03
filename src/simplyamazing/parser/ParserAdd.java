@@ -75,10 +75,11 @@ public class ParserAdd {
 				List<DateGroup> dateGroup1 = dateParser.parse(startTime);
 				List<DateGroup> dateGroup2 = dateParser.parse(endTime);
 				
-				/*if(dateGroup1.isEmpty()||dateGroup2.isEmpty()){
+				if(dateGroup1.isEmpty()||dateGroup2.isEmpty()){
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-				}*/
+					return false;
+				}
 				
 				
 				
@@ -126,10 +127,11 @@ public class ParserAdd {
 			} else if (!endTime.equals(EMPTY_STRING)) {
                 List<DateGroup> dateGroup3 = dateParser.parse(endTime);
 				
-				/*if(dateGroup3.isEmpty()){
+				if(dateGroup3.isEmpty()){
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-				}*/
+					return false;
+				}
 				try {
 					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT, Locale.ENGLISH);
 					sdf.setLenient(true);

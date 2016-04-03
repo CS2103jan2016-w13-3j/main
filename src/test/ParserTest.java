@@ -35,6 +35,8 @@ public class ParserTest {
 	private static final String ADD_COMMAND_EVENT_FROM_AFTER_TO = "add go to nus to 12:00 04 May 2016 from 13:00 05 May 2016";
 	private static final String ADD_COMMAND_EVENT_WRONG_TIME_FORMAT = "add testing from e:rr to b:ca";
 	private static final String ADD_COMMAND_DEADLINES_ENDTIME_BEFORE_CURRENT = "add demo by 14:00 23 Mar 2016";
+	private static final String ADD_COMMAND_DEADLINES_WRONG_ENDTIME = "add study by ww:aa";
+	private static final String ADD_COMMAND_NONE = "add ";
 	private static final String ADD_COMMAND_EVENT_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_INVALID_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
 	private static final String ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK = "Error: Please ensure the fields are correct";
@@ -101,8 +103,10 @@ public class ParserTest {
 		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINE_NO_DESCRIPTION).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_NO_DESCRIPTION).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_FROM_AFTER_TO).getFeedBack());
-	  //assertEquals(ADD_COMMAND_ERROR_TIME_FORMAT_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_WRONG_TIME_FORMAT).getFeedBack());
 		assertEquals(ADD_COMMAND_ERROR_MESSAGE_DATE_BEFORE_CURRENT_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINES_ENDTIME_BEFORE_CURRENT).getFeedBack());
+		assertEquals(ADD_COMMAND_ERROR_TIME_FORMAT_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_WRONG_TIME_FORMAT).getFeedBack());
+		assertEquals(ADD_COMMAND_ERROR_TIME_FORMAT_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINES_WRONG_ENDTIME).getFeedBack());
+		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_NONE).getFeedBack());
 	}
 
 	@Test//(expected = Exception.class)
