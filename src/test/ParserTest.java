@@ -74,6 +74,14 @@ public class ParserTest {
 	private static final String HELP_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
 
 	private static final String DELETE_COMMAND_VALID_INDEX = "delete 1";
+	private static final String DELETE_COMMAND_VALID_ALT = "- 1";
+	private static final String DELETE_COMMAND_VALID_ALT_2 = "del 1";
+	private static final String DELETE_COMMAND_VALID_ALT_3 = "remove 1";
+	private static final String DELETE_COMMAND_VALID_ALT_4 = "cancel 1";
+	private static final String DELETE_COMMAND_VALID_CAP = "DELETE 1";
+	private static final String DELETE_COMMAND_VALID_ALT_2_CAP = "DEL 1";
+	private static final String DELETE_COMMAND_VALID_ALT_3_CAP = "REMOVE 1";
+	private static final String DELETE_COMMAND_VALID_ALT_4_CAP = "CANCEL 1";
 	private static final String DELETE_COMMAND_VALID_INDEX_FEEDBACK = "";
 	private static final String DELETE_COMMAND_INVALID_DUMMY_STRING = "delete cba";
 	private static final String DELETE_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
@@ -226,6 +234,14 @@ public class ParserTest {
 	@Test//(expected = Exception.class)
 	public void testDeleteCommand() throws Exception {
 		assertEquals(DELETE_COMMAND_VALID_INDEX_FEEDBACK, parser.getHandler(DELETE_COMMAND_VALID_INDEX).getFeedBack());
+		assertEquals(DELETE_COMMAND_VALID_INDEX_FEEDBACK, parser.getHandler(DELETE_COMMAND_VALID_ALT).getFeedBack());
+		assertEquals(DELETE_COMMAND_VALID_INDEX_FEEDBACK, parser.getHandler(DELETE_COMMAND_VALID_ALT_2).getFeedBack());
+		assertEquals(DELETE_COMMAND_VALID_INDEX_FEEDBACK, parser.getHandler(DELETE_COMMAND_VALID_ALT_3).getFeedBack());
+		assertEquals(DELETE_COMMAND_VALID_INDEX_FEEDBACK, parser.getHandler(DELETE_COMMAND_VALID_ALT_4).getFeedBack());
+		assertEquals(DELETE_COMMAND_VALID_INDEX_FEEDBACK, parser.getHandler(DELETE_COMMAND_VALID_CAP).getFeedBack());
+		assertEquals(DELETE_COMMAND_VALID_INDEX_FEEDBACK, parser.getHandler(DELETE_COMMAND_VALID_ALT_2_CAP).getFeedBack());
+		assertEquals(DELETE_COMMAND_VALID_INDEX_FEEDBACK, parser.getHandler(DELETE_COMMAND_VALID_ALT_3_CAP).getFeedBack());
+		assertEquals(DELETE_COMMAND_VALID_INDEX_FEEDBACK, parser.getHandler(DELETE_COMMAND_VALID_ALT_4_CAP).getFeedBack());
 		assertEquals(DELETE_COMMAND_INVALID_FEEDBACK,parser.getHandler(DELETE_COMMAND_INVALID_DUMMY_STRING).getFeedBack());
 	}
 
