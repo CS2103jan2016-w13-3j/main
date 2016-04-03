@@ -28,7 +28,6 @@ public class FileManager {
 	public void createNewFile(File file) throws Exception {
 		if(fileVerifier.isFileExisting(file)) {
 			file.delete();
-			assert(!file.exists());
 		}
 		fileBuilder.createNewFile(file);
 	}
@@ -64,7 +63,6 @@ public class FileManager {
 	
 	public void writeToFile(File file, String text) throws Exception {
 		writeManager.write(file, text);
-		assert(!fileVerifier.isEmptyFile(file));
 	}
 	
 	public ArrayList<String> readFile(File file) throws Exception {
@@ -73,7 +71,6 @@ public class FileManager {
 	
 	public void cleanFile(File file) throws Exception {
 		writeManager.writeEmptyFile(file);
-		assert(fileVerifier.isEmptyFile(file));
 	}
 	
 	public void createBackup(File file, File backupFile) throws Exception {

@@ -17,7 +17,6 @@ public class ReadManager {
 		
 		while ((line = bufferedReader.readLine()) != null) {	
 			lines.add(line);
-			assert(lines.size()!=0);
 		}
 		bufferedReader.close();
 		return lines;	 
