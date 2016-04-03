@@ -6,6 +6,13 @@ import simplyamazing.parser.Parser;
 
 public class ParserTest {
 	private static final String EDIT_COMMAND_VALID_DESCRIPTION = "edit 1 description dancing";
+	private static final String EDIT_COMMAND_VALID_DESCRIPTION_ALT = "change 1 description dancing";
+	private static final String EDIT_COMMAND_VALID_DESCRIPTION_ALT_2 = "update 1 description dancing";
+	private static final String EDIT_COMMAND_VALID_DESCRIPTION_CAP = "EDIT 1 description dancing";
+	private static final String EDIT_COMMAND_VALID_DESCRIPTION_CAP_FIRSTCHAR = "Edit 1 description dancing";
+	private static final String EDIT_COMMAND_VALID_DESCRIPTION_CAP_SECONDCHAR = "eDit 1 description dancing";
+	private static final String EDIT_COMMAND_VALID_DESCRIPTION_CAP_THIRDCHAR = "edIt 1 description dancing";
+	private static final String EDIT_COMMAND_VALID_DESCRIPTION_CAP_FOURTHCHAR = "ediT 1 description dancing";
 	private static final String EDIT_COMMAND_VALID_ENDTIME = "edit 1 end 22:00 05 Apr 2016";
 	private static final String EDIT_COMMAND_VALID_STARTTIME = "edit 1 start 29:00 05 Apr 2016";
 	private static final String EDIT_COMMAND_VALID_PRIORITY = "edit 1 priority high";
@@ -24,6 +31,11 @@ public class ParserTest {
 	
 	private static final String ADD_COMMAND_TYPE_VALID = "add";
 	private static final String ADD_COMMAND_FLOATING_VALID = "add go home";
+	private static final String ADD_COMMAND_FLOATING_VALID_CAP = "ADD go home";
+	private static final String ADD_COMMAND_FLOATING_VALID_ALT = "+ go home";
+	private static final String ADD_COMMAND_FLOATING_VALID_CAP_FIRSTCHAR = "Add go home";
+	private static final String ADD_COMMAND_FLOATING_VALID_CAP_SECONDCHAR = "aDd go home";
+	private static final String ADD_COMMAND_FLOATING_VALID_CAP_THIRDCHAR = "adD go home";
 	private static final String ADD_COMMAND_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_DEADLINE_VALID = "add finish homework by 22:00 20 Apr 2017";
 	private static final String ADD_COMMAND_DEADLINE_VALID_FEEDBACK = "";
@@ -46,6 +58,8 @@ public class ParserTest {
      
 	private static final String HELP_COMMAND_VALID = "help";
 	private static final String HELP_COMMAND_ADD_VALID = "help add";
+	private static final String HELP_COMMAND_ADD_VALID_ALT = "? add";
+	private static final String HELP_COMMAND_ADD_VALID_CAP = "HELP add";
 	private static final String HELP_COMMAND_DELETE_VALID = "help delete";
 	private static final String HELP_COMMAND_EDIT_VALID = "help edit";
 	private static final String HELP_COMMAND_VIEW_VALID = "help view";
@@ -70,6 +84,13 @@ public class ParserTest {
     private static final boolean LOCATION_COMMAND_ERROR = true;
     
 	private static final String DONE_COMMAND_VALID = "done 1";
+	private static final String DONE_COMMAND_VALID_ALT = "finish 1";
+	private static final String DONE_COMMAND_VALID_ALT_2 = "complete 1";
+	private static final String DONE_COMMAND_VALID_ALT_3 = "mark 1";
+	private static final String DONE_COMMAND_VALID_CAP = "DONE 1";
+	private static final String DONE_COMMAND_VALID_ALT_CAP = "FINISH 1";
+	private static final String DONE_COMMAND_VALID_ALT_2_CAP = "COMPLETE 1";
+	private static final String DONE_COMMAND_VALID_ALT_3_CAP = "MARK 1";
 	private static final String DONE_COMMAND_VALID_FEEDBACK = "";
 	private static final String DONE_COMMAND_INVALID_WRONG_KEYWORD = "done home";
 	private static final String DONE_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
@@ -77,6 +98,13 @@ public class ParserTest {
 	
 	private static final String VIEW_COMMAND_VALID = "view";
 	private static final String VIEW_COMMAND_EVENT_VALID = "view events";
+	private static final String VIEW_COMMAND_EVENT_VALID_ALT = "display events";
+	private static final String VIEW_COMMAND_EVENT_VALID_ALT_2 = "show events";
+	private static final String VIEW_COMMAND_EVENT_VALID_ALT_3 = "list events";
+	private static final String VIEW_COMMAND_EVENT_VALID_CAP = "VIEW events";
+	private static final String VIEW_COMMAND_EVENT_VALID_ALT_CAP = "DISPLAY events";
+	private static final String VIEW_COMMAND_EVENT_VALID_ALT_2_CAP = "SHOW events";
+	private static final String VIEW_COMMAND_EVENT_VALID_ALT_3_CAP = "LIST events";
 	private static final String VIEW_COMMAND_DEADLINES_VALID = "view deadlines";
 	private static final String VIEW_COMMAND_TASKS_VALID = "view tasks";
 	private static final String VIEW_COMMAND_DONE_VALID = "view done";
@@ -86,6 +114,9 @@ public class ParserTest {
 	private static final String VIEW_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help view\" command to see all the valid keywords";
     
 	private static final String SEARCH_COMMAND_VALID = "search dinner";
+	private static final String SEARCH_COMMAND_VALID_ALT = "find dinner";
+	private static final String SEARCH_COMMAND_VALID_CAP = "SEARCH dinner";
+	private static final String SEARCH_COMMAND_VALID_ALT_CAP = "FIND dinner";
 	private static final String SEARCH_COMMAND_VALID_FEEDBACK = "";
 	private static final String SEARCH_COMMAND_VALID_KEYWORD = "dinner";
 	
@@ -93,6 +124,11 @@ public class ParserTest {
 	private static final String UNDO_COMMAND_VALID_FEEDBACK = "";
 	
 	private static final String EXIT_COMMAND_VALID = "exit";
+	private static final String EXIT_COMMAND_VALID_ALT ="quit";
+	private static final String EXIT_COMMAND_VALID_ALT_2 ="logout";
+	private static final String EXIT_COMMAND_VALID_CAP = "EXIT";
+	private static final String EXIT_COMMAND_VALID_ALT_CAP ="QUIT";
+	private static final String EXIT_COMMAND_VALID_ALT_2_CAP ="LOGOUT";
 	private static final String EXIT_COMMAND_VALID_FEEDBACK = "";
 	
 	private static final String WRONG_COMMAND_TYPE = "redoing";
@@ -111,7 +147,11 @@ public class ParserTest {
 		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID).getFeedBack());
 		assertEquals(ADD_COMMAND_EVENT_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_VALID).getFeedBack());
 		assertEquals(ADD_COMMAND_DEADLINE_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINE_VALID).getFeedBack());
-
+		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID_CAP).getFeedBack());
+		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID_ALT).getFeedBack());
+		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID_CAP_FIRSTCHAR).getFeedBack());
+		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID_CAP_SECONDCHAR).getFeedBack());
+		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID_CAP_THIRDCHAR).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_WITH_ONLY_STARTTIME_INVALID).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FEEDBACK,
 				parser.getHandler(ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME).getFeedBack());
@@ -135,6 +175,13 @@ public class ParserTest {
     @Test
 	public void testEditCommand() throws Exception {
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION_ALT).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION_ALT_2).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION_CAP).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION_CAP_FIRSTCHAR).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION_CAP_SECONDCHAR).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION_CAP_THIRDCHAR).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION_CAP_FOURTHCHAR).getFeedBack());
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_ENDTIME).getFeedBack());
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_STARTTIME).getFeedBack());
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_PRIORITY).getFeedBack());
@@ -151,6 +198,8 @@ public class ParserTest {
 	public void testHelpCommand() throws Exception {
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_VALID).getFeedBack());
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_ADD_VALID).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_ADD_VALID_ALT).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_ADD_VALID_CAP).getFeedBack());
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_DELETE_VALID).getFeedBack());
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_VIEW_VALID).getFeedBack());
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_LOCATION_VALID).getFeedBack());
@@ -171,6 +220,13 @@ public class ParserTest {
 	@Test//(expected = Exception.class)
 	public void testDoneCommand() throws Exception {
 		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID).getFeedBack());
+		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT).getFeedBack());
+		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT_2).getFeedBack());
+		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT_3).getFeedBack());
+		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_CAP).getFeedBack());
+		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT_CAP).getFeedBack());
+		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT_2_CAP).getFeedBack());
+		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT_3_CAP).getFeedBack());
 		assertEquals(DONE_COMMAND_VALID_INDEX, parser.getHandler(DONE_COMMAND_VALID).getIndex());
 		assertEquals(DONE_COMMAND_INVALID_FEEDBACK,parser.getHandler(DONE_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
 	}
@@ -179,6 +235,13 @@ public class ParserTest {
 	public void testViewCommand() throws Exception {
 		assertEquals(VIEW_COMMAND_VALID_FEEDBACK, parser.getHandler(VIEW_COMMAND_VALID).getFeedBack());
 		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_EVENT_VALID).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_EVENT_VALID_ALT).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_EVENT_VALID_ALT_2).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_EVENT_VALID_ALT_3).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_EVENT_VALID_CAP).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_EVENT_VALID_ALT_CAP).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_EVENT_VALID_ALT_2_CAP).getFeedBack());
+		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_EVENT_VALID_ALT_3_CAP).getFeedBack());
 		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_DEADLINES_VALID).getFeedBack());
 		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_TASKS_VALID).getFeedBack());
 		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_DONE_VALID).getFeedBack());
@@ -189,6 +252,9 @@ public class ParserTest {
 	@Test
 	public void testSearchCommand() throws Exception {
 		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID).getFeedBack());
+		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_ALT).getFeedBack());
+		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_CAP).getFeedBack());
+		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_ALT_CAP).getFeedBack());
 		assertEquals(SEARCH_COMMAND_VALID_KEYWORD, parser.getHandler(SEARCH_COMMAND_VALID).getKeyWord());
 	}
 	
@@ -200,6 +266,11 @@ public class ParserTest {
 	@Test
 	public void testExitCommand() throws Exception {
 		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID).getFeedBack());
+		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_ALT).getFeedBack());
+		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_ALT_2).getFeedBack());
+		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_CAP).getFeedBack());
+		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_ALT_CAP).getFeedBack());
+		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_ALT_2_CAP).getFeedBack());
 	}
 	
 	@Test

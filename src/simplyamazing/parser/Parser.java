@@ -7,13 +7,14 @@ import java.util.regex.Pattern;
 /*enum CommandType {
 	ADD ("add", "+"),
 	DELETE ("delete", "-", "del", "remove", "cancel"),
-	DISPLAY ("display", "show", "list"),
+	VIEW ("view","display", "show", "list"),
 	EDIT ("edit", "change", "update"),
 	SEARCH ("search", "find"),
 	UNDO ("undo"),
 	DONE ("mark", "complete", "finish", "done"),
 	HELP ("help", "?"),
-	LOCATION("location", "path", "address");
+	LOCATION("location", "path", "address"),
+	EXIT("exit","quit","logout");
 }*/
 public class Parser {
 	private static Logger logger = Logger.getLogger("Parser");
