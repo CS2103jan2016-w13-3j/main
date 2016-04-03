@@ -2,12 +2,27 @@ package simplyamazing.parser;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
+enum CommandType {
+	ADD ("Add a task", "add", "+"),
+	CLEAR ("Clear all tasks", "clear"),
+	DELETE ("Delete a task", "delete", "-", "del", "remove", "cancel"),
+	DISPLAY ("Display all tasks", "display", "show", "list"),
+	EDIT ("Edit a task", "edit", "change", "update"),
+	SEARCH ("Search for tasks", "search", "find"),
+	REDO ("Redo an action", "redo"),
+	UNDO ("Undo an action", "undo"),
+	MARK ("Mark a task as complete", "mark", "complete", "finish", "done"),
+	UNMARK ("Unmark a task as complete", "unmark"),
+	HELP ("Get help", "help", "?"),
+}
 public class Parser {
 	private static Logger logger = Logger.getLogger("Parser");
 	
 	
 	private static final String COMMAND_ADD = "add";
+	private static final String COMMAND_ADD_ALT = "+";
 	private static final String COMMAND_DELETE = "delete";
 	private static final String COMMAND_EDIT = "edit";
 	private static final String COMMAND_VIEW = "view";
@@ -32,7 +47,8 @@ public class Parser {
 	}
 
 	public static String removeFirstWord(String userCommand) {
-		return userCommand.replaceFirst(getFirstWord(userCommand), STRING_EMPTY).trim();
+		final String replace = Pattern.quote(getFirstWord(userCommand));
+		return userCommand.replaceFirst(replace, STRING_EMPTY).trim();
 	}
 	
 	public static String getFirstWord(String userCommand) {
@@ -80,7 +96,7 @@ public class Parser {
 	
 	private Handler parserFirstWord(Handler handler, String firstWord,String removeFirstWord) throws Exception{
 		switch(firstWord.toLowerCase()){
-		 case COMMAND_ADD:
+		 case COMMAND_ADD : case COMMAND_ADD_ALT :
 			 handler.setCommandType(COMMAND_ADD);
 			 handler = parserAddCommand(handler, removeFirstWord);
 			 break;
