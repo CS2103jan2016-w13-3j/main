@@ -39,6 +39,7 @@ public class StorageTest {
 	private static final String PARAM_SEARCH_TASKS_NULL = null;
 	private static final String PARAM_SEARCH_TASKS_EMPTY = "";
 	private static final String PARAM_SEARCH_TASKS_KEYWORD = "gym";
+	private static final String PARAM_SEARCH_TASKS_MORE_KEYWORD = "go gym";
 	private static final String PARAM_RESTORE_NULL = null;
 	private static final String PARAM_RESTORE_EMPTY = "";
 	private static final String PARAM_RESTORE_COMMAND = "done 1";
@@ -254,7 +255,7 @@ public class StorageTest {
 	 * keyword: [null] [not null]
 	 * Boundary values: Empty String, a String of some length
 	 */	
-	@Test
+	@Test(expected = Exception.class) 
 	public void testSearchTasksMethodForException() throws Exception {
 		Storage storage = new Storage();
 		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
@@ -278,15 +279,17 @@ public class StorageTest {
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
+		storage.addTask(new Task(PARAM_DESCRIPTION));
 		storage.addTask(new Task(PARAM_DESCRIPTION1));
-		assertEquals(1, storage.getTaskList().getTasks().size());
-		assertEquals(1, storage.getFileManager().getLineCount(todo));
+		assertEquals(2, storage.getTaskList().getTasks().size());
+		assertEquals(2, storage.getFileManager().getLineCount(todo));
 		
 		// This is a boundary case for the ‘not null’ partition 
-		assertEquals(1, storage.searchTasks(PARAM_SEARCH_TASKS_EMPTY).size());
+		assertEquals(2, storage.searchTasks(PARAM_SEARCH_TASKS_EMPTY).size());
 		
-		// This is for the ‘not null’ partition 
+		// These are for the ‘not null’ partition 
 		assertEquals(1, storage.searchTasks(PARAM_SEARCH_TASKS_KEYWORD).size());
+		assertEquals(2, storage.searchTasks(PARAM_SEARCH_TASKS_MORE_KEYWORD).size());
 	}
 	
 	/*
