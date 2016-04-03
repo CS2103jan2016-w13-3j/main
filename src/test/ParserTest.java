@@ -22,6 +22,7 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK ="Error: Time provided must be after the current time";
 	private static final String EDII_COMMAND_INVALID_START_AFTER_END_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
 	
+	private static final String ADD_COMMAND_TYPE_VALID = "add";
 	private static final String ADD_COMMAND_FLOATING_VALID = "add go home";
 	private static final String ADD_COMMAND_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_DEADLINE_VALID = "add finish homework by 22:00 20 Apr 2017";
@@ -66,11 +67,13 @@ public class ParserTest {
 	private static final String LOCATION_COMMAND_VALID = "location C:\"Users\"Ishpal\"Desktop\"Task Data";
 	private static final String LOCATION_COMMAND_INVALID_FEEDBACK = "Error: Location provided is invalid";
 	private static final String LOCATION_COMMAND_VALID_FEEDBACK = "";
-
+    private static final boolean LOCATION_COMMAND_ERROR = true;
+    
 	private static final String DONE_COMMAND_VALID = "done 1";
 	private static final String DONE_COMMAND_VALID_FEEDBACK = "";
 	private static final String DONE_COMMAND_INVALID_WRONG_KEYWORD = "done home";
 	private static final String DONE_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
+	private static final String DONE_COMMAND_VALID_INDEX = "1";
 	
 	private static final String VIEW_COMMAND_VALID = "view";
 	private static final String VIEW_COMMAND_EVENT_VALID = "view events";
@@ -81,7 +84,19 @@ public class ParserTest {
 	private static final String VIEW_COMMAND_VALID_FEEDBACK = "";
 	private static final String VIEW_COMMAND_INVALID_WRONG_KEYWORD = "view abc";
 	private static final String VIEW_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help view\" command to see all the valid keywords";
-
+    
+	private static final String SEARCH_COMMAND_VALID = "search dinner";
+	private static final String SEARCH_COMMAND_VALID_FEEDBACK = "";
+	private static final String SEARCH_COMMAND_VALID_KEYWORD = "dinner";
+	
+	private static final String UNDO_COMMAND_VALID = "undo";
+	private static final String UNDO_COMMAND_VALID_FEEDBACK = "";
+	
+	private static final String EXIT_COMMAND_VALID = "exit";
+	private static final String EXIT_COMMAND_VALID_FEEDBACK = "";
+	
+	private static final String WRONG_COMMAND_TYPE = "redoing";
+	private static final String WRONG_COMMAND_TYPE_FEEDBACK = "Error: Invalid command entered. Please enter \"help\" to view command format";
     
 	private static Parser parser = new Parser();
 
@@ -92,6 +107,7 @@ public class ParserTest {
 	 * commands.
 	 */
 	public void testAddCommand() throws Exception {
+		assertEquals(ADD_COMMAND_TYPE_VALID, parser.getHandler(ADD_COMMAND_FLOATING_VALID).getCommandType());
 		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID).getFeedBack());
 		assertEquals(ADD_COMMAND_EVENT_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_VALID).getFeedBack());
 		assertEquals(ADD_COMMAND_DEADLINE_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINE_VALID).getFeedBack());
@@ -113,6 +129,7 @@ public class ParserTest {
 	public void testLocationCommand() throws Exception {
 		assertEquals(LOCATION_COMMAND_VALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_VALID).getFeedBack());
 		assertEquals(LOCATION_COMMAND_INVALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_INVALID).getFeedBack());
+		assertEquals(LOCATION_COMMAND_ERROR, parser.getHandler(LOCATION_COMMAND_INVALID).getHasError());
 	}
 	
     @Test
@@ -154,6 +171,7 @@ public class ParserTest {
 	@Test//(expected = Exception.class)
 	public void testDoneCommand() throws Exception {
 		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID).getFeedBack());
+		assertEquals(DONE_COMMAND_VALID_INDEX, parser.getHandler(DONE_COMMAND_VALID).getIndex());
 		assertEquals(DONE_COMMAND_INVALID_FEEDBACK,parser.getHandler(DONE_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
 	}
 	
@@ -167,5 +185,28 @@ public class ParserTest {
 		assertEquals(VIEW_COMMAND_VALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_OVERDUE_VALID).getFeedBack());
 		assertEquals(VIEW_COMMAND_INVALID_FEEDBACK,parser.getHandler(VIEW_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());	
 	}
+	
+	@Test
+	public void testSearchCommand() throws Exception {
+		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID).getFeedBack());
+		assertEquals(SEARCH_COMMAND_VALID_KEYWORD, parser.getHandler(SEARCH_COMMAND_VALID).getKeyWord());
+	}
+	
+	@Test
+	public void testUndoCommand() throws Exception {
+		assertEquals(UNDO_COMMAND_VALID_FEEDBACK, parser.getHandler(UNDO_COMMAND_VALID).getFeedBack());
+	}
+	
+	@Test
+	public void testExitCommand() throws Exception {
+		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID).getFeedBack());
+	}
+	
+	@Test
+	public void testInvalidCommand() throws Exception {
+		assertEquals(WRONG_COMMAND_TYPE_FEEDBACK, parser.getHandler(WRONG_COMMAND_TYPE).getFeedBack());
+	}
+	
+	
 
 }
