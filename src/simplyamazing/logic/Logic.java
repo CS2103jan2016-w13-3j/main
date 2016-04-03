@@ -119,6 +119,8 @@ public class Logic {
 	
 	public String executeCommand(String userCommand) throws Exception {
 		logger.log(Level.INFO, "going to execute command");
+		
+		
 		commandHandler = parserObj.getHandler(userCommand);
 	
 		assert commandHandler != null;                      
@@ -180,7 +182,12 @@ public class Logic {
 		logger.log(Level.INFO, "about to return to UI");
 		return feedback;
 	}
-
+	
+	
+	public String getHandlerCommandType(String userInput) throws Exception{
+		Handler handler = parserObj.getHandler(userInput);
+		return handler.getCommandType();
+	}
 
 	private static String executeAddCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
@@ -279,7 +286,7 @@ public class Logic {
 	private static String executeSearchCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {		
 			logger.log(Level.WARNING, "handler has reported an error in search");
-			throw new Exception(commandHandler.getFeedBack());
+			return commandHandler.getFeedBack();
 			
 		} else{			
 			String keyword = commandHandler.getKeyWord();
@@ -287,7 +294,7 @@ public class Logic {
 			
 			if(taskList.size() == 0){
 				logger.log(Level.WARNING, "There are no tasks containing the keyword");
-				throw new Exception(ERROR_NO_TASKS_FOUND);
+				return ERROR_NO_TASKS_FOUND;
 			} else {
 				logger.log(Level.INFO, "tasks have been retrieved, converting into a string now");
 				String listInStringFormat = convertListToString(taskList);
