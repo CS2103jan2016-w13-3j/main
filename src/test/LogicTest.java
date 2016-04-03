@@ -55,7 +55,7 @@ public class LogicTest {
 	private static final String DONE_INVALID_INDEX_FEEDBACK = "Error: The Index entered is invalid";
 	private static final String DONE_INVALID_INDEX_STRING = "done abcd";
 	private static final String DONE_INVALID_COMMAND_FEEDBACK = "Error: Index provided is not an Integer.";
-	private static final String DONE_VALID_INDEX  = "done 1";
+	private static final String DONE_VALID_INDEX  = "done 2";
 	private static final String DONE_VALID_FEEDBACK = "Task [hello world] has been marked as done.";
 	
 	
@@ -81,6 +81,9 @@ public class LogicTest {
 	private static final String HELP_VALID_DELETE_FEEDBACK = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1";
 	private static final String HELP_VALID_SEARCH = "help search";
 	private static final String HELP_VALID_SEARCH_FEEDBACK = "Search for tasks containing the given keyword\nCommand: search <keyword>\n\nExample:\nsearch meeting\n";
+	private static final String HELP_VALID_EXIT = "help exit";
+	private static final String HELP_VALID_EXIT_FEEDBACK ="Exit SimplyAmazing\nCommand: exit\n";
+	
 	private static final String HELP_VALID_VIEW = "help view";
 	private static final String HELP_VALID_VIEW_FEEDBACK = "1.Display all tasks\n Command: view\n\n2.Display tasks with deadlines\n"
 			+ "Command: view deadlines\n\n3.Display all events\nCommand: view events\n\n4.Display tasks without deadlines\nCommand: view tasks\n\n"
@@ -102,7 +105,7 @@ public class LogicTest {
 	
 	@Test
 	public void test1ValidCommandTypes() throws Exception{
-		//assertEquals("Error: There is no previous command to undo", logicObj.executeCommand("undo"));      // prob
+		assertEquals("Error: There is no previous command to undo", logicObj.executeCommand("undo"));      // prob
 		assertEquals("Error: Please ensure the fields are correct",logicObj.executeCommand("add "));
 		assertEquals("Error: Invalid command entered. Please enter \"help\" to view all commands and their format", logicObj.executeCommand("hi"));
 		assertEquals("Error: Index provided is not an Integer.", logicObj.executeCommand("delete"));
@@ -154,6 +157,7 @@ public class LogicTest {
 		assertEquals(HELP_VALID_SEARCH_FEEDBACK, logicObj.executeCommand(HELP_VALID_SEARCH));
 		assertEquals(HELP_VALID_LOCATION_FEEDBACK, logicObj.executeCommand(HELP_VALID_LOCATION));
 		assertEquals(HELP_VALID_ADD_FEEDBACK, logicObj.executeCommand(HELP_VALID_ADD));
+		assertEquals(HELP_VALID_EXIT_FEEDBACK, logicObj.executeCommand(HELP_VALID_EXIT));
 	}
 
 	
@@ -179,6 +183,48 @@ public class LogicTest {
 	}
 	
 	
+	@Test 
+	public void test81EditCommand() throws Exception{
+		logicObj.executeCommand("view");
+		
+		// test indexes first
+		assertEquals("Error: The Index entered is invalid", logicObj.executeCommand("edit 10 priority high"));
+		assertEquals("Error: The Index entered is invalid", logicObj.executeCommand("edit -1 priority high"));
+		assertEquals("Error: The Index entered is invalid", logicObj.executeCommand("edit 0 priority high"));
+		assertEquals("Error: Index provided is not an Integer.", logicObj.executeCommand("edit abc priority high"));
+		
+		assertEquals("Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields",logicObj.executeCommand("edit 1 anyfield anyvalue"));
+		
+		
+		assertEquals("Error: Time provided must be after the current time",logicObj.executeCommand("edit 1 start 22:00 2 apr 2016"));
+		assertEquals("Error: New start time cannot be after the end time",logicObj.executeCommand("edit 1 start 00:00 26 may 2016"));
+		assertEquals("Error: Time provided must be after the current time", logicObj.executeCommand("edit 1 end 22:00 2 apr 2016"));
+		assertEquals("Error: New start time cannot be the same as the end time",logicObj.executeCommand("edit 1 start 23:59 25 may 2016"));
+		
+		assertEquals("Task [hello world] has been successfully updated.", logicObj.executeCommand("edit 3 description hello world"));
+		assertEquals("Error: Unable to allocate a start time when the task has no end time", logicObj.executeCommand("edit 3 start 17:00 20 may 2016"));
+		assertEquals("Error: Start date and time cannot be after the End date and time", logicObj.executeCommand("edit 3 start 11:00 20 may 2016, end 10:00 20 may 2016"));
+		assertEquals("Error: Start date and time cannot be after the End date and time", logicObj.executeCommand("edit 3 start 11:00 20 may 2016, end 11:00 20 may 2016"));
+		assertEquals("Error: Time provided must be after the current time", logicObj.executeCommand("edit 3 start 12:00 3 apr 2016, end 10:00 20 may 2016"));
+		
+		assertEquals("Error: New end time cannot be before the start time", logicObj.executeCommand("edit 2 end 09:00 26 may 2016"));
+		assertEquals("Error: New end time cannot be the same as the start time", logicObj.executeCommand("edit 2 end 09:30 26 may 2016"));
+		
+		
+		assertEquals("Error: Priority level can be only high, medium, low or none.",logicObj.executeCommand("edit 1 priority nothing"));
+		assertEquals("Task [cs2103 peer review by 23:59 25 May 2016 with high priority] has been successfully updated.",logicObj.executeCommand("edit 1 priority high"));
+		assertEquals("Task [cs2103 peer review by 23:59 25 May 2016 with medium priority] has been successfully updated.",logicObj.executeCommand("edit 1 priority medium"));
+		assertEquals("Task [cs2103 peer review by 23:59 25 May 2016 with low priority] has been successfully updated.",logicObj.executeCommand("edit 1 priority low"));
+		assertEquals("Task [cs2103 peer review by 23:59 25 May 2016] has been successfully updated.",logicObj.executeCommand("edit 1 priority none"));
+	
+	
+	}
+	
+	
+	
+	
+	
+	
 	
 	/*
 	 * The following test case contains 3 equivalent partitions, a negative partition where the value is below what is expected,
@@ -202,7 +248,7 @@ public class LogicTest {
 	 * expected and the last one where a string is given instead of an integer
 	 */
 	
-	public void test9MarkCommand() throws Exception{
+	public void test92MarkCommand() throws Exception{
 		logicObj.executeCommand("view");
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
@@ -233,14 +279,22 @@ public class LogicTest {
 		
 		// this is the boundary case for positive value partition. Other values include 10, 1000, 10000
 		assertFalse(Logic.checkIndexValid(new String("6"), list));
+		
+		assertFalse(Logic.checkIndexValid(null, list));
+		assertFalse(Logic.checkIndexValid(new String("abc"), list));
+	}
+		
+	@Test
+	public void test91UndoCommand() throws Exception {
+		assertEquals("\"done 2\" command has been successfully undone.", logicObj.executeCommand("undo"));
 	}
 	
-/*	
 	@Test
-	public void test11UndoCommand() throws Exception {
-		assertEquals("\"done 1\" command has been successfully undone.", logicObj.executeCommand("undo"));
+	public void test9ExitCommand() throws Exception {
+		assertEquals("", logicObj.executeCommand("exit"));
 	}
-*/
+	
+	
 	public void addItemsToList(int numItemsToAdd) {
 		for(int i=0; i<numItemsToAdd; i++) {
 			list.add(new Task());

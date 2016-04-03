@@ -228,14 +228,14 @@ public class Logic {
 		
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in edit");
-			throw new Exception(commandHandler.getFeedBack());
+			return commandHandler.getFeedBack();
 			
 		} else { 
 			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
 			
 			if (isIndexValid == false) {
 				logger.log(Level.WARNING, "index given is invalid");
-				throw new Exception(ERROR_INVALID_INDEX);
+				return ERROR_INVALID_INDEX;
 				
 			} else {
 				logger.log(Level.INFO, "index valid, editing now");
@@ -250,7 +250,7 @@ public class Logic {
 					
 				} else {
 					logger.log(Level.WARNING, "invalid date field");
-					throw new Exception(dateErrorMessage);
+					return dateErrorMessage;
 					
 				}
 			}
@@ -283,23 +283,17 @@ public class Logic {
 	}
 
 	
-	private static String executeSearchCommand(Handler commandHandler) throws Exception {
-		if (commandHandler.getHasError() == true) {		
-			logger.log(Level.WARNING, "handler has reported an error in search");
-			return commandHandler.getFeedBack();
-			
-		} else{			
-			String keyword = commandHandler.getKeyWord();
-			taskList = storageObj.searchTasks(keyword);
-			
-			if(taskList.size() == 0){
-				logger.log(Level.WARNING, "There are no tasks containing the keyword");
-				return ERROR_NO_TASKS_FOUND;
-			} else {
-				logger.log(Level.INFO, "tasks have been retrieved, converting into a string now");
-				String listInStringFormat = convertListToString(taskList);
-				return listInStringFormat;
-			}
+	private static String executeSearchCommand(Handler commandHandler) throws Exception {			
+		String keyword = commandHandler.getKeyWord();
+		taskList = storageObj.searchTasks(keyword);
+		
+		if(taskList.size() == 0){
+			logger.log(Level.WARNING, "There are no tasks containing the keyword");
+			return ERROR_NO_TASKS_FOUND;
+		} else {
+			logger.log(Level.INFO, "tasks have been retrieved, converting into a string now");
+			String listInStringFormat = convertListToString(taskList);
+			return listInStringFormat;
 		}
 	}
 	
