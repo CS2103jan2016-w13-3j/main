@@ -40,6 +40,7 @@ public class ParserTest {
 	private static final String ADD_COMMAND_DEADLINE_VALID = "add finish homework by 22:00 20 Apr 2017";
 	private static final String ADD_COMMAND_DEADLINE_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_EVENT_VALID = "add have a dinner from 19:00 28 Apr 2016 to 21:00 28 Apr 2016";
+	private static final String ADD_COMMAND_EVENT_COMPLEX_INVALID = "add watch nba to 18:00 29 Apr 2016 by me from 19:00 29 Apr 2016"; 
 	private static final String ADD_COMMAND_WITH_ONLY_STARTTIME_INVALID = "add walk from 14:00 10 May 2017";
 	private static final String ADD_COMMAND_STARTTIME_BEFORE_CURRENTTIME ="add test from 13:00 12 Mar 2016 to 14:00 11 Apr 2016";
 	private static final String ADD_COMMAND_DEADLINE_NO_DESCRIPTION = "add by 23:00 01 May 2016";
@@ -79,6 +80,11 @@ public class ParserTest {
 
 	private static final String LOCATION_COMMAND_INVALID = "location ";
 	private static final String LOCATION_COMMAND_VALID = "location C:\"Users\"Ishpal\"Desktop\"Task Data";
+	private static final String LOCATION_COMMAND_VALID_ALT = "path C:\"Users\"Ishpal\"Desktop\"Task Data";
+	private static final String LOCATION_COMMAND_VALID_ALT_2 = "address C:\"Users\"Ishpal\"Desktop\"Task Data";
+	private static final String LOCATION_COMMAND_VALID_CAP = "LOCATION C:\"Users\"Ishpal\"Desktop\"Task Data";
+	private static final String LOCATION_COMMAND_VALID_ALT_CAP = "PATH C:\"Users\"Ishpal\"Desktop\"Task Data";
+	private static final String LOCATION_COMMAND_VALID_ALT_2_CAP = "ADDRESS C:\"Users\"Ishpal\"Desktop\"Task Data";
 	private static final String LOCATION_COMMAND_INVALID_FEEDBACK = "Error: Location provided is invalid";
 	private static final String LOCATION_COMMAND_VALID_FEEDBACK = "";
     private static final boolean LOCATION_COMMAND_ERROR = true;
@@ -163,11 +169,17 @@ public class ParserTest {
 		assertEquals(ADD_COMMAND_ERROR_TIME_FORMAT_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_WRONG_TIME_FORMAT).getFeedBack());
 		assertEquals(ADD_COMMAND_ERROR_TIME_FORMAT_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINES_WRONG_ENDTIME).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_NONE).getFeedBack());
+		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_COMPLEX_INVALID).getFeedBack());
 	}
 
 	@Test//(expected = Exception.class)
 	public void testLocationCommand() throws Exception {
 		assertEquals(LOCATION_COMMAND_VALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_VALID).getFeedBack());
+		assertEquals(LOCATION_COMMAND_VALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_VALID_ALT).getFeedBack());
+		assertEquals(LOCATION_COMMAND_VALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_VALID_ALT_2).getFeedBack());
+		assertEquals(LOCATION_COMMAND_VALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_VALID_CAP).getFeedBack());
+		assertEquals(LOCATION_COMMAND_VALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_VALID_ALT_CAP).getFeedBack());
+		assertEquals(LOCATION_COMMAND_VALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_VALID_ALT_2_CAP).getFeedBack());
 		assertEquals(LOCATION_COMMAND_INVALID_FEEDBACK, parser.getHandler(LOCATION_COMMAND_INVALID).getFeedBack());
 		assertEquals(LOCATION_COMMAND_ERROR, parser.getHandler(LOCATION_COMMAND_INVALID).getHasError());
 	}
