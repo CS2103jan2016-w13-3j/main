@@ -4,19 +4,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-enum CommandType {
-	ADD ("Add a task", "add", "+"),
-	CLEAR ("Clear all tasks", "clear"),
-	DELETE ("Delete a task", "delete", "-", "del", "remove", "cancel"),
-	DISPLAY ("Display all tasks", "display", "show", "list"),
-	EDIT ("Edit a task", "edit", "change", "update"),
-	SEARCH ("Search for tasks", "search", "find"),
-	REDO ("Redo an action", "redo"),
-	UNDO ("Undo an action", "undo"),
-	MARK ("Mark a task as complete", "mark", "complete", "finish", "done"),
-	UNMARK ("Unmark a task as complete", "unmark"),
-	HELP ("Get help", "help", "?"),
-}
+/*enum CommandType {
+	ADD ("add", "+"),
+	DELETE ("delete", "-", "del", "remove", "cancel"),
+	DISPLAY ("display", "show", "list"),
+	EDIT ("edit", "change", "update"),
+	SEARCH ("search", "find"),
+	UNDO ("undo"),
+	DONE ("mark", "complete", "finish", "done"),
+	HELP ("help", "?"),
+	LOCATION("location", "path", "address");
+}*/
 public class Parser {
 	private static Logger logger = Logger.getLogger("Parser");
 	
@@ -24,14 +22,33 @@ public class Parser {
 	private static final String COMMAND_ADD = "add";
 	private static final String COMMAND_ADD_ALT = "+";
 	private static final String COMMAND_DELETE = "delete";
+	private static final String COMMAND_DELETE_ALT = "del";
+	private static final String COMMAND_DELETE_ALT_2 = "-";
+	private static final String COMMAND_DELETE_ALT_3 = "remove";
+	private static final String COMMAND_DELETE_ALT_4 = "cancel";
 	private static final String COMMAND_EDIT = "edit";
+	private static final String COMMAND_EDIT_ALT = "change";
+	private static final String COMMAND_EDIT_ALT_2 = "update";
 	private static final String COMMAND_VIEW = "view";
+	private static final String COMMAND_VIEW_ALT ="display";
+	private static final String COMMAND_VIEW_ALT_2 = "show";
+	private static final String COMMAND_VIEW_ALT_3 = "list";
 	private static final String COMMAND_SEARCH = "search";
+	private static final String COMMAND_SEARCH_ALT = "find";
+	private static final String COMMAND_SEARCH_ALT_2 = "get";
 	private static final String COMMAND_HELP = "help";
+	private static final String COMMAND_HELP_ALT = "?";
 	private static final String COMMAND_UNDO = "undo";
 	private static final String COMMAND_SET_LOCATION = "location";
+	private static final String COMMAND_SET_LOCATION_ALT = "path";
+	private static final String COMMAND_SET_LOCATION_ALT_2 = "address";
 	private static final String COMMAND_MARK_AS_DONE = "done";
+	private static final String COMMAND_MARK_AS_DONE_ALT = "mark";
+	private static final String COMMAND_MARK_AS_DONE_ALT_2 = "finish";
+	private static final String COMMAND_MARK_AS_DONE_ALT_3 = "complete";
 	private static final String COMMAND_EXIT = "exit";
+	private static final String COMMAND_EXIT_ALT = "quit";
+	private static final String COMMAND_EXIT_ALT_2 = "logout";
 	private static final String COMMAND_INVALID = "Error: Invalid command entered. Please enter \"help\" to view command format";
 	
 	private static final String STRING_EMPTY = "";
@@ -96,42 +113,42 @@ public class Parser {
 	
 	private Handler parserFirstWord(Handler handler, String firstWord,String removeFirstWord) throws Exception{
 		switch(firstWord.toLowerCase()){
-		 case COMMAND_ADD : case COMMAND_ADD_ALT :
+		 case COMMAND_ADD: case COMMAND_ADD_ALT:
 			 handler.setCommandType(COMMAND_ADD);
 			 handler = parserAddCommand(handler, removeFirstWord);
 			 break;
-		 case COMMAND_DELETE:
+		 case COMMAND_DELETE: case COMMAND_DELETE_ALT : case COMMAND_DELETE_ALT_2: case COMMAND_DELETE_ALT_3: case COMMAND_DELETE_ALT_4:
 			 handler.setCommandType(COMMAND_DELETE);
 			 handler = parserDeleteCommand(handler, removeFirstWord);
 			 break;
-		 case COMMAND_EDIT:
+		 case COMMAND_EDIT: case COMMAND_EDIT_ALT: case COMMAND_EDIT_ALT_2:
 			 handler.setCommandType(COMMAND_EDIT);
 			 handler = parserEditCommand(handler, removeFirstWord);
 			 break;
-		 case COMMAND_VIEW:
+		 case COMMAND_VIEW: case COMMAND_VIEW_ALT: case COMMAND_VIEW_ALT_2: case COMMAND_VIEW_ALT_3:
 			 handler.setCommandType(COMMAND_VIEW);
 			 handler = parserViewCommand(handler, removeFirstWord);
 			 break;
-		 case COMMAND_SEARCH:
+		 case COMMAND_SEARCH: case COMMAND_SEARCH_ALT: case COMMAND_SEARCH_ALT_2:
 			 handler.setCommandType(COMMAND_SEARCH);
 			 handler.setKeyWord(removeFirstWord);
 			 break;
-		 case COMMAND_HELP:
+		 case COMMAND_HELP: case COMMAND_HELP_ALT:
 			 handler.setCommandType(COMMAND_HELP);
 			 handler = parserHelpCommand(handler,removeFirstWord);
 			 break;
 		 case COMMAND_UNDO:
 			 handler.setCommandType(COMMAND_UNDO);
 			 break;
-		 case COMMAND_SET_LOCATION:
+		 case COMMAND_SET_LOCATION: case COMMAND_SET_LOCATION_ALT: case COMMAND_SET_LOCATION_ALT_2: 
 			 handler.setCommandType(COMMAND_SET_LOCATION);
 			 handler = parserLocationCommand(handler, removeFirstWord);
 			 break;
-		 case COMMAND_MARK_AS_DONE:
+		 case COMMAND_MARK_AS_DONE: case COMMAND_MARK_AS_DONE_ALT: case COMMAND_MARK_AS_DONE_ALT_2: case COMMAND_MARK_AS_DONE_ALT_3:
 			 handler.setCommandType(COMMAND_MARK_AS_DONE);
 			 handler = parserDoneCommand(handler, removeFirstWord);
 		     break;
-		 case COMMAND_EXIT:
+		 case COMMAND_EXIT: case COMMAND_EXIT_ALT: case COMMAND_EXIT_ALT_2:
 			 handler.setCommandType(COMMAND_EXIT);
 		     break;
 		 default:
