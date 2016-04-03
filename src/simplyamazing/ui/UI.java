@@ -97,19 +97,21 @@ public class UI {
 
 	private void addUIComponentsToFrame() {
 		frame.getContentPane().add(txtrHeader);
-		frame.getContentPane().add(separator);
 		frame.getContentPane().add(separator_1);
 		frame.getContentPane().add(scrollPane);
-		frame.getContentPane().add(commandBarController.getCommandBar());
+		frame.getContentPane().add(separator);
 		frame.getContentPane().add(feedbackArea.getFeedbackArea());
+		frame.getContentPane().add(commandBarController.getCommandBar());
 	}
 
 	private void setupFeedbackArea() {
 		feedbackArea = new FeedbackArea();
+		feedbackArea.getFeedbackArea().setBounds(10, 346, 664, 22);
 	}
 
 	private void setupInstructionPanel() {
 		instructionPanel = new InstructionPanel();
+		instructionPanel.getInstrctionPanel().setBounds(10, 57, 664, 311);
 	}
 	
 	private void setupTaskDataPanel(Object[][] taskData) {
@@ -133,6 +135,7 @@ public class UI {
 
 	private void setupCommandBar() {
 		commandBarController = new CommandBarController();
+		commandBarController.getCommandBar().setBounds(10, 392, 664, 33);
 		commandBarController.handleKeyPressedEvent(this);
 	}
 
@@ -153,6 +156,7 @@ public class UI {
 		try {
 			feedback = logic.executeCommand(command);
 			logger.log(Level.INFO, MESSAGE_LOG_USER_COMMAND_EXECUTED);
+			
 			if (feedback.contains(CHARACTER_NEW_LINE)) {
 				String[] tasks = feedback.split(CHARACTER_NEW_LINE);
 				
