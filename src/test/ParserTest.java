@@ -25,9 +25,11 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_AFTER_ENDTIME = "edit 2 start 23:00 18 Apr 2017, end 21:00 19 Apr 2016";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME = "edit 1 start 11:00 20 Apr 2016, end 11:00 20 Apr 2016";
+	private static final String EDIT_COMMAND_INVALID_PRIORITY = "edit 1 priority abc";
 	private static final String EDIT_COMMAND_INVALID_INDEX_FEEDBACK = "Error: Index provided is not an Integer.";
 	private static final String EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK ="Error: Time provided must be after the current time";
-	private static final String EDII_COMMAND_INVALID_START_AFTER_END_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
+	private static final String EDIT_COMMAND_INVALID_START_AFTER_END_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
+	private static final String EDIT_COMMAND_ERROR_MESSAGE_PRIORITY_LEVEL_FEEDBACK = "Error: Priority level can be only high, medium, low or none.";
 	
 	private static final String ADD_COMMAND_TYPE_VALID = "add";
 	private static final String ADD_COMMAND_FLOATING_VALID = "add go home";
@@ -143,6 +145,10 @@ public class ParserTest {
 	private static final String EXIT_COMMAND_VALID_CAP = "EXIT";
 	private static final String EXIT_COMMAND_VALID_ALT_CAP ="QUIT";
 	private static final String EXIT_COMMAND_VALID_ALT_2_CAP ="LOGOUT";
+	private static final String EXIT_COMMAND_VALID_CAP_FIRSTCHAR = "Exit";
+	private static final String EXIT_COMMAND_VALID_CAP_SECONDCHAR = "eXit";
+	private static final String EXIT_COMMAND_VALID_CAP_THIRDCHAR = "exIt";
+	private static final String EXIT_COMMAND_VALID_CAP_FOURTHCHAR = "exiT";
 	private static final String EXIT_COMMAND_VALID_FEEDBACK = "";
 	
 	private static final String WRONG_COMMAND_TYPE = "redoing";
@@ -207,14 +213,15 @@ public class ParserTest {
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_PRIORITY).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_INDEX_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_WITHOUT_INDEX).getFeedBack());
+		assertEquals(EDIT_COMMAND_ERROR_MESSAGE_PRIORITY_LEVEL_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_PRIORITY).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_BEFORE_CURRENT).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_ENDTIME_BEFORE_CURRENT).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_TWO_KEYWORDS).getFeedBack());
-		assertEquals(EDII_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_AFTER_ENDTIME).getFeedBack());
-		assertEquals(EDII_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_AFTER_ENDTIME).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME).getFeedBack());
 	}
-
-	@Test//(expected = Exception.class)
+	
+    @Test//(expected = Exception.class)
 	public void testHelpCommand() throws Exception {
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_VALID).getFeedBack());
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_ADD_VALID).getFeedBack());
@@ -299,6 +306,10 @@ public class ParserTest {
 		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_CAP).getFeedBack());
 		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_ALT_CAP).getFeedBack());
 		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_ALT_2_CAP).getFeedBack());
+		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_CAP_FIRSTCHAR).getFeedBack());
+		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_CAP_SECONDCHAR).getFeedBack());
+		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_CAP_THIRDCHAR).getFeedBack());
+		assertEquals(EXIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EXIT_COMMAND_VALID_CAP_FOURTHCHAR).getFeedBack());
 	}
 	
 	@Test

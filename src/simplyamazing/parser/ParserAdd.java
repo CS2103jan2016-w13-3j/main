@@ -79,10 +79,6 @@ public class ParserAdd {
 						handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 						return false;
 					}
-
-
-
-					try {
 						SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
 						sdf.setLenient(true);
 						/*Date startingDate = null;
@@ -108,11 +104,6 @@ public class ParserAdd {
 							isEvent = true;
 							return true;
 						}
-					} catch (ParseException e) {
-						handler.setHasError(true);
-						handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-						return false;
-					}
 				}
 			} else if(taskInfo.contains(KEYWORD_DEADLINE)){
 				endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
