@@ -352,7 +352,7 @@ public class Storage {
 	}
 
 	public ArrayList<Task> searchTasks(String keyword) throws Exception {
-
+		keyword = keyword.toLowerCase();
 		ArrayList<Task> tasks = viewTasks(STRING_EMPTY);
 		assert(tasks != null);
 		tasks.addAll(taskList.getCompletedTasks());
@@ -361,6 +361,14 @@ public class Storage {
 		for (int i = 0; i < tasks.size(); i++) {
 			if (tasks.get(i).toString().contains(keyword)) {
 				filteredTasks.add(tasks.get(i));
+			}
+		}
+		String[] keywords = keyword.split(CHARACTER_SPACE);
+		for (int i = 0; i < tasks.size(); i++) {
+			for (int j = 0; j < keywords.length; j++) {
+				if (tasks.get(i).toString().contains(keywords[j]) && !filteredTasks.contains(tasks.get(i))) {
+					filteredTasks.add(tasks.get(i));
+				}
 			}
 		}
 		return filteredTasks;
