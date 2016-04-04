@@ -2,12 +2,12 @@ package simplyamazing.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.SystemColor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,7 +89,7 @@ public class ResizableUI {
 	 */
 	private void initialize() {
 		setupFrame();
-		setupPanel();
+		setupPanels();
 		setupAppLogo();
 		setupFeedbackArea();
 		setupCommandBar();
@@ -104,25 +104,27 @@ public class ResizableUI {
 	}
 
 	private void addUIComponentsToFrame() {
-		frame.getContentPane().add(panel, BorderLayout.NORTH);
+		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		
-		panel.add(txtrHeader, gbc);
+		GridBagConstraints gbc_header = gbc;
+		gbc_header.insets = new Insets(20,180,0,180);
+		panel.add(txtrHeader, gbc_header);
 		
 		gbc.gridy++;
+		gbc.insets = new Insets(0,10,0,10);
 		panel.add(separator_1, gbc);
 		
 		gbc.gridy++;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		panel.add(scrollPane, gbc);
 		
 		gbc.gridy++;
-		gbc.fill = GridBagConstraints.BOTH;
 		panel.add(separator, gbc);
 		
 		gbc.gridy++;
 		panel.add(feedbackArea.getFeedbackArea(), gbc);
 		
 		gbc.gridy++;
+		gbc.insets = new Insets(0,10,10,10);
 		panel.add(commandBarController.getCommandBar(), gbc);
 	}
 
@@ -143,7 +145,7 @@ public class ResizableUI {
 		txtrHeader.setFont(new Font("Lucida Calligraphy", Font.BOLD, 16));
 		txtrHeader.setEditable(false);
 		txtrHeader.setText("Welcome to SimplyAmazing!");
-		txtrHeader.setAlignmentX(frame.getWidth()/2);
+		txtrHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
 		//txtrHeader.setBounds(203, 11, 278, 22);
 	}
 
@@ -161,25 +163,24 @@ public class ResizableUI {
 
 	private void setupFrame() {
 		frame = new JFrame();
-		frame.setBackground(Color.WHITE);
+		//frame.setBackground(Color.WHITE);
 		frame.setForeground(Color.WHITE);
-		frame.setBounds(100, 100, 700, 475);
+		frame.setBounds(100, 100, 683, 732);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
 	
-	private void setupPanel() {
+	private void setupPanels() {
 		panel = new JPanel(new GridBagLayout());
 		panel.setForeground(Color.WHITE);
 		panel.setBackground(Color.WHITE);
+		//panel.setPreferredSize(frame.getContentPane().getSize());
+		
 		gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weighty = 1;
 		gbc.weightx = 1;
-		gbc.insets = new Insets(10,10,10,10);
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.anchor = GridBagConstraints.NORTH;
 	}
 
 	public void executeUserCommand() {
