@@ -394,14 +394,14 @@ public class Storage {
 
 		ArrayList<Task> filteredTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
-			if (tasks.get(i).toString().contains(keyword)) {
+			if (tasks.get(i).toString().toLowerCase().contains(keyword)) {
 				filteredTasks.add(tasks.get(i));
 			}
 		}
 		String[] keywords = keyword.split(CHARACTER_SPACE);
 		for (int i = 0; i < tasks.size(); i++) {
 			for (int j = 0; j < keywords.length; j++) {
-				if (tasks.get(i).toString().contains(keywords[j]) && !filteredTasks.contains(tasks.get(i))) {
+				if (tasks.get(i).toString().toLowerCase().contains(keywords[j]) && !filteredTasks.contains(tasks.get(i))) {
 					filteredTasks.add(tasks.get(i));
 				}
 			}
