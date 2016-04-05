@@ -71,6 +71,13 @@ public class ParserAdd {
 					handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 					return false;
 				} else if (!startTime.equals(EMPTY_STRING) && !endTime.equals(EMPTY_STRING)) {
+					
+					boolean isStartFormatCorrect = followStandardFormat(startTime);
+					boolean isEndFormatCorrect = followStandardFormat(endTime);
+					if(isStartFormatCorrect == false || isEndFormatCorrect == false){
+						// use natty instead of standard format
+					}
+					
 					List<DateGroup> dateGroup1 = dateParser.parse(startTime);
 					List<DateGroup> dateGroup2 = dateParser.parse(endTime);
 
@@ -174,5 +181,51 @@ public class ParserAdd {
 		}
 		isFloatingTask = true;
 		return true;
+	}
+	
+	
+	
+	public boolean followStandardFormat(String dateTimeString){
+		String[] dateTimeArr = dateTimeString.trim().split(" ");
+		
+		if (dateTimeArr.length != 4) {
+			return false;
+		} else {
+			// dateTimeArr len should be 4 here, now check end time
+			String time = dateTimeArr[0];
+			if ((time.contains(":") && (time.length() == 4 || time.length()== 5))) {
+
+				int date;
+				try{
+					date = Integer.parseInt(dateTimeArr[1], 10);
+				} catch (NumberFormatException e){
+					return false;
+				}	
+				// reach here means that it time given follows format and date given is an int
+
+				if ((date > 31) || (date < 0)) {	//date given not valid
+					return false;
+				} else {
+					
+					String givenMonth = dateTimeArr[2].toLowerCase();
+					if ( !(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
+							|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
+							|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec"))) {
+						// month given follows the required format
+						return false;
+					} else {
+						int year;
+						try {
+							year = Integer.parseInt(dateTimeArr[3], 10);
+						} catch (NumberFormatException e) {
+							return false; 	// year not in int format
+						}
+					}
+				}
+			} else {
+				return false;
+			}
+			return true;
+		}
 	}
 }
