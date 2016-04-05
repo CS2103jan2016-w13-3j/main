@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 import simplyamazing.logic.Logic;
@@ -108,7 +109,7 @@ public class ResizableUI {
 	}
 
 	private void addUIComponentsToFrame() {
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
+		frame.getContentPane().add(panel);
 		
 		GridBagConstraints gbc_header = gbc;
 		gbc_header.insets = new Insets(10,10,0,10);
@@ -119,9 +120,11 @@ public class ResizableUI {
 		panel.add(separator_1, gbc);
 		
 		gbc.gridy++;
+		//gbc.fill = GridBagConstraints.HORIZONTAL;
 		panel.add(scrollPane, gbc);
 		
 		gbc.gridy++;
+		//gbc.fill = GridBagConstraints.BOTH;
 		panel.add(separator, gbc);
 		
 		gbc.gridy++;
@@ -142,7 +145,7 @@ public class ResizableUI {
 	}
 	
 	private void setupTaskDataPanel(Object[][] taskData) {
-		taskDataPanel = new TaskDataPanel(taskData);
+		taskDataPanel = new TaskDataPanel(taskData, true);
 	}
 
 	private void setupAppLogo() {
@@ -171,7 +174,7 @@ public class ResizableUI {
 		frame = new JFrame();
 		//frame.setBackground(Color.WHITE);
 		frame.setForeground(Color.WHITE);
-		frame.setBounds(100, 100, 683, 600);
+		frame.setBounds(100, 100, 697, 620);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -205,7 +208,7 @@ public class ResizableUI {
 						taskData[i] = tasks[i].split(FIELD_SEPARATOR);
 					}
 					scrollPane.setVisible(true);
-					setupTaskDataPanel(taskData); 
+					setupTaskDataPanel(taskData);
 					scrollPane.setViewportView(taskDataPanel.getTaskDataPanel());
 					scrollPane.getViewport().setBackground(Color.WHITE);
 				} else {

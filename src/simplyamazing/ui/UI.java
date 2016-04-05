@@ -119,7 +119,7 @@ public class UI {
 	}
 	
 	private void setupTaskDataPanel(Object[][] taskData) {
-		taskDataPanel = new TaskDataPanel(taskData);
+		taskDataPanel = new TaskDataPanel(taskData, false);
 	}
 
 	private void setupAppLogo() {

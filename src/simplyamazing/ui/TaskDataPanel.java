@@ -14,7 +14,7 @@ public class TaskDataPanel {
 	
 	private Object columnNames[] = { "#", "Description", "Start time", "End time", "Priority", "Status"};
 	
-	public TaskDataPanel(Object[][] rowData) {
+	public TaskDataPanel(Object[][] rowData, boolean isResizable) {
 		DefaultTableModel model = new DefaultTableModel(rowData, columnNames);
 		taskDataTable = new JTable(model);
 		taskDataTable.setToolTipText("Task Data will be shown here.");
@@ -27,8 +27,10 @@ public class TaskDataPanel {
 		taskDataTable.getTableHeader().setBorder(BorderFactory.createEtchedBorder());
 		taskDataTable.getTableHeader().setFont(new Font("Times New Roman", Font.BOLD, 15));
 		taskDataTable.setBorder(BorderFactory.createEtchedBorder());
-		taskDataTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		TableColumnModel columnModel = taskDataTable.getColumnModel();
+		if (!isResizable) {
+			taskDataTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		}
 		columnModel.getColumn(0).setPreferredWidth(29);
 		columnModel.getColumn(1).setPreferredWidth(220);
 		columnModel.getColumn(2).setPreferredWidth(150);
