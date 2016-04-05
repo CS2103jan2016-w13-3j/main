@@ -120,11 +120,11 @@ public class ResizableUI {
 		panel.add(separator_1, gbc);
 		
 		gbc.gridy++;
-		//gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		panel.add(scrollPane, gbc);
 		
 		gbc.gridy++;
-		//gbc.fill = GridBagConstraints.BOTH;
+		gbc.fill = GridBagConstraints.BOTH;
 		panel.add(separator, gbc);
 		
 		gbc.gridy++;

@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import simplyamazing.logic.Logic;
 
@@ -96,7 +97,7 @@ public class UI {
 	private void setupScrollPane() {
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
-		scrollPane.setBounds(10, 57, 676, 278);
+		scrollPane.setBounds(10, 57, 676, 539);
 	}
 
 	private void addUIComponentsToFrame() {
@@ -110,12 +111,12 @@ public class UI {
 
 	private void setupFeedbackArea() {
 		feedbackArea = new FeedbackArea();
-		feedbackArea.getFeedbackArea().setBounds(10, 346, 676, 22);
+		feedbackArea.getFeedbackArea().setBounds(10, 620, 676, 22);
 	}
 
 	private void setupInstructionPanel() {
 		instructionPanel = new InstructionPanel();
-		instructionPanel.getInstrctionPanel().setBounds(10, 57, 676, 311);
+		instructionPanel.getInstrctionPanel().setBounds(10, 57, 676, 539);
 	}
 	
 	private void setupTaskDataPanel(Object[][] taskData) {
@@ -127,28 +128,28 @@ public class UI {
 		txtrHeader.setFont(new Font("Lucida Calligraphy", Font.BOLD, 16));
 		txtrHeader.setEditable(false);
 		txtrHeader.setText("Welcome to SimplyAmazing!");
-		txtrHeader.setBounds(208, 11, 278, 22);
+		txtrHeader.setBounds(208, 0, 278, 33);
 	}
 
 	private void setupSeparators() {
 		separator = new JSeparator();
-		separator.setBounds(10, 379, 676, 2);
+		separator.setBounds(10, 607, 676, 2);
 		separator_1 = new JSeparator();
 		separator_1.setBounds(10, 44, 676, 2);
 	}
 
 	private void setupCommandBar() {
 		commandBarController = new CommandBarController();
-		commandBarController.getCommandBar().setBounds(10, 392, 676, 33);
+		commandBarController.getCommandBar().setBounds(10, 653, 676, 33);
 		commandBarController.handleKeyPressedEvent(this);
 	}
 
 	private void setupFrame() {
 		frame = new JFrame();
 		frame.setResizable(false);
+		frame.setBounds(100, 100, 700, 725);
 		frame.setForeground(new Color(255, 255, 255));
 		frame.getContentPane().setBackground(SystemColor.window);
-		frame.setBounds(100, 100, 700, 475);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 	}
