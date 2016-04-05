@@ -60,7 +60,7 @@ public class ParserAdd {
 
 		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) {
 			System.out.println("Found "+KEYWORD_SCHEDULE_FROM+", "+KEYWORD_SCHEDULE_TO);
-			
+
 			if (taskInfo.contains(SPECIAL_STRING)) {
 				startTimeIndex = taskInfo.lastIndexOf(SPECIAL_STRING)+1;
 			} else {
@@ -68,12 +68,12 @@ public class ParserAdd {
 			}
 			String taskInfoFiltered = taskInfo;
 			endTimeIndex = taskInfoFiltered.lastIndexOf(KEYWORD_SCHEDULE_TO);
-			
+
 			while(!taskInfoFiltered.substring((endTimeIndex+2),(endTimeIndex+3)).trim().equals(EMPTY_STRING)) {
 				taskInfoFiltered = taskInfoFiltered.substring(0, endTimeIndex) ;
 				endTimeIndex = taskInfoFiltered.lastIndexOf(KEYWORD_SCHEDULE_TO);
 			}
-			
+
 			System.out.println(startTimeIndex);
 			System.out.println(endTimeIndex);
 			if (startTimeIndex < endTimeIndex) {
@@ -99,7 +99,7 @@ public class ParserAdd {
 						System.out.println("Endtime and Startime both use Natty format");					
 						List<DateGroup> dateGroup1 = dateParser.parse(startTime);
 						List<DateGroup> dateGroup2 = dateParser.parse(endTime);
-						
+
 						if(dateGroup1.isEmpty()||dateGroup2.isEmpty() ){
 							handler.setHasError(true);
 							handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
@@ -228,7 +228,7 @@ public class ParserAdd {
 				sdf.setLenient(false);
 
 				if(isEndFormatCorrect == false){
-                    System.out.println("Endtime use Natty");
+					System.out.println("Endtime use Natty");
 					List<DateGroup> dateGroup3 = dateParser.parse(endTime);
 
 					if(dateGroup3.isEmpty()){
@@ -309,24 +309,19 @@ public class ParserAdd {
 				}	
 				// reach here means that it time given follows format and date given is an int
 
-				if ((date > 31) || (date < 0)) {	//date given not valid
+				String givenMonth = dateTimeArr[2].toLowerCase();
+				if ( !(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
+						|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
+						|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec"))) {
+					// month given follows the required format
 					return false;
 				} else {
-
-					String givenMonth = dateTimeArr[2].toLowerCase();
-					if ( !(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
-							|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
-							|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec"))) {
-						// month given follows the required format
-						return false;
-					} else {
-						try {
-							year = Integer.parseInt(dateTimeArr[3], 10);
-						} catch (NumberFormatException e) {
-							return false; 	// year not in int format
-						}
+					try {
+						year = Integer.parseInt(dateTimeArr[3], 10);
+					} catch (NumberFormatException e) {
+						return false; 	// year not in int format
 					}
-				}
+				}			
 			} else {
 				return false;
 			}

@@ -72,22 +72,17 @@ public class ParserSearch {
 				}	
 				// reach here means that it time given follows format and date given is an int
 
-				if ((date > 31) || (date < 0)) {	//date given not valid
+				String givenMonth = dateTimeArr[2].toLowerCase();
+				if ( !(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
+						|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
+						|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec"))) {
+					// month given follows the required format
 					return false;
 				} else {
-
-					String givenMonth = dateTimeArr[2].toLowerCase();
-					if ( !(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
-							|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
-							|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec"))) {
-						// month given follows the required format
-						return false;
-					} else {
-						try {
-							year = Integer.parseInt(dateTimeArr[3], 10);
-						} catch (NumberFormatException e) {
-							return false; 	// year not in int format
-						}
+					try {
+						year = Integer.parseInt(dateTimeArr[3], 10);
+					} catch (NumberFormatException e) {
+						return false; 	// year not in int format
 					}
 				}
 			} else {
