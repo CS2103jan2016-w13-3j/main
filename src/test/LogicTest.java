@@ -7,12 +7,20 @@ import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 import simplyamazing.data.Task;
 import simplyamazing.logic.Logic;
+import simplyamazing.parser.Handler;
+import simplyamazing.parser.Parser;
+
 import java.util.ArrayList;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LogicTest {
 	private static ArrayList<Task> list = new ArrayList<Task>();
 	private static Logic logicObj= new Logic();
+	private static Parser parserObj = new Parser();
+	private static Handler handler = new Handler();
+	Task task1;
+	Task task2;
+	Task task3;
 	
 	
 	private static final String LOCATION_COMMAND_FAIL = "location just a placeholder";
@@ -39,6 +47,10 @@ public class LogicTest {
 	
 	private static final String VIEW_INVALID = "view nothing";
 	private static final String VIEW_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help view\" command to see all the valid keywords" ;
+	private static final String VIEW_EMPTY_LIST = "List is empty";
+	private static final String VIEW_DONE = "view done";
+	private static final String VIEW_OVERDUE = "view overdue";
+	
 	
 	private static final String DELETE_VALID_INDEX = "delete 2";
 	private static final String DELETE_VALID_INDEX_FEEDBACK = "Task [hackathon in SOC from 09:30 26 May 2016 to 10:00 27 May 2016] has been successfully deleted.";
@@ -66,11 +78,6 @@ public class LogicTest {
 	private static final String SEARCH_EMPTY_STRING = "search ";
 	private static final String SEARCH_ALL_TASKS = "1,cs2103 peer review, ,23:59 25 May 2016, , \n2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, , \n3,hello world, , , , \n";
 	
-	
-	private static final String HELP_VALID = "help";
-	private static final String HELP_VALID_FEEDBACK = "Key in the following to view specific command formats:\n"
-			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
-			+ "7. help location\n8. help undo\n9. help exit\n";
 	private static final String HELP_INVALID = "help 1";
 	private static final String HELP_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
 	private static final String HELP_VALID_UNDO = "help undo";
@@ -84,20 +91,28 @@ public class LogicTest {
 	private static final String HELP_VALID_EXIT = "help exit";
 	private static final String HELP_VALID_EXIT_FEEDBACK ="Exit SimplyAmazing\nCommand: exit\n";
 	
+	private static final String HELP_VALID = "help";
+	private static final String HELP_VALID_FEEDBACK = "Key in the following to view specific command formats:\n"
+			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
+			+ "7. help location\n8. help undo\n9. help exit\n";
+	
 	private static final String HELP_VALID_VIEW = "help view";
 	private static final String HELP_VALID_VIEW_FEEDBACK = "1.Display all tasks\n Command: view\n\n2.Display tasks with deadlines\n"
 			+ "Command: view deadlines\n\n3.Display all events\nCommand: view events\n\n4.Display tasks without deadlines\nCommand: view tasks\n\n"
 			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n";
+	
 	private static final String HELP_VALID_EDIT = "help edit";
 	private static final String HELP_VALID_EDIT_FEEDBACK = "Edit content in a task\nCommand: edit <task index> <task header> <updated content>\n\n"
 			+ "Example:\n1. edit 4 description send marketing report\n\n2. edit 3 start 22:00 26 may 2016, end 22:40 26 may 2016\n\n"
 			+ "3. edit 1 priority high";
+	
 	private static final String HELP_VALID_ADD = "help add";
 	private static final String HELP_VALID_ADD_FEEDBACK = "1.Add a task to the list\nCommand: add <task description>\n\nExample: add prepare presentation\n\n\n"
 			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to\n<end time hh:mm> <end date dd MMM yyyy>\n\n"
 			+ "Example: Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
 			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>\n\n"
 			+ "Example: submit marketing report by 17:00 20 Dec 2016\n";
+	
 	private static final String HELP_VALID_LOCATION = "help location";
 	private static final String HELP_VALID_LOCATION_FEEDBACK = "Sets the storage location or folder for application data\n"
 			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data";
@@ -135,8 +150,16 @@ public class LogicTest {
 	 */
 	public void test4AddCommand() throws Exception{
 		assertEquals(ADD_TASK_PASS_FEEDBACK, logicObj.executeCommand(ADD_TASK_PASS));
+		handler = parserObj.getHandler(ADD_TASK_PASS);
+		task3 = handler.getTask();
+		
 		assertEquals(ADD_DEADLINE_PASS_FEEDBACK, logicObj.executeCommand(ADD_DEADLINE_PASS));
+		handler = parserObj.getHandler(ADD_DEADLINE_PASS);
+		task1 = handler.getTask();
+		
 		assertEquals(ADD_EVENT_PASS_FEEDBACK, logicObj.executeCommand(ADD_EVENT_PASS));
+		handler = parserObj.getHandler(ADD_EVENT_PASS);
+		task2 = handler.getTask();
 		
 		assertEquals(ADD_ERROR_MESSAGE, logicObj.executeCommand(ADD_TASK_WITH_STARTIME_ONLY));
 		assertEquals(ADD_TASK_ENDTIME_BEFORE_STARTIME_FEEDBACK, logicObj.executeCommand(ADD_TASK_ENDTIME_BEFORE_STARTIME));
@@ -175,10 +198,13 @@ public class LogicTest {
 	
 	@Test
 	public void test7ViewCommand() throws Exception{
+		
 		assertEquals(VIEW_INVALID_FEEDBACK, logicObj.executeCommand(VIEW_INVALID));
-		logicObj.executeCommand("view");
-		logicObj.executeCommand("view done");
-		logicObj.executeCommand("view overdue");
+		assertEquals(VIEW_EMPTY_LIST, logicObj.executeCommand(VIEW_DONE));
+		assertEquals(VIEW_EMPTY_LIST, logicObj.executeCommand(VIEW_OVERDUE));
+		assertEquals("1,"+task1.toString()+"\n"
+				+ "2,"+task2.toString()+"\n"
+				+ "3,"+task3.toString()+"\n",logicObj.executeCommand("view"));
 		
 	}
 	
@@ -238,6 +264,7 @@ public class LogicTest {
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_LARGER));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_ZERO));
+		logicObj.executeCommand("view");
 		assertEquals(DELETE_VALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_VALID_INDEX));
 	}
 
@@ -248,7 +275,7 @@ public class LogicTest {
 	 * expected and the last one where a string is given instead of an integer
 	 */
 	
-	public void test92MarkCommand() throws Exception{
+	public void test91MarkCommand() throws Exception{
 		logicObj.executeCommand("view");
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
@@ -266,7 +293,7 @@ public class LogicTest {
 	 * expected
 	 */
 	
-	public void test91ValidIndex(){
+	public void test92ValidIndex(){
 		list.clear();
 		addItemsToList(5);
 		
@@ -285,7 +312,7 @@ public class LogicTest {
 	}
 		
 	@Test
-	public void test91UndoCommand() throws Exception {
+	public void test93UndoCommand() throws Exception {
 		assertEquals("\"done 2\" command has been successfully undone.", logicObj.executeCommand("undo"));
 	}
 	
