@@ -28,6 +28,8 @@ public class Logic {
 	
 	private static final String MESSAGE_EMPTY_LIST = "List is empty";
 	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
+	private static final String MESSAGE_MULTIPLE_TASKS_DELETED = "Given tasks have been deleted";
+	private static final String MESSAGE_MULTIPLE_TASKS_MARKED = "Given tasks have been marked as done"; 
 	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo"; 
@@ -231,7 +233,8 @@ public class Logic {
 			return commandHandler.getFeedBack();
 			
 		} else { 
-			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
+			ArrayList<Integer> listToEdit = commandHandler.getIndexList();
+			boolean isIndexValid = checkIndexValid(listToEdit.get(0), taskList);
 			
 			if (isIndexValid == false) {
 				logger.log(Level.WARNING, "index given is invalid");
@@ -239,7 +242,7 @@ public class Logic {
 				
 			} else {
 				logger.log(Level.INFO, "index valid, editing now");
-				int indexToEdit = Integer.parseInt(commandHandler.getIndex());
+				int indexToEdit = listToEdit.get(0);
 				Task fieldsToChange = commandHandler.getTask();
 				Task originalTask = taskList.get(indexToEdit - 1);
 				String dateErrorMessage = hasDateError(fieldsToChange, originalTask);
@@ -259,25 +262,43 @@ public class Logic {
 
 	
 	private static String executeDeleteCommand(Handler commandHandler) throws Exception {
-
-		
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in delete");
 			return commandHandler.getFeedBack();
 			
-		} else {		
-			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
+		} else {
+			ArrayList<Integer> listToDelete = commandHandler.getIndexList();
 			
-			if (isIndexValid == false) {				
-				logger.log(Level.WARNING, "index given is invalid");
+			if(listToDelete.size() == 0) {
 				return ERROR_INVALID_INDEX;
-				
-			} else {			
+			}
+			boolean isIndexValid = true;
+			int indexToDelete = -1;
+			if(listToDelete.size() == 1) {
 				logger.log(Level.INFO, "index valid, deleting now");
-				int indexToDelete = Integer.parseInt(commandHandler.getIndex());
+				indexToDelete = listToDelete.get(0);
+				
+				isIndexValid = checkIndexValid(indexToDelete, taskList);
+				if(isIndexValid == false) {
+					logger.log(Level.WARNING, "index given is invalid");
+					return ERROR_INVALID_INDEX;
+				}
 				Task taskToDelete = taskList.get(indexToDelete - 1);
 				return storageObj.deleteTask(taskToDelete);
+			} else {
 				
+				ArrayList<Task> tasksToDelete = new ArrayList<Task>();
+				for(int i = 0; i< listToDelete.size(); i++){
+					indexToDelete = listToDelete.get(i);
+					isIndexValid = checkIndexValid(indexToDelete, taskList);
+					if(isIndexValid == false) {
+						logger.log(Level.WARNING, "index given is invalid");
+						return ERROR_INVALID_INDEX;
+					} else{
+						tasksToDelete.add(taskList.get(indexToDelete -1 ));
+					}
+				}
+				 return storageObj.deleteMultipleTasks(tasksToDelete);
 			}
 		}
 	}
@@ -360,15 +381,40 @@ public class Logic {
 			return commandHandler.getFeedBack();
 			
 		} else {
-			boolean isIndexValid = checkIndexValid(commandHandler.getIndex(), taskList);
 			
-			if (isIndexValid == false) {
+			ArrayList<Integer> listToMark = commandHandler.getIndexList();
+			if(listToMark.size() == 0) {
 				return ERROR_INVALID_INDEX;
+			}
+			
+			boolean isIndexValid = true;
+			int indexToMark;
+			
+			if(listToMark.size() == 1) {
+				logger.log(Level.INFO, "index valid, deleting now");
+				indexToMark = listToMark.get(0);
 				
-			} else{
-				int indexToMark = Integer.parseInt(commandHandler.getIndex());
+				isIndexValid = checkIndexValid(indexToMark, taskList);
+				if(isIndexValid == false) {
+					logger.log(Level.WARNING, "index given is invalid");
+					return ERROR_INVALID_INDEX;
+				}
 				Task taskToMark = taskList.get(indexToMark - 1);
 				return storageObj.markTaskDone(taskToMark);
+			} else {
+				ArrayList<Task> tasksToMark = new ArrayList<Task>();
+				
+				for(int i = 0; i< listToMark.size(); i++){
+					indexToMark = listToMark.get(i);
+					isIndexValid = checkIndexValid(indexToMark, taskList);
+					if(isIndexValid == false) {
+						logger.log(Level.WARNING, "index given is invalid");
+						return ERROR_INVALID_INDEX;
+					} else{
+						tasksToMark.add(taskList.get(indexToMark -1 ));
+					}
+				}
+				 return storageObj.markMultipleTasksDone(tasksToMark);
 			}
 		}
 	}
@@ -420,21 +466,11 @@ public class Logic {
 	}
 	
 	
-	public static boolean checkIndexValid(String indexStr, ArrayList<Task> list){
-		if (indexStr == null) {
+	public static boolean checkIndexValid(int index, ArrayList<Task> list){
+		if(index <= 0 || index > list.size()){
 			return false;
 		} else {
-			try {
-				int indexToDelete = Integer.parseInt(indexStr);
-				
-				if(indexToDelete <= 0 || indexToDelete > list.size()){
-					return false;
-				} else {
-					return true;
-				}
-			} catch (NumberFormatException e) {
-				return false;
-			}
+			return true;
 		}
 	}
 	
