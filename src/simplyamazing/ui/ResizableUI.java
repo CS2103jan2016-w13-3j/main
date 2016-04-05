@@ -22,7 +22,8 @@ import simplyamazing.logic.Logic;
 
 public class ResizableUI {
 	private static final String MESSAGE_LOG_USER_COMMAND_EXECUTED = "user command is successfully executed.";
-
+	private static final String MESSAGE_EMPTY_LIST = "List is empty";
+	
 	private static final Color COLOR_DARK_GREEN = new Color(0, 128, 0);
 
 	private static final String CHARACTER_NEW_LINE = "\n";
@@ -107,11 +108,11 @@ public class ResizableUI {
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		
 		GridBagConstraints gbc_header = gbc;
-		gbc_header.insets = new Insets(20,180,0,180);
+		gbc_header.insets = new Insets(10,10,0,10);
 		panel.add(txtrHeader, gbc_header);
 		
 		gbc.gridy++;
-		gbc.insets = new Insets(0,10,0,10);
+		gbc.insets = new Insets(10,10,0,10);
 		panel.add(separator_1, gbc);
 		
 		gbc.gridy++;
@@ -124,12 +125,13 @@ public class ResizableUI {
 		panel.add(feedbackArea.getFeedbackArea(), gbc);
 		
 		gbc.gridy++;
-		gbc.insets = new Insets(0,10,10,10);
+		gbc.insets = new Insets(10,10,10,10);
 		panel.add(commandBarController.getCommandBar(), gbc);
 	}
 
 	private void setupFeedbackArea() {
 		feedbackArea = new FeedbackArea();
+		feedbackArea.getFeedbackArea().setFont(new Font("Times New Roman", Font.PLAIN, 14));
 	}
 
 	private void setupInstructionPanel() {
@@ -158,6 +160,7 @@ public class ResizableUI {
 
 	private void setupCommandBar() {
 		commandBarController = new CommandBarController();
+		commandBarController.getCommandBar().setFont(new Font("Tahoma", Font.PLAIN, 16));
 		commandBarController.handleKeyPressedEvent(this);
 	}
 
@@ -165,7 +168,7 @@ public class ResizableUI {
 		frame = new JFrame();
 		//frame.setBackground(Color.WHITE);
 		frame.setForeground(Color.WHITE);
-		frame.setBounds(100, 100, 683, 732);
+		frame.setBounds(100, 100, 683, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -216,6 +219,9 @@ public class ResizableUI {
 					feedbackArea.colorCodeFeedback(Color.RED);
 					logger.log(Level.WARNING, feedback);
 				} else {
+					if (feedback.matches(MESSAGE_EMPTY_LIST)) {
+						scrollPane.setVisible(false);
+					}
 					feedbackArea.colorCodeFeedback(COLOR_DARK_GREEN);
 					logger.log(Level.INFO, feedback);
 				}

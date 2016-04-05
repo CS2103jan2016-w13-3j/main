@@ -124,7 +124,7 @@ public class UI {
 		txtrHeader.setFont(new Font("Lucida Calligraphy", Font.BOLD, 16));
 		txtrHeader.setEditable(false);
 		txtrHeader.setText("Welcome to SimplyAmazing!");
-		txtrHeader.setBounds(203, 11, 278, 22);
+		txtrHeader.setBounds(208, 11, 278, 22);
 	}
 
 	private void setupSeparators() {

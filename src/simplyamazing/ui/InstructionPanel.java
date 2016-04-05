@@ -13,7 +13,7 @@ public class InstructionPanel {
 	public InstructionPanel() {
 		instructionPanel = new JTextPane();
 		instructionPanel.setForeground(Color.BLACK);
-		instructionPanel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		instructionPanel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		instructionPanel.setEditable(false);
 	}
 	
