@@ -57,14 +57,26 @@ public class ParserAdd {
 		com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
 
 		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) {
-			System.out.println("Found "+KEYWORD_SCHEDULE_FROM+", "+KEYWORD_SCHEDULE_TO+","+STRING_TIME_FORMATTER);
+			System.out.println("Found "+KEYWORD_SCHEDULE_FROM+", "+KEYWORD_SCHEDULE_TO);
 			startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
-			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_TO);
+			
+			String taskInfoFiltered = taskInfo;
+			endTimeIndex = taskInfoFiltered.lastIndexOf(KEYWORD_SCHEDULE_TO);
+			
+			while(!taskInfoFiltered.substring((endTimeIndex+2),(endTimeIndex+3)).trim().equals(EMPTY_STRING)) {
+				taskInfoFiltered = taskInfoFiltered.substring(0, endTimeIndex) ;
+				endTimeIndex = taskInfoFiltered.lastIndexOf(KEYWORD_SCHEDULE_TO);
+			}
+			
+			System.out.println(startTimeIndex);
+			System.out.println(endTimeIndex);
 			if (startTimeIndex < endTimeIndex) {
 
 				startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
 				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
 				description = taskInfo.substring(0, startTimeIndex);
+				System.out.println("StartTime:"+ startTime);
+				System.out.println("EndTime:" + endTime);
 
 				if (description.equals(EMPTY_STRING) || startTime.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
 					handler.setHasError(true);
@@ -77,19 +89,23 @@ public class ParserAdd {
 					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
 					sdf.setLenient(false);
 					if(isStartFormatCorrect == false && isEndFormatCorrect == false){
+						System.out.println("Endtime and Startime both use Natty format");					
 						List<DateGroup> dateGroup1 = dateParser.parse(startTime);
 						List<DateGroup> dateGroup2 = dateParser.parse(endTime);
-
-						if(dateGroup1.isEmpty()||dateGroup2.isEmpty()){
+						
+						if(dateGroup1.isEmpty()||dateGroup2.isEmpty() ){
 							handler.setHasError(true);
 							handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 							return false;
 						}						
 						List<Date> date1 = dateGroup1.get(0).getDates();
 						startingDate = date1.get(0);
+						System.out.println(startingDate);
 						List<Date> date2 = dateGroup2.get(0).getDates();
 						endingDate = date2.get(0);
+						System.out.println(endingDate);
 					}else if (isStartFormatCorrect == true && isEndFormatCorrect == true){
+						System.out.println("Endtime and Startime both use our format");
 						try{
 							startingDate = (Date)sdf.parse(startTime);
 							endingDate = (Date)sdf.parse(endTime);
@@ -99,6 +115,7 @@ public class ParserAdd {
 							return false;
 						}
 					}else if (isStartFormatCorrect == true && isEndFormatCorrect == false){
+						System.out.println("Startime use our format, Endtime use Natty format");
 						try{
 							startingDate = (Date)sdf.parse(startTime);
 						}catch (ParseException e) {
@@ -116,6 +133,7 @@ public class ParserAdd {
 						List<Date> date2 = dateGroup2.get(0).getDates();
 						endingDate = date2.get(0);
 					}else if(isStartFormatCorrect == false && isEndFormatCorrect == true){
+						System.out.println("Startime use Natty format, Endtime use our format");
 						try{
 							endingDate = (Date)sdf.parse(endTime);
 						}catch (ParseException e) {

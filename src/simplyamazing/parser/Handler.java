@@ -9,10 +9,12 @@ public class Handler {
 	private String keyWord;
 	private String feedback;
 	private boolean hasError;
+	private boolean hasEndDate;
    
 	private static final String INDEX_DEFAULT_VALUE = null;
 	private static final String EMPTY_STRING = "";
 	private static final boolean HASERROR_DEFAULT_VALUE = false;
+	private static final boolean HASENDDATE_DEFAULT_VALUE = false;
 	private static final Task TASK_DEFAULT_VALUE = null;
 
 	public Handler() {
@@ -22,6 +24,7 @@ public class Handler {
 		this.keyWord = EMPTY_STRING;
 		this.feedback = EMPTY_STRING;
 		this.hasError = HASERROR_DEFAULT_VALUE;
+		this.hasEndDate = HASENDDATE_DEFAULT_VALUE;
 	}
 
 	public void setTask(Task task) {
@@ -47,6 +50,10 @@ public class Handler {
 	public void setHasError(boolean hasError) {
 		this.hasError = hasError;
 	}
+	
+	public void setHasEndDate(boolean hasEndDate) {
+		this.hasEndDate = hasEndDate;
+	}
 
 	public Task getTask() {
 		return task;
@@ -70,6 +77,9 @@ public class Handler {
 
 	public boolean getHasError() {
 		return hasError;
+	}
+	public boolean getHasEndDate() {
+		return hasEndDate;
 	}
 
 }
