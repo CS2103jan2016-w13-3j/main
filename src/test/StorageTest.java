@@ -23,7 +23,11 @@ public class StorageTest {
 	private static final String PARAM_DESCRIPTION = "go swimming";
 	private static final String PARAM_PRIORITY = "high";
 	private static final String PARAM_END_TIME = "15:00 16 May 2016";
+	private static final String PARAM_END_TIME1 = "15:00 20 May 2016";
+	private static final String PARAM_END_TIME2 = "15:00 27 May 2016";
+	private static final String PARAM_END_TIME3 = "15:00 31 May 2016";
 	private static final String PARAM_START_TIME = "13:00 16 May 2016";
+	private static final String PARAM_START_TIME1 = "13:00 20 May 2016";
 	private static final String PARAM_SET_LOCATION_NULL = null;
 	private static final String PARAM_SET_LOCATION_EMPTY = "";
 	private static final String PARAM_SET_LOCATION_NOT_DIRECTORY = "C:\\Users\\Public\\Documents\\SimplyAmazing";
@@ -290,6 +294,28 @@ public class StorageTest {
 		// These are for the ‘not null’ partition 
 		assertEquals(1, storage.searchTasks(PARAM_SEARCH_TASKS_KEYWORD).size());
 		assertEquals(2, storage.searchTasks(PARAM_SEARCH_TASKS_MORE_KEYWORD).size());
+	}
+	
+	@Test
+	public void testSearchTasksByDateMethod() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME2)); // deadline
+		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME3)); // deadline
+		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_START_TIME, PARAM_END_TIME)); // event
+		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_START_TIME1, PARAM_END_TIME1)); // event
+		assertEquals(4, storage.getTaskList().getTasks().size());
+		assertEquals(4, storage.getFileManager().getLineCount(todo));
+		
+		// These are for the ‘not null’ partition 
+		assertEquals(4, storage.searchTasksByDate(Task.convertStringToDate(PARAM_END_TIME)).size());
+		assertEquals(3, storage.searchTasksByDate(Task.convertStringToDate(PARAM_END_TIME1)).size());
+		assertEquals(2, storage.searchTasksByDate(Task.convertStringToDate(PARAM_END_TIME2)).size());
+		assertEquals(1, storage.searchTasksByDate(Task.convertStringToDate(PARAM_END_TIME3)).size());
 	}
 	
 	/*
