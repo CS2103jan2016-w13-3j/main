@@ -15,6 +15,7 @@ public class ParserAdd {
 	private static final String KEYWORD_SCHEDULE_FROM = "from";
 	private static final String KEYWORD_DEADLINE = "by";
 	private static final String EMPTY_STRING = "";
+	private static final String SPECIAL_STRING = "*";
 	private static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
 	private static final String ERROR_MESSAGE_FIELDS_NOT_CORRECT = "Error: Please ensure the fields are correct";
 	private static final String ERROR_MESSAGE_TIME_FORMAT_INVALID ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
@@ -59,8 +60,12 @@ public class ParserAdd {
 
 		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) {
 			System.out.println("Found "+KEYWORD_SCHEDULE_FROM+", "+KEYWORD_SCHEDULE_TO);
-			startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
 			
+			if (taskInfo.contains(SPECIAL_STRING)) {
+				startTimeIndex = taskInfo.lastIndexOf(SPECIAL_STRING)+1;
+			} else {
+				startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
+			}
 			String taskInfoFiltered = taskInfo;
 			endTimeIndex = taskInfoFiltered.lastIndexOf(KEYWORD_SCHEDULE_TO);
 			
@@ -76,6 +81,7 @@ public class ParserAdd {
 				startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
 				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
 				description = taskInfo.substring(0, startTimeIndex);
+				description = description.replace(SPECIAL_STRING, EMPTY_STRING);
 				System.out.println("StartTime:"+ startTime);
 				System.out.println("EndTime:" + endTime);
 
