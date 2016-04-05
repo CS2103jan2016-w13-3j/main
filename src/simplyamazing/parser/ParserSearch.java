@@ -13,18 +13,27 @@ import com.joestelmach.natty.DateGroup;
 public class ParserSearch {
 	private static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
 	private static final String ERROR_MESSAGE_TIME_FORMAT_INVALID ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
+	private static final String SPACE = " ";
 	private static Date endingDate = null;
 	private static int year;
 	private boolean checkValue;
 
 	public Handler parserSearchCommand(Handler handler, String taskInfo) throws Exception {
-		checkValue = isSearchingDate(handler,taskInfo);
+		checkValue = isSearchingKeyWord(handler,taskInfo);
 		if (checkValue == true){
 			handler.setKeyWord(taskInfo);
 		}
 		return handler;
 	}
-	public boolean isSearchingDate(Handler handler,String taskInfo) throws Exception {
+	public boolean isSearchingKeyWord(Handler handler,String taskInfo) throws Exception {
+		String givenMonth = taskInfo.substring(0, 3).toLowerCase();
+		if(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.equals("apr")
+				|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
+				|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec")){
+			handler.setKeyWord(givenMonth);
+			return false;
+		}
+		
 		com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
 		boolean isEndFormatCorrect = followStandardFormat(taskInfo);
 		SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
