@@ -22,8 +22,10 @@ import javax.swing.JTextArea;
 import simplyamazing.logic.Logic;
 
 public class ResizableUI {
+	private static final String MESSAGE_WELCOME = "Please enter \"help\" to learn about available commands and their formats";
 	private static final String MESSAGE_LOG_USER_COMMAND_EXECUTED = "user command is successfully executed.";
 	private static final String MESSAGE_EMPTY_LIST = "List is empty";
+	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
 	
 	private static final Color COLOR_DARK_GREEN = new Color(0, 128, 0);
 
@@ -62,10 +64,10 @@ public class ResizableUI {
 						window.updateTaskTable();
 					} else {
 						window.scrollPane.setVisible(false);
-						feedbackArea.colorCodeFeedback(COLOR_DARK_GREEN);
-						feedbackArea.setFeedback(taskDataString);
-						logger.log(Level.INFO, taskDataString);
 					}
+					feedbackArea.colorCodeFeedback(Color.BLACK);
+					feedbackArea.setFeedback(MESSAGE_WELCOME);
+					logger.log(Level.INFO, MESSAGE_WELCOME);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -220,7 +222,7 @@ public class ResizableUI {
 					feedbackArea.colorCodeFeedback(Color.RED);
 					logger.log(Level.WARNING, feedback);
 				} else {
-					if (feedback.matches(MESSAGE_EMPTY_LIST)) {
+					if (feedback.matches(MESSAGE_EMPTY_LIST) || feedback.matches(MESSAGE_NO_TASKS_FOUND)) {
 						scrollPane.setVisible(false);
 					}
 					feedbackArea.colorCodeFeedback(COLOR_DARK_GREEN);
