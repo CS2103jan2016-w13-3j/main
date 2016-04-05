@@ -96,7 +96,7 @@ public class UI {
 	private void setupScrollPane() {
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
-		scrollPane.setBounds(10, 57, 664, 278);
+		scrollPane.setBounds(10, 57, 676, 278);
 	}
 
 	private void addUIComponentsToFrame() {
@@ -110,12 +110,12 @@ public class UI {
 
 	private void setupFeedbackArea() {
 		feedbackArea = new FeedbackArea();
-		feedbackArea.getFeedbackArea().setBounds(10, 346, 664, 22);
+		feedbackArea.getFeedbackArea().setBounds(10, 346, 676, 22);
 	}
 
 	private void setupInstructionPanel() {
 		instructionPanel = new InstructionPanel();
-		instructionPanel.getInstrctionPanel().setBounds(10, 57, 664, 311);
+		instructionPanel.getInstrctionPanel().setBounds(10, 57, 676, 311);
 	}
 	
 	private void setupTaskDataPanel(Object[][] taskData) {
@@ -132,14 +132,14 @@ public class UI {
 
 	private void setupSeparators() {
 		separator = new JSeparator();
-		separator.setBounds(10, 379, 664, 2);
+		separator.setBounds(10, 379, 676, 2);
 		separator_1 = new JSeparator();
-		separator_1.setBounds(10, 44, 664, 2);
+		separator_1.setBounds(10, 44, 676, 2);
 	}
 
 	private void setupCommandBar() {
 		commandBarController = new CommandBarController();
-		commandBarController.getCommandBar().setBounds(10, 392, 664, 33);
+		commandBarController.getCommandBar().setBounds(10, 392, 676, 33);
 		commandBarController.handleKeyPressedEvent(this);
 	}
 
