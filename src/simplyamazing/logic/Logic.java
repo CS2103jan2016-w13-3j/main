@@ -284,16 +284,35 @@ public class Logic {
 
 	
 	private static String executeSearchCommand(Handler commandHandler) throws Exception {			
-		String keyword = commandHandler.getKeyWord();
-		taskList = storageObj.searchTasks(keyword);
+		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in delete");
+			return commandHandler.getFeedBack();
+			
+		}
 		
-		if(taskList.size() == 0){
-			logger.log(Level.WARNING, "There are no tasks containing the keyword");
-			return ERROR_NO_TASKS_FOUND;
+		if (commandHandler.getHasEndDate() == true) {
+			Date endDate = commandHandler.getTask().getEndTime();
+			taskList = storageObj.searchTasksByDate(endDate);
+			
+			if(taskList.size() == 0){
+				logger.log(Level.WARNING, "There are no tasks containing the keyword");
+				return ERROR_NO_TASKS_FOUND;
+			} else {
+				return convertListToString(taskList);
+			}
 		} else {
-			logger.log(Level.INFO, "tasks have been retrieved, converting into a string now");
-			String listInStringFormat = convertListToString(taskList);
-			return listInStringFormat;
+		
+			String keyword = commandHandler.getKeyWord();
+			taskList = storageObj.searchTasks(keyword);
+		
+			if(taskList.size() == 0){
+				logger.log(Level.WARNING, "There are no tasks containing the keyword");
+				return ERROR_NO_TASKS_FOUND;
+			} else {
+				logger.log(Level.INFO, "tasks have been retrieved, converting into a string now");
+				String listInStringFormat = convertListToString(taskList);
+				return listInStringFormat;
+			}
 		}
 	}
 	
