@@ -376,21 +376,29 @@ public class Storage {
 	}
 	
 	public ArrayList<Task> searchTasksByDate(Date date) throws Exception {
+		String[] datetimes = Task.convertDateToString(date, Task.TIME_FORMAT).split(CHARACTER_SPACE);
+		String dateString = datetimes[1] + CHARACTER_SPACE + datetimes[2] + CHARACTER_SPACE + datetimes[3];
 		ArrayList<Task> tasks = viewTasks(STRING_EMPTY);
 		assert(tasks != null);
 		tasks.addAll(taskList.getCompletedTasks());
 
 		ArrayList<Task> filteredTasks = new ArrayList<Task>();
-		// put the tasks with the exact end time first
+		// put the tasks with the exact match of the specified date first
 		for (int i = 0; i < tasks.size(); i++) {
-			if (tasks.get(i).getEndTime().compareTo(date) == 0) { 
+			if (tasks.get(i).toString().contains(dateString)) { 
+				filteredTasks.add(tasks.get(i));
+			}	
+		}
+		
+		for (int i = 0; i < tasks.size(); i++) {
+			if (tasks.get(i).getEndTime().compareTo(date) == 0 && !filteredTasks.contains(tasks.get(i))) { 
 				filteredTasks.add(tasks.get(i));
 			}	
 		}
 		
 		// put the tasks which has end time after the specified date
 		for (int i = 0; i < tasks.size(); i++) {
-			if (tasks.get(i).getEndTime().after(date) && tasks.get(i).getEndTime() != Task.DEFAULT_DATE_VALUE && !filteredTasks.contains(tasks.get(i))) {
+			if (tasks.get(i).getStartTime().before(date) && tasks.get(i).getEndTime().after(date) && tasks.get(i).getEndTime() != Task.DEFAULT_DATE_VALUE && !filteredTasks.contains(tasks.get(i))) {
 				filteredTasks.add(tasks.get(i));
 			}
 		}
