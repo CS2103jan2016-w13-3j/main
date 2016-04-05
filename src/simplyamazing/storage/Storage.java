@@ -30,7 +30,6 @@ public class Storage {
 	private static final int INDEX_START_FOR_ARRAY = 0;
 
 	private static final String MESSAGE_LOCATION_SET = "Storage location of task data has been sucessfully set as %1$s.";
-	private static final String MESSAGE_LOCATION_NOT_SET = "Error: Storage location of task data is has not been set. Please enter \"location <directory>\" command to set the storage location.";
 	private static final String MESSAGE_NOT_DIRECTORY = "Error: Not a valid directory.";
 	private static final String MESSAGE_ADDED = "%1$s has been added.";
 	private static final String MESSAGE_RESTORED = "\"%1$s\" command has been successfully undone.";
@@ -95,7 +94,7 @@ public class Storage {
 			if (!fileManager.isFileExisting(storage)) {
 				fileManager.createNewFile(storage);
 			}
-			if(isLocationSet()) { // When storage location has been set before
+			if (isLocationSet()) { // When storage location has been set before
 				setupFiles();
 
 				File todoNew = fileManager.createFile(location+FILENAME_TODO);
@@ -417,6 +416,7 @@ public class Storage {
 		tasks.addAll(taskList.getCompletedTasks());
 
 		ArrayList<Task> filteredTasks = new ArrayList<Task>();
+		
 		// put the tasks with the exact match of the specified date first
 		for (int i = 0; i < tasks.size(); i++) {
 			if (tasks.get(i).toString().contains(dateString)) { 
@@ -424,15 +424,16 @@ public class Storage {
 			}	
 		}
 		
-		for (int i = 0; i < tasks.size(); i++) {
-			if (tasks.get(i).getEndTime().compareTo(date) == 0 && !filteredTasks.contains(tasks.get(i))) { 
-				filteredTasks.add(tasks.get(i));
-			}	
-		}
-		
 		// put the tasks which has end time after the specified date
 		for (int i = 0; i < tasks.size(); i++) {
-			if (tasks.get(i).getStartTime().before(date) && tasks.get(i).getEndTime().after(date) && tasks.get(i).getEndTime() != Task.DEFAULT_DATE_VALUE && !filteredTasks.contains(tasks.get(i))) {
+			if (tasks.get(i).getStartTime().before(date) && tasks.get(i).getEndTime().after(date) && !filteredTasks.contains(tasks.get(i))) {
+				filteredTasks.add(tasks.get(i));
+			}
+		}
+		
+		// put floating tasks lastly
+		for (int i = 0; i < tasks.size(); i++) {
+			if (tasks.get(i).getStartTime() == Task.DEFAULT_DATE_VALUE && tasks.get(i).getEndTime() == Task.DEFAULT_DATE_VALUE && !filteredTasks.contains(tasks.get(i))) {
 				filteredTasks.add(tasks.get(i));
 			}
 		}
