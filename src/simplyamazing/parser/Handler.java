@@ -1,16 +1,18 @@
 //@@author A0112659A
 package simplyamazing.parser;
 
+import java.util.ArrayList;
+
 import simplyamazing.data.Task;
 
 public class Handler {
 	private Task task;
 	private String commandType;
-	private String index;
 	private String keyWord;
 	private String feedback;
 	private boolean hasError;
 	private boolean hasEndDate;
+	private  ArrayList<Integer> indexes; 
    
 	private static final String INDEX_DEFAULT_VALUE = null;
 	private static final String EMPTY_STRING = "";
@@ -21,11 +23,11 @@ public class Handler {
 	public Handler() {
 		task = new Task();
 		this.commandType = EMPTY_STRING;
-		this.index = INDEX_DEFAULT_VALUE;
 		this.keyWord = EMPTY_STRING;
 		this.feedback = EMPTY_STRING;
 		this.hasError = HASERROR_DEFAULT_VALUE;
 		this.hasEndDate = HASENDDATE_DEFAULT_VALUE;
+		this.indexes = new ArrayList<Integer>();
 	}
 
 	public void setTask(Task task) {
@@ -37,7 +39,7 @@ public class Handler {
 	}
 
 	public void setIndex(String index) {
-		this.index = index;
+		this.indexes.add(Integer.parseInt(index));
 	}
 
 	public void setKeyWord(String keyWord) {
@@ -64,8 +66,8 @@ public class Handler {
 		return commandType;
 	}
 
-	public String getIndex() {
-		return index;
+	public ArrayList<Integer> getIndexList() {
+		return indexes;
 	}
 
 	public String getKeyWord() {

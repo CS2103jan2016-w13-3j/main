@@ -3,23 +3,30 @@ package simplyamazing.parser;
 
 public class ParserDelete {
 	private final String COMMAND_INVALID = "Error: Index provided is not an Integer.";
-	
+	private final String SPACE = " ";
+	private int size;
 	public Handler parserDeleteCommand(Handler handler, String taskInfo) throws Exception{
-		if (isInteger(taskInfo)){
-			handler.setIndex(taskInfo);
-		}else{
-			handler.setHasError(true);
-			handler.setFeedBack(COMMAND_INVALID);
+
+		String[] indexes = taskInfo.split(SPACE);
+		size = indexes.length;
+		for (int i = 0; i < size;i++){
+			if (isInteger(indexes[i])){
+				handler.setIndex(indexes[i]);
+			}else{
+				handler.setHasError(true);
+				handler.setFeedBack(COMMAND_INVALID);
+				return handler;
+			}
 		}
 		return handler;
 	}
 	public static boolean isInteger(String taskInfo) {
-	    try { 
-	        Integer.parseInt(taskInfo); 
-	    } catch(NumberFormatException e) { 
-	        return false; 
-	    }
-	    // only got here if we didn't return false
-	    return true;
+		try { 
+			Integer.parseInt(taskInfo); 
+		} catch(NumberFormatException e) { 
+			return false; 
+		}
+		// only got here if we didn't return false
+		return true;
 	}
 }
