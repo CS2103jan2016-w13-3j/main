@@ -37,7 +37,9 @@ public class Storage {
 	private static final String MESSAGE_INVALID_TASK_TYPE = "Unrecognized task type!";
 	private static final String MESSAGE_COMPLETED_TASK = "%1$s is a completed task.";
 	private static final String MESSAGE_DELETED = "%1$s has been successfully deleted.";
+	private static final String MESSAGE_DELETED_MULTIPLE = "Provided tasks have been successfully deleted.";
 	private static final String MESSAGE_MARKED_DONE = "%1$s has been marked as done.";
+	private static final String MESSAGE_MARKED_DONE_MULTIPLE = "Provided tasks have been marked as done.";
 	private static final String MESSAGE_UPDATED = "%1$s has been successfully updated.";
 
 	private static final String MESSAGE_LOG_DIRECTORY_CREATED = "Directory for storage file is created successfully.";
@@ -190,8 +192,10 @@ public class Storage {
 
 	public String editTask(Task task, Task editedTask) throws Exception {
 
-		isEditing = true;			
-		throwExceptionIfCompletedTask(task);
+		isEditing = true;	
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		tasks.add(task);
+		throwExceptionIfCompletedTask(tasks);
 
 		deleteTask(task);
 
@@ -216,11 +220,13 @@ public class Storage {
 		return feedback;
 	}
 
-	private void throwExceptionIfCompletedTask(Task task) throws Exception {
-		if(taskList.getCompletedTasks().contains(task)) {
-			String exceptionMessage = String.format(MESSAGE_COMPLETED_TASK, task.toFilteredString());
-			logger.log(Level.WARNING, exceptionMessage);
-			throw new Exception(exceptionMessage);
+	private void throwExceptionIfCompletedTask(ArrayList<Task> tasks) throws Exception {
+		for (int i = 0; i < tasks.size(); i++) {
+			if(taskList.getCompletedTasks().contains(tasks.get(i))) {
+				String exceptionMessage = String.format(MESSAGE_COMPLETED_TASK, tasks.get(i).toFilteredString());
+				logger.log(Level.WARNING, exceptionMessage);
+				throw new Exception(exceptionMessage);
+			}
 		}
 	}
 
@@ -249,6 +255,34 @@ public class Storage {
 		String feedback = String.format(MESSAGE_DELETED, task.toFilteredString());
 		logger.log(Level.INFO, feedback);
 		return feedback;
+	}
+	
+	public String deleteMultipleTasks(ArrayList<Task> tasks) throws Exception {
+		setupFiles();
+
+		fileManager.createBackup(todo, todoBackup);
+		logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+
+		updateTaskData();
+		for (int i = 0; i < tasks.size(); i++) {
+			taskList.removeTaskFromList(tasks.get(i));
+	
+			int lineCountBeforeAdding = fileManager.getLineCount(todo);
+			fileManager.importListToFile(taskList.getTasks(), todo);
+			int lineCountAfterAdding = fileManager.getLineCount(todo);
+			assert(lineCountAfterAdding <= lineCountBeforeAdding);
+	
+			lineCountBeforeAdding = fileManager.getLineCount(done);
+			fileManager.importListToFile(taskList.getCompletedTasks(), done);
+			lineCountAfterAdding = fileManager.getLineCount(done);
+			assert(lineCountAfterAdding <= lineCountBeforeAdding);
+	
+			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
+	
+			String feedback = String.format(MESSAGE_DELETED, tasks.get(i).toFilteredString());
+			logger.log(Level.INFO, feedback);
+		}
+		return MESSAGE_DELETED_MULTIPLE;
 	}
 
 	public ArrayList<Task> viewTasks(String taskType) throws Exception {
@@ -406,9 +440,15 @@ public class Storage {
 	}
 
 	public String markTaskDone(Task task) throws Exception {
-		throwExceptionIfCompletedTask(task);
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		tasks.add(task);
+		throwExceptionIfCompletedTask(tasks);
 
 		deleteTask(task);
+		
+		fileManager.createBackup(done, doneBackup);
+		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
+		
 		task.setDone(true);
 		moveToDoneFile(task);
 
@@ -417,10 +457,26 @@ public class Storage {
 		return feedback;
 	}
 
-	private void moveToDoneFile(Task task) throws Exception {
+	public String markMultipleTasksDone(ArrayList<Task> tasks) throws Exception {
+		
+		throwExceptionIfCompletedTask(tasks);
+
+		deleteMultipleTasks(tasks);
+		
 		fileManager.createBackup(done, doneBackup);
 		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
-
+		
+		for (int i = 0; i < tasks.size(); i++) {
+			tasks.get(i).setDone(true);
+			moveToDoneFile(tasks.get(i));
+	
+			String feedback = String.format(MESSAGE_MARKED_DONE, tasks.get(i).toFilteredString());
+			logger.log(Level.INFO, feedback);
+		}
+		return MESSAGE_MARKED_DONE_MULTIPLE;
+	}
+	
+	private void moveToDoneFile(Task task) throws Exception {
 		taskList.addTaskToList(task, taskList.getCompletedTasks());
 
 		int lineCountBeforeAdding = fileManager.getLineCount(done);
