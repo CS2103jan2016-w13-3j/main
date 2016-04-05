@@ -230,7 +230,7 @@ public class StorageTest {
 		storage.addTask(new Task(PARAM_DESCRIPTION1)); // floating task
 		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME)); // deadline
 		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_START_TIME, PARAM_END_TIME)); // event
-		storage.addTask(new Task(PARAM_DESCRIPTION1, Task.convertDateToString(new Date()), Task.convertDateToString(new Date()))); // overdue
+		storage.addTask(new Task(PARAM_DESCRIPTION1, Task.convertDateToString(new Date(), Task.TIME_FORMAT), Task.convertDateToString(new Date(), Task.TIME_FORMAT))); // overdue
 		assertEquals(4, storage.getFileManager().getLineCount(todo));
 		assertEquals(4, storage.getTaskList().getTasks().size());
 		
@@ -312,10 +312,10 @@ public class StorageTest {
 		assertEquals(4, storage.getFileManager().getLineCount(todo));
 		
 		// These are for the ‘not null’ partition 
-		assertEquals(4, storage.searchTasksByDate(Task.convertStringToDate(PARAM_END_TIME)).size());
-		assertEquals(3, storage.searchTasksByDate(Task.convertStringToDate(PARAM_END_TIME1)).size());
-		assertEquals(2, storage.searchTasksByDate(Task.convertStringToDate(PARAM_END_TIME2)).size());
-		assertEquals(1, storage.searchTasksByDate(Task.convertStringToDate(PARAM_END_TIME3)).size());
+		assertEquals(4, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME).getEndTime()).size());
+		assertEquals(3, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME1).getEndTime()).size());
+		assertEquals(2, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME2).getEndTime()).size());
+		assertEquals(1, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME3).getEndTime()).size());
 	}
 	
 	/*

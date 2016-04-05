@@ -6,18 +6,18 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Task implements Comparable<Task>{
-	public static final int DEFAULT_PRIORITY_LEVEL = 0;
-	public static final int DEFAULT_PRIORITY_LEVEL_LOW = 1;
+	private static final int DEFAULT_PRIORITY_LEVEL = 0;
+	private static final int DEFAULT_PRIORITY_LEVEL_LOW = 1;
 	private static final int DEFAULT_PRIORITY_LEVEL_MEDIUM = 2;
 	private static final int DEFAULT_PRIORITY_LEVEL_HIGH = 3;
 	
-	public static final int DEFAULT_TASK_TYPE = 1;
-	public static final int DEFAULT_TASK_TYPE_FOR_EVENTS = 2;
-	public static final int DEFAULT_TASK_TYPE_FOR_DEADLINES = 3;
+	private static final int DEFAULT_TASK_TYPE = 1;
+	private static final int DEFAULT_TASK_TYPE_FOR_EVENTS = 2;
+	private static final int DEFAULT_TASK_TYPE_FOR_DEADLINES = 3;
 	
 	public static final Date DEFAULT_DATE_VALUE = new Date(0);
 
-	private static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
+	public static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
 	public static final String FIELD_SEPARATOR = ",";
 	
 	private static final String CHARACTER_SPACE = " ";
@@ -61,7 +61,7 @@ public class Task implements Comparable<Task>{
 	public Task(String description, String endTime) throws Exception {
 		this.description = description.trim();
 		this.startTime = DEFAULT_DATE_VALUE;
-		this.endTime = convertStringToDate(endTime.trim());
+		this.endTime = convertStringToDate(endTime.trim(), TIME_FORMAT);
 		this.priority = DEFAULT_PRIORITY_LEVEL;
 		this.taskType = DEFAULT_TASK_TYPE_FOR_EVENTS;
 		this.done = false;
@@ -69,22 +69,22 @@ public class Task implements Comparable<Task>{
 
 	public Task(String description, String startTime, String endTime) throws Exception {
 		this.description = description.trim();
-		this.startTime = convertStringToDate(startTime.trim());
-		this.endTime = convertStringToDate(endTime.trim());
+		this.startTime = convertStringToDate(startTime.trim(), TIME_FORMAT);
+		this.endTime = convertStringToDate(endTime.trim(), TIME_FORMAT);
 		this.priority = DEFAULT_PRIORITY_LEVEL;
 		this.taskType = DEFAULT_TASK_TYPE_FOR_DEADLINES;
 		this.done = false;
 	}
 
-	public static Date convertStringToDate(String timeString) throws Exception {
-        SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
+	public static Date convertStringToDate(String timeString, String format) throws Exception {
+        SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.ENGLISH);
         Date date = formatter.parse(timeString);
         return date;
     }
 
-    public static String convertDateToString(Date date) {
+    public static String convertDateToString(Date date, String format) {
         String timeString = CHARACTER_SPACE;
-        SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
+        SimpleDateFormat formatter = new SimpleDateFormat(format, Locale.ENGLISH);
         timeString = formatter.format(date);
         String[] fields = timeString.split(CHARACTER_SPACE);
         assert(fields.length > 0);
@@ -107,7 +107,7 @@ public class Task implements Comparable<Task>{
 	}
 
 	public void setStartTime(String startTime) throws Exception {
-		this.startTime = convertStringToDate(startTime.trim());
+		this.startTime = convertStringToDate(startTime.trim(), TIME_FORMAT);
 		this.taskType = DEFAULT_TASK_TYPE_FOR_EVENTS;
 	}
 	
@@ -121,7 +121,7 @@ public class Task implements Comparable<Task>{
 	}
 
 	public void setEndTime(String endTime) throws Exception {
-		this.endTime = convertStringToDate(endTime.trim());
+		this.endTime = convertStringToDate(endTime.trim(), TIME_FORMAT);
 		if (this.startTime.compareTo(DEFAULT_DATE_VALUE) == 0) { // For floating tasks and deadlines
 			this.taskType = DEFAULT_TASK_TYPE_FOR_DEADLINES;
 		}
@@ -199,11 +199,11 @@ public class Task implements Comparable<Task>{
 		String status = CHARACTER_SPACE;
 		
 		if (this.startTime != DEFAULT_DATE_VALUE) {
-			startTimeString = convertDateToString(this.startTime);
+			startTimeString = convertDateToString(this.startTime, TIME_FORMAT);
 			assert(!startTimeString.matches(CHARACTER_SPACE));
 		}
 		if (this.endTime != DEFAULT_DATE_VALUE) {
-			endTimeString = convertDateToString(this.endTime);
+			endTimeString = convertDateToString(this.endTime, TIME_FORMAT);
 			assert(!endTimeString.matches(CHARACTER_SPACE));
 		}
 		switch (this.priority) {

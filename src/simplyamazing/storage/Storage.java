@@ -376,24 +376,21 @@ public class Storage {
 	}
 	
 	public ArrayList<Task> searchTasksByDate(Date date) throws Exception {
-		System.out.println(Task.convertDateToString(date));
 		ArrayList<Task> tasks = viewTasks(STRING_EMPTY);
 		assert(tasks != null);
 		tasks.addAll(taskList.getCompletedTasks());
 
 		ArrayList<Task> filteredTasks = new ArrayList<Task>();
-		
 		// put the tasks with the exact end time first
 		for (int i = 0; i < tasks.size(); i++) {
 			if (tasks.get(i).getEndTime().compareTo(date) == 0) { 
-				System.out.println(Task.convertDateToString(tasks.get(i).getEndTime()));
 				filteredTasks.add(tasks.get(i));
 			}	
 		}
+		
 		// put the tasks which has end time after the specified date
 		for (int i = 0; i < tasks.size(); i++) {
-			if (tasks.get(i).getEndTime().after(date) && tasks.get(i).getEndTime() != Task.DEFAULT_DATE_VALUE) {
-				System.out.println(Task.convertDateToString(tasks.get(i).getEndTime()));
+			if (tasks.get(i).getEndTime().after(date) && tasks.get(i).getEndTime() != Task.DEFAULT_DATE_VALUE && !filteredTasks.contains(tasks.get(i))) {
 				filteredTasks.add(tasks.get(i));
 			}
 		}
