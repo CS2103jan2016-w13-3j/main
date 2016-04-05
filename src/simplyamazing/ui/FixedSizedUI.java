@@ -185,7 +185,9 @@ public class FixedSizedUI {
 			} else { // only feedback
 				if (getTaskData().contains(CHARACTER_NEW_LINE)) {
 					updateTaskTable();
-				} 
+				} else {
+					scrollPane.setVisible(false);
+				}
 				if (feedback.contains(STRING_ERROR)) {
 					feedbackArea.colorCodeFeedback(Color.RED);
 					logger.log(Level.WARNING, feedback);
