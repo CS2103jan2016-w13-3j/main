@@ -26,7 +26,7 @@ public class TaskDataPanel {
 		taskDataTable.getTableHeader().setBorder(BorderFactory.createEtchedBorder());
 		taskDataTable.getTableHeader().setFont(new Font("Times New Roman", Font.BOLD, 15));
 		taskDataTable.setBorder(BorderFactory.createEtchedBorder());
-		//taskDataTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		taskDataTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		TableColumnModel columnModel = taskDataTable.getColumnModel();
 		columnModel.getColumn(0).setPreferredWidth(29);
 		columnModel.getColumn(1).setPreferredWidth(220);
