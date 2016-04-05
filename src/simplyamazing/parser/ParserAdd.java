@@ -62,7 +62,13 @@ public class ParserAdd {
 			System.out.println("Found "+KEYWORD_SCHEDULE_FROM+", "+KEYWORD_SCHEDULE_TO);
 
 			if (taskInfo.contains(SPECIAL_STRING)) {
-				startTimeIndex = taskInfo.lastIndexOf(SPECIAL_STRING)+1;
+				int specialStrIndex = taskInfo.lastIndexOf(SPECIAL_STRING);		
+				System.out.println(taskInfo.substring(specialStrIndex+1, specialStrIndex+5));
+				if(taskInfo.substring(specialStrIndex+1, specialStrIndex+5).matches(KEYWORD_SCHEDULE_FROM)){
+					startTimeIndex = specialStrIndex + 1;
+				} else {
+					startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
+				}
 			} else {
 				startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
 			}
