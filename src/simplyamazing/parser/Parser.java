@@ -111,6 +111,11 @@ public class Parser {
 		return parserHelp.parserHelpCommand(handler,removeFirstWord);
 	}
 	
+	private Handler parserSearchCommand(Handler handler, String removeFirstWord) throws Exception {
+		ParserSearch parserSearch = new ParserSearch();
+		return parserSearch.parserSearchCommand(handler,removeFirstWord);
+	}
+	
 	
 	private Handler parserFirstWord(Handler handler, String firstWord,String removeFirstWord) throws Exception{
 		switch(firstWord.toLowerCase()){
@@ -132,7 +137,7 @@ public class Parser {
 			 break;
 		 case COMMAND_SEARCH: case COMMAND_SEARCH_ALT: case COMMAND_SEARCH_ALT_2:
 			 handler.setCommandType(COMMAND_SEARCH);
-			 handler.setKeyWord(removeFirstWord);
+			 handler = parserSearchCommand(handler,removeFirstWord);
 			 break;
 		 case COMMAND_HELP: case COMMAND_HELP_ALT:
 			 handler.setCommandType(COMMAND_HELP);
