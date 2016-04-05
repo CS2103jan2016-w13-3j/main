@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.PatternSyntaxException;
 
 import com.joestelmach.natty.DateGroup;
 
@@ -16,6 +17,7 @@ public class ParserSearch {
 	private static final String SPACE = " ";
 	private static Date endingDate = null;
 	private static int year;
+	private static String outputYear = "";
 	private boolean checkValue;
 
 	public Handler parserSearchCommand(Handler handler, String taskInfo) throws Exception {
@@ -27,13 +29,17 @@ public class ParserSearch {
 	}
 	public boolean isSearchingKeyWord(Handler handler,String taskInfo) throws Exception {
 		String givenMonth = taskInfo.substring(0, 3).toLowerCase();
-		if(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.equals("apr")
+		if(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
 				|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
 				|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec")){
-			handler.setKeyWord(givenMonth);
+			String[] monthAndYear = taskInfo.split(SPACE);
+			if (monthAndYear.length == 2) {
+				outputYear = ""+ taskInfo.split(SPACE)[1];
+			}
+			handler.setKeyWord(givenMonth + SPACE + outputYear);
 			return false;
 		}
-		
+
 		com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
 		boolean isEndFormatCorrect = followStandardFormat(taskInfo);
 		SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
