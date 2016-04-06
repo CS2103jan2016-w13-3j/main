@@ -389,7 +389,6 @@ public class Storage {
 		keyword = keyword.toLowerCase();
 		ArrayList<Task> tasks = viewTasks(STRING_EMPTY);
 		assert(tasks != null);
-		tasks.addAll(taskList.getCompletedTasks());
 
 		ArrayList<Task> filteredTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
@@ -413,7 +412,6 @@ public class Storage {
 		String dateString = datetimes[1] + CHARACTER_SPACE + datetimes[2] + CHARACTER_SPACE + datetimes[3];
 		ArrayList<Task> tasks = viewTasks(STRING_EMPTY);
 		assert(tasks != null);
-		tasks.addAll(taskList.getCompletedTasks());
 
 		ArrayList<Task> filteredTasks = new ArrayList<Task>();
 		
