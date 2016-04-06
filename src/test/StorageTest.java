@@ -4,6 +4,7 @@ package test;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.junit.Test;
@@ -53,6 +54,8 @@ public class StorageTest {
 	private static final String FEEDBACK_ADDED = "%1$s has been added.";
 	private static final String FEEDBACK_UPDATED = "%1$s has been successfully updated.";
 	private static final String FEEDBACK_MARKED_DONE = "%1$s has been marked as done.";
+	private static final String FEEDBACK_MARKED_DONE_MULTIPLE = "Provided tasks have been marked as done.";
+	private static final String FEEDBACK_DELETED_MULTIPLE = "Provided tasks have been successfully deleted.";
 	private static final String FEEDBACK_DELETED = "%1$s has been successfully deleted.";
 	private static final String FEEDBACK_RESTORED = "\"%1$s\" command has been successfully undone.";
 	
@@ -313,7 +316,7 @@ public class StorageTest {
 		assertEquals(4, storage.getFileManager().getLineCount(todo));
 		
 		// These are for the ‘not null’ partition 
-		assertEquals(4, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME).getEndTime()).size());
+		assertEquals(3, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME).getEndTime()).size());
 		assertEquals(3, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME1).getEndTime()).size());
 		assertEquals(2, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME2).getEndTime()).size());
 		assertEquals(1, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME3).getEndTime()).size());
@@ -380,6 +383,31 @@ public class StorageTest {
 		storage.addTask(new Task(PARAM_DESCRIPTION1));
 		assertEquals(String.format(FEEDBACK_MARKED_DONE, task.toFilteredString()), storage.markTaskDone(task));	
 		assertEquals(2, storage.getFileManager().getLineCount(done));
+	}
+	
+	@Test
+	public void testMarkMultipleTasksDoneMethod() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		for (int i = 0; i < 5; i++) {
+			storage.addTask(new Task(PARAM_DESCRIPTION));
+			if (i < 3) {
+				tasks.add(new Task(PARAM_DESCRIPTION));
+			}
+		}
+		
+		// This is for the ‘not null’ partition
+		assertEquals(5, storage.getTaskList().getTasks().size());
+		assertEquals(5, storage.getFileManager().getLineCount(todo));
+		assertEquals(0, storage.getTaskList().getCompletedTasks().size());
+		assertEquals(0, storage.getFileManager().getLineCount(done));
+		assertEquals(String.format(FEEDBACK_MARKED_DONE_MULTIPLE), storage.markMultipleTasksDone(tasks));	
+		assertEquals(3, storage.getFileManager().getLineCount(done));
 	}
 	
 	/*
