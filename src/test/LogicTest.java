@@ -68,6 +68,11 @@ public class LogicTest {
 	private static final String DONE_INVALID_INDEX_FEEDBACK = "Error: The Index entered is invalid";
 	private static final String DONE_INVALID_INDEX_STRING = "done abcd";
 	private static final String DONE_INVALID_COMMAND_FEEDBACK = "Error: Index provided is not an Integer.";
+	private static final String DONE_INVALID_INDEX_MULTIPLE = "done 1 2 -1";
+	private static final String DONE_INVALID_INDEX_MULTIPLE_FEEDBACK = "Error: One of the given indexes is invalid";
+	private static final String DONE_VALID_INDEX_MULTIPLE = "done 1 2";
+	private static final String DONE_VALID_INDEX_MULTIPLE_FEEDBACK = "Provided tasks have been marked as done.";
+	
 	private static final String DONE_VALID_INDEX  = "done 2";
 	private static final String DONE_VALID_FEEDBACK = "Task [hello world] has been marked as done.";
 	
@@ -108,11 +113,11 @@ public class LogicTest {
 			+ "3. edit 1 priority high";
 	
 	private static final String HELP_VALID_ADD = "help add";
-	private static final String HELP_VALID_ADD_FEEDBACK = "1.Add a task to the list\nCommand: add <task description>\n\nExample: add prepare presentation\n\n\n"
+	private static final String HELP_VALID_ADD_FEEDBACK =  "1.Add a task to the list\nCommand: add <task description>\n\nExample: add Prepare presentation\n\n\n"
 			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to\n<end time hh:mm> <end date dd MMM yyyy>\n\n"
-			+ "Example: Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
+			+ "Example: add Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
 			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>\n\n"
-			+ "Example: submit marketing report by 17:00 20 Dec 2016\n";
+			+ "Example: add Submit marketing report by 17:00 20 Dec 2016\n";
 	
 	private static final String HELP_VALID_LOCATION = "help location";
 	private static final String HELP_VALID_LOCATION_FEEDBACK = "Sets the storage location or folder for application data\n"
@@ -265,8 +270,13 @@ public class LogicTest {
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_LARGER));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_ZERO));
+
+		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand("delete 1 2 5"));
+		assertEquals("Provided tasks have been successfully deleted.", logicObj.executeCommand("delete 1 2"));
+		logicObj.executeCommand("undo");
 		logicObj.executeCommand("view");
 		assertEquals(DELETE_VALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_VALID_INDEX));
+
 	}
 
 	@Test
@@ -282,6 +292,10 @@ public class LogicTest {
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_LARGER));
 		assertEquals(DONE_INVALID_COMMAND_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_STRING));
+		logicObj.executeCommand("view");
+		assertEquals(DONE_INVALID_INDEX_MULTIPLE_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_MULTIPLE));
+		assertEquals(DONE_VALID_INDEX_MULTIPLE_FEEDBACK, logicObj.executeCommand(DONE_VALID_INDEX_MULTIPLE));
+		logicObj.executeCommand("undo");
 		logicObj.executeCommand("view");
 		assertEquals(DONE_VALID_FEEDBACK, logicObj.executeCommand(DONE_VALID_INDEX));
 	}
@@ -299,17 +313,14 @@ public class LogicTest {
 		addItemsToList(5);
 		
 		// this is the boundary case for negative value partition. Other values include -2, -10, -10000
-		assertFalse(Logic.checkIndexValid(new String("-3"), list)); 
-		assertFalse(Logic.checkIndexValid(new String("0"), list));
+		assertFalse(Logic.checkIndexValid(-3, list)); 
+		assertFalse(Logic.checkIndexValid(0, list));
 		
 		// this is the boundary case for the correct value partition. Values should range from [1,5]
-		assertTrue(Logic.checkIndexValid(new String("1"), list));
+		assertTrue(Logic.checkIndexValid(1, list));
 		
 		// this is the boundary case for positive value partition. Other values include 10, 1000, 10000
-		assertFalse(Logic.checkIndexValid(new String("6"), list));
-		
-		assertFalse(Logic.checkIndexValid(null, list));
-		assertFalse(Logic.checkIndexValid(new String("abc"), list));
+		assertFalse(Logic.checkIndexValid(6, list));
 	}
 		
 	@Test

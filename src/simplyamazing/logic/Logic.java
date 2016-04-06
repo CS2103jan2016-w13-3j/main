@@ -28,9 +28,8 @@ public class Logic {
 	
 	private static final String MESSAGE_EMPTY_LIST = "List is empty";
 	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
-	private static final String MESSAGE_MULTIPLE_TASKS_DELETED = "Given tasks have been deleted";
-	private static final String MESSAGE_MULTIPLE_TASKS_MARKED = "Given tasks have been marked as done"; 
 	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
+	private static final String ERROR_INVALID_INDEX_MULTIPLE = "Error: One of the given indexes is invalid";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo"; 
 	private static final String ERROR_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
@@ -60,11 +59,11 @@ public class Logic {
 			+ "Command: view deadlines\n\n3.Display all events\nCommand: view events\n\n4.Display tasks without deadlines\nCommand: view tasks\n\n"
 			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n";
 
-	private static final String MESSAGE_HELP_ADD_TASK = "1.Add a task to the list\nCommand: add <task description>\n\nExample: add prepare presentation\n\n\n"
+	private static final String MESSAGE_HELP_ADD_TASK = "1.Add a task to the list\nCommand: add <task description>\n\nExample: add Prepare presentation\n\n\n"
 			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to\n<end time hh:mm> <end date dd MMM yyyy>\n\n"
-			+ "Example: Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
+			+ "Example: add Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
 			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>\n\n"
-			+ "Example: submit marketing report by 17:00 20 Dec 2016\n";
+			+ "Example: add Submit marketing report by 17:00 20 Dec 2016\n";
 	
 	
 	enum CommandType {
@@ -267,11 +266,8 @@ public class Logic {
 			return commandHandler.getFeedBack();
 			
 		} else {
-			ArrayList<Integer> listToDelete = commandHandler.getIndexList();
 			
-			if(listToDelete.size() == 0) {
-				return ERROR_INVALID_INDEX;
-			}
+			ArrayList<Integer> listToDelete = commandHandler.getIndexList();
 			boolean isIndexValid = true;
 			int indexToDelete = -1;
 			if(listToDelete.size() == 1) {
@@ -292,8 +288,8 @@ public class Logic {
 					indexToDelete = listToDelete.get(i);
 					isIndexValid = checkIndexValid(indexToDelete, taskList);
 					if(isIndexValid == false) {
-						logger.log(Level.WARNING, "index given is invalid");
-						return ERROR_INVALID_INDEX;
+						logger.log(Level.WARNING, "indexes given is invalid");
+						return ERROR_INVALID_INDEX_MULTIPLE;
 					} else{
 						tasksToDelete.add(taskList.get(indexToDelete -1 ));
 					}
@@ -383,10 +379,6 @@ public class Logic {
 		} else {
 			
 			ArrayList<Integer> listToMark = commandHandler.getIndexList();
-			if(listToMark.size() == 0) {
-				return ERROR_INVALID_INDEX;
-			}
-			
 			boolean isIndexValid = true;
 			int indexToMark;
 			
@@ -409,7 +401,7 @@ public class Logic {
 					isIndexValid = checkIndexValid(indexToMark, taskList);
 					if(isIndexValid == false) {
 						logger.log(Level.WARNING, "index given is invalid");
-						return ERROR_INVALID_INDEX;
+						return ERROR_INVALID_INDEX_MULTIPLE;
 					} else{
 						tasksToMark.add(taskList.get(indexToMark -1 ));
 					}
