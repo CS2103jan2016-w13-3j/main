@@ -389,7 +389,8 @@ public class Storage {
 		keyword = keyword.toLowerCase();
 		ArrayList<Task> tasks = viewTasks(STRING_EMPTY);
 		assert(tasks != null);
-
+		tasks.addAll(viewCompletedTasks());
+		
 		ArrayList<Task> filteredTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			if (tasks.get(i).toString().toLowerCase().contains(keyword)) {
