@@ -43,10 +43,9 @@ public class ParserEdit {
 			case "description" :
 				handler.getTask().setDescription(value);
 				break;
-			case "start" :
-				boolean isStartFormatCorrect = followStandardFormat(value);
-
-
+			case "start" :				
+              if(!value.toLowerCase().equals("none")){
+            	  boolean isStartFormatCorrect = followStandardFormat(value);
 				if(isStartFormatCorrect == true){
 					System.out.println("startTime use our format");
 					try{
@@ -67,10 +66,12 @@ public class ParserEdit {
 					startingDate = date3.get(0);
 				}
 				handler.getTask().setStartTime(startingDate);
+              }
 				break;
 			case "end" :
-				boolean isEndFormatCorrect = followStandardFormat(value);
-
+				
+				if(!value.toLowerCase().equals("none")){
+					boolean isEndFormatCorrect = followStandardFormat(value);
 				if(isEndFormatCorrect == true){
 					System.out.println("endTime use our format");
 					try{
@@ -91,6 +92,7 @@ public class ParserEdit {
 					endingDate = date4.get(0);
 				}
 				handler.getTask().setEndTime(endingDate);
+				}
 				break;
 			case "priority" :
 				try{
@@ -119,10 +121,11 @@ public class ParserEdit {
 				handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
 			}
 		} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // start time is modified
-			if (!startingDate.after(todayDate)) {
+			if (!startingDate.after(todayDate) ||endingDate.compareTo(Task.DEFAULT_DATE_VALUE)==0) {
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 			}
+			
 		} else if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // end time is modified
 			if (!endingDate.after(todayDate)) {
 				handler.setHasError(true);
