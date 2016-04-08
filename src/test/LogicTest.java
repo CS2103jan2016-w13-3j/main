@@ -88,6 +88,10 @@ public class LogicTest {
 	private static final String HELP_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
 	private static final String HELP_VALID_UNDO = "help undo";
 	private static final String HELP_VALID_UNDO_FEEDBACK = "Undo the most recent command\nCommand: undo\n";
+	private static final String HELP_VALID_REDO = "help redo";
+	private static final String HELP_VALID_REDO_FEEDBACK = "Redo the most recent command\nCommand: redo\n";
+	private static final String HELP_VALID_UNDONE = "help undone";
+	private static final String HELP_VALID_UNDONE_FEEDBACK = "Marks a completed task as undone\nCommand: undone <task index>\n\nExample:\nundone 2\n";
 	private static final String HELP_VALID_DONE = "help done";
 	private static final String HELP_VALID_DONE_FEEDBACK = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n";
 	private static final String HELP_VALID_DELETE = "help delete";
@@ -185,6 +189,8 @@ public class LogicTest {
 		assertEquals(HELP_VALID_EDIT_FEEDBACK, logicObj.executeCommand(HELP_VALID_EDIT));
 		assertEquals(HELP_VALID_SEARCH_FEEDBACK, logicObj.executeCommand(HELP_VALID_SEARCH));
 		assertEquals(HELP_VALID_LOCATION_FEEDBACK, logicObj.executeCommand(HELP_VALID_LOCATION));
+		assertEquals(HELP_VALID_UNDONE_FEEDBACK, logicObj.executeCommand(HELP_VALID_UNDONE));
+		assertEquals(HELP_VALID_REDO_FEEDBACK, logicObj.executeCommand(HELP_VALID_REDO));
 		assertEquals(HELP_VALID_ADD_FEEDBACK, logicObj.executeCommand(HELP_VALID_ADD));
 		assertEquals(HELP_VALID_EXIT_FEEDBACK, logicObj.executeCommand(HELP_VALID_EXIT));
 	}
