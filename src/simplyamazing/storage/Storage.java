@@ -197,10 +197,14 @@ public class Storage {
 		if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
 			task.setDescription(editedTask.getDescription());
 		}
-		if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 && editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
+		if (editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0) { // start time set as none
+			task.setStartTime(Task.DEFAULT_DATE_VALUE);
+		} else if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 && editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
 			task.setStartTime(editedTask.getStartTime());
 		}
-		if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 && editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
+		if (editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0) { // end time set as none
+			task.setEndTime(Task.DEFAULT_DATE_VALUE);
+		} else if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 && editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
 			task.setEndTime(editedTask.getEndTime());
 		}
 		if (task.getPriority() != editedTask.getPriority()) {

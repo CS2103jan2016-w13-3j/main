@@ -33,6 +33,7 @@ public class Logic {
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo"; 
 	private static final String ERROR_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
+	private static final String ERROR_INVALID_END_TIME = "Error: Unable to remove end time for an event";
 	private static final String ERROR_START_AFTER_END ="Error: New start time cannot be after the end time";
 	private static final String ERROR_START_SAME_AS_END ="Error: New start time cannot be the same as the end time";
 	private static final String ERROR_END_BEFORE_START = "Error: New end time cannot be before the start time";
@@ -520,29 +521,29 @@ public class Logic {
 
 		if(!(newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0 && newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0)) { // if both start time and end time are not modified
 			if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // start time is modified
-				if (previousEndTime.compareTo(Task.DEFAULT_DATE_VALUE) == 0) { // no end time => it's a floating task 
+				if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && previousEndTime.compareTo(Task.DEFAULT_DATE_VALUE) == 0) { // no end time => it's a floating task 
 					return ERROR_NO_END_TIME;
 
-				} else {
-					if (newStartTime.after(previousEndTime)) {
+				} else { // it's a deadline
+					if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && newStartTime.after(previousEndTime)) {
 						return ERROR_START_AFTER_END;
-
 					}
-					if (newStartTime.equals(previousEndTime)) {
+					if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && newStartTime.equals(previousEndTime)) {
 						return ERROR_START_SAME_AS_END;
 
 					}
-
 				}
 			} else if (newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // end time is modified
 				if (previousStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // has start time => it's an event
-					if (newEndTime.before(previousStartTime)) {
-						return ERROR_END_BEFORE_START;
-
-					}
-					if (newEndTime.equals(previousStartTime)) {
-						return ERROR_END_SAME_AS_START;
-
+					if (newEndTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0) {
+						return ERROR_INVALID_END_TIME;
+					} else {
+						if (newEndTime.before(previousStartTime)) {
+							return ERROR_END_BEFORE_START;
+						}
+						if (newEndTime.equals(previousStartTime)) {
+							return ERROR_END_SAME_AS_START;
+						}
 					}
 				}
 			} 
