@@ -41,6 +41,7 @@ public class Parser {
 	private static final String COMMAND_HELP = "help";
 	private static final String COMMAND_HELP_ALT = "?";
 	private static final String COMMAND_UNDO = "undo";
+	private static final String COMMAND_REDO = "redo";
 	private static final String COMMAND_SET_LOCATION = "location";
 	private static final String COMMAND_SET_LOCATION_ALT = "path";
 	private static final String COMMAND_SET_LOCATION_ALT_2 = "address";
@@ -149,6 +150,9 @@ public class Parser {
 		 case COMMAND_UNDO:
 			 handler.setCommandType(COMMAND_UNDO);
 			 break;
+		 case COMMAND_REDO:
+			 handler.setCommandType(COMMAND_REDO);
+			 break;	 
 		 case COMMAND_SET_LOCATION: case COMMAND_SET_LOCATION_ALT: case COMMAND_SET_LOCATION_ALT_2: 
 			 handler.setCommandType(COMMAND_SET_LOCATION);
 			 handler = parserLocationCommand(handler, removeFirstWord);
