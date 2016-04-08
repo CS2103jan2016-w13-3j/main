@@ -16,6 +16,7 @@ public class Task implements Comparable<Task>{
 	private static final int DEFAULT_TASK_TYPE_FOR_DEADLINES = 3;
 	
 	public static final Date DEFAULT_DATE_VALUE = new Date(0);
+	public static final Date DEFAULT_DATE_VALUE_FOR_NULL = new Date(1);
 
 	public static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
 	public static final String FIELD_SEPARATOR = ",";

@@ -44,54 +44,57 @@ public class ParserEdit {
 				handler.getTask().setDescription(value);
 				break;
 			case "start" :				
-              if(!value.toLowerCase().equals("none")){
-            	  boolean isStartFormatCorrect = followStandardFormat(value);
-				if(isStartFormatCorrect == true){
-					System.out.println("startTime use our format");
-					try{
-						startingDate = (Date)sdf.parse(value);
-					}catch (ParseException e) {
-						handler.setHasError(true);
-						handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-					}
-				}else{
-					System.out.println("startTime use Natty");
-					List<DateGroup> dateGroup3 = dateParser.parse(value);
+				if(value.toLowerCase().equals("none")){
+					handler.getTask().setStartTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
+				} else {
+					boolean isStartFormatCorrect = followStandardFormat(value);
+					if(isStartFormatCorrect == true){
+						System.out.println("startTime use our format");
+						try{
+							startingDate = (Date)sdf.parse(value);
+						}catch (ParseException e) {
+							handler.setHasError(true);
+							handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+						}
+					}else{ 
+						System.out.println("startTime use Natty");
+						List<DateGroup> dateGroup3 = dateParser.parse(value);
 
-					if(dateGroup3.isEmpty()){
-						handler.setHasError(true);
-						handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+						if(dateGroup3.isEmpty()){
+							handler.setHasError(true);
+							handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+						}
+						List<Date> date3 = dateGroup3.get(0).getDates();
+						startingDate = date3.get(0);
 					}
-					List<Date> date3 = dateGroup3.get(0).getDates();
-					startingDate = date3.get(0);
+					handler.getTask().setStartTime(startingDate);
 				}
-				handler.getTask().setStartTime(startingDate);
-              }
 				break;
 			case "end" :
-				
-				if(!value.toLowerCase().equals("none")){
+				if(value.toLowerCase().equals("none")){
+					handler.getTask().setEndTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
+				} else {
 					boolean isEndFormatCorrect = followStandardFormat(value);
-				if(isEndFormatCorrect == true){
-					System.out.println("endTime use our format");
-					try{
-						endingDate = (Date)sdf.parse(value);
-					}catch (ParseException e) {
-						handler.setHasError(true);
-						handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-					}
-				}else{
-					System.out.println("endTime use Natty");
-					List<DateGroup> dateGroup4 = dateParser.parse(value);
+					if(isEndFormatCorrect == true){
+						System.out.println("endTime use our format");
+						try{
+							endingDate = (Date)sdf.parse(value);
+						}catch (ParseException e) {
+							handler.setHasError(true);
+							handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+						}
+					}else{
+						System.out.println("endTime use Natty");
+						List<DateGroup> dateGroup4 = dateParser.parse(value);
 
-					if(dateGroup4.isEmpty()){
-						handler.setHasError(true);
-						handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+						if(dateGroup4.isEmpty()){
+							handler.setHasError(true);
+							handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+						}
+						List<Date> date4 = dateGroup4.get(0).getDates();
+						endingDate = date4.get(0);
 					}
-					List<Date> date4 = dateGroup4.get(0).getDates();
-					endingDate = date4.get(0);
-				}
-				handler.getTask().setEndTime(endingDate);
+					handler.getTask().setEndTime(endingDate);
 				}
 				break;
 			case "priority" :
@@ -113,23 +116,33 @@ public class ParserEdit {
 		Date todayDate = new Date();
 
 		if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && endingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // if both start time and end time are modified
-			if (!startingDate.after(todayDate) || !endingDate.after(todayDate)){ 
+			if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0) { 
+				if (!startingDate.after(todayDate) || !endingDate.after(todayDate)) { 
+					handler.setHasError(true);
+					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
+				}else if (!endingDate.after(startingDate)){
+					handler.setHasError(true);
+					handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
+				}
+			} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0 && endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0) { // start time set as none
+				if (!endingDate.after(todayDate)) { 
+					handler.setHasError(true);
+					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
+				}
+			} else if(startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0){ // end time set as none
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
-			}else if (!endingDate.after(startingDate)){
-				handler.setHasError(true);
-				handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
 			}
 		} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // start time is modified
-			if (!startingDate.after(todayDate) ||endingDate.compareTo(Task.DEFAULT_DATE_VALUE)==0) {
+			if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && !startingDate.after(todayDate)) {
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 			}
-			
+
 		} else if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // end time is modified
-			if (!endingDate.after(todayDate)) {
-				handler.setHasError(true);
-				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
+			if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && !endingDate.after(todayDate)) {
+					handler.setHasError(true);
+					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 			}
 		}  
 		/*if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && startingDate.after(endingDate)) {
