@@ -34,16 +34,20 @@ public class ParserSearch {
           return false;
 		}else{
 			String givenMonth = taskInfo.substring(0, 3).toLowerCase();
-			if(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
-					|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
-					|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec")){
-				String[] monthAndYear = taskInfo.split(SPACE);
-				if (monthAndYear.length == 2) {
-					outputYear = ""+ taskInfo.split(SPACE)[1];
+			String[] monthAndYear = taskInfo.split(SPACE);
+			if (monthAndYear.length == 2) {
+				outputYear = ""+ taskInfo.split(SPACE)[1];
+				if(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
+						|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
+						|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec")){
+					
+					handler.setKeyWord(givenMonth + SPACE + outputYear);
+					return false;
+				}else{
+					return true;
 				}
-				handler.setKeyWord(givenMonth + SPACE + outputYear);
-				return false;
 			}
+			
 
 			com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
 			boolean isEndFormatCorrect = followStandardFormat(taskInfo);
