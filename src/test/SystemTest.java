@@ -31,8 +31,10 @@ public class SystemTest {
 	private static final String COMMAND_SEARCH = "search";
 	private static final String COMMAND_HELP = "help";
 	private static final String COMMAND_UNDO = "undo";
+	private static final String COMMAND_REDO = "redo";
 	private static final String COMMAND_SET_LOCATION = "location";
 	private static final String COMMAND_MARK_AS_DONE = "done";
+	private static final String COMMAND_UNDONE = "undone";
 	private static final String COMMAND_EXIT = "exit";
 	private static final String COMMAND_INVALID = "abcd";
 	
@@ -69,7 +71,7 @@ public class SystemTest {
 	private static final String COMMAND_RESTORE_EMPTY = "";
 	private static final String COMMAND_RESTORE = "restore";
 	private static final String COMMAND_HELP_INTEGER = COMMAND_HELP + CHARACTER_SPACE + "1";
-	private static final String COMMAND_HELP_INVALID = COMMAND_HELP + CHARACTER_SPACE + "ABC";
+	private static final String COMMAND_HELP_INVALID = COMMAND_HELP + CHARACTER_SPACE + COMMAND_INVALID;
 	private static final String COMMAND_HELP_ALL = COMMAND_HELP;
 	private static final String COMMAND_HELP_LOCATION = COMMAND_HELP + CHARACTER_SPACE + COMMAND_SET_LOCATION;
 	private static final String COMMAND_HELP_ADD = COMMAND_HELP + CHARACTER_SPACE + COMMAND_ADD;
@@ -80,7 +82,8 @@ public class SystemTest {
 	private static final String COMMAND_HELP_DONE = COMMAND_HELP + CHARACTER_SPACE + COMMAND_MARK_AS_DONE;
 	private static final String COMMAND_HELP_SEARCH = COMMAND_HELP + CHARACTER_SPACE + COMMAND_SEARCH;
 	private static final String COMMAND_HELP_EXIT = COMMAND_HELP + CHARACTER_SPACE + COMMAND_EXIT;
-	
+	private static final String COMMAND_HELP_REDO = COMMAND_HELP + CHARACTER_SPACE + COMMAND_REDO;
+	private static final String COMMAND_HELP_UNDONE = COMMAND_HELP + CHARACTER_SPACE + COMMAND_UNDONE;
 	
 	
 	
@@ -119,10 +122,9 @@ public class SystemTest {
 	
 	
 	private static final String FEEDBACK_HELP_INTEGER = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
-	
-	
 	private static final String FEEDBACK_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";
-	
+	private static final String FEEDBACK_HELP_REDO = "";
+	private static final String FEEDBACK_HELP_UNDONE = "";
 	private static final String FEEDBACK_HELP_DONE = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n";
 	
 	private static final String FEEDBACK_HELP_DELETE = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1";
@@ -356,6 +358,8 @@ public class SystemTest {
 		assertEquals(FEEDBACK_NO_TASK_FOUND, logic.executeCommand(COMMAND_SEARCH_TASKS_OTHER_KEYWORD));
 	}
 	
+	
+	//@@author A0125136N
 	@Test 
 	public void testHelpMethod() throws Exception  {
 		Logic logic = new Logic();
@@ -371,20 +375,60 @@ public class SystemTest {
 		
 		
 		assertEquals(true, parser.getHandler(COMMAND_HELP_INVALID).getHasError());
-		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_OTHERS).getCommandType());
-		assertEquals(parser.getHandler(COMMAND_VIEW_TASKS_OTHERS).getFeedBack(), logic.executeCommand(COMMAND_VIEW_TASKS_OTHERS));
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_INVALID).getCommandType());
+		assertEquals(parser.getHandler(COMMAND_HELP_INVALID).getFeedBack(), logic.executeCommand(COMMAND_HELP_INVALID));
 		
+		assertEquals(true, parser.getHandler(COMMAND_HELP_INTEGER).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_INTEGER).getCommandType());
+		assertEquals(parser.getHandler(COMMAND_HELP_INTEGER).getFeedBack(), logic.executeCommand(COMMAND_HELP_INTEGER));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_ALL).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_ALL).getCommandType());
 		assertEquals(FEEDBACK_HELP_ALL, logic.executeCommand(COMMAND_HELP_ALL));
-		assertEquals(FEEDBACK_HELP_INTEGER, logic.executeCommand(COMMAND_HELP_INTEGER));
-		assertEquals(FEEDBACK_HELP_UNDO, logic.executeCommand(COMMAND_HELP_UNDO));
-		assertEquals(FEEDBACK_HELP_DONE, logic.executeCommand(COMMAND_HELP_DONE));
-		assertEquals(FEEDBACK_HELP_DELETE, logic.executeCommand(COMMAND_HELP_DELETE));
-		assertEquals(FEEDBACK_HELP_VIEW, logic.executeCommand(COMMAND_HELP_VIEW));
-		assertEquals(FEEDBACK_HELP_EDIT, logic.executeCommand(COMMAND_HELP_EDIT));
-		assertEquals(FEEDBACK_HELP_SEARCH, logic.executeCommand(COMMAND_HELP_SEARCH));
-		assertEquals(FEEDBACK_HELP_LOCATION, logic.executeCommand(COMMAND_HELP_LOCATION));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_ADD).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_ADD).getCommandType());
 		assertEquals(FEEDBACK_HELP_ADD, logic.executeCommand(COMMAND_HELP_ADD));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_VIEW).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_VIEW).getCommandType());
+		assertEquals(FEEDBACK_HELP_VIEW, logic.executeCommand(COMMAND_HELP_VIEW));
+
+		assertEquals(false, parser.getHandler(COMMAND_HELP_DELETE).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_DELETE).getCommandType());
+		assertEquals(FEEDBACK_HELP_DELETE, logic.executeCommand(COMMAND_HELP_DELETE));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_EDIT).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_EDIT).getCommandType());
+		assertEquals(FEEDBACK_HELP_EDIT, logic.executeCommand(COMMAND_HELP_EDIT));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_DONE).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_DONE).getCommandType());
+		assertEquals(FEEDBACK_HELP_DONE, logic.executeCommand(COMMAND_HELP_DONE));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_UNDO).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_UNDO).getCommandType());
+		assertEquals(FEEDBACK_HELP_UNDO, logic.executeCommand(COMMAND_HELP_UNDO));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_SEARCH).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_SEARCH).getCommandType());
+		assertEquals(FEEDBACK_HELP_SEARCH, logic.executeCommand(COMMAND_HELP_SEARCH));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_LOCATION).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_LOCATION).getCommandType());
+		assertEquals(FEEDBACK_HELP_LOCATION, logic.executeCommand(COMMAND_HELP_LOCATION));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_EXIT).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_EXIT).getCommandType());
 		assertEquals(FEEDBACK_HELP_EXIT, logic.executeCommand(COMMAND_HELP_EXIT));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_UNDONE).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_UNDONE).getCommandType());
+		assertEquals(FEEDBACK_HELP_UNDONE, logic.executeCommand(COMMAND_HELP_UNDONE));
+		
+		assertEquals(false, parser.getHandler(COMMAND_HELP_REDO).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_REDO).getCommandType());
+		assertEquals(FEEDBACK_HELP_REDO, logic.executeCommand(COMMAND_HELP_REDO));
 		
 	}
 }
