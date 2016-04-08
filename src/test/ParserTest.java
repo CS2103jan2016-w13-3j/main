@@ -130,12 +130,20 @@ public class ParserTest {
 	private static final String VIEW_COMMAND_INVALID_WRONG_KEYWORD = "view abc";
 	private static final String VIEW_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help view\" command to see all the valid keywords";
     
+	private static final String SEARCH_COMMAND_VALID_EMPTY = "SEARCH";
+	private static final String SEARCH_COMMAND_VALID_FLEXICMD = "sEaRch this Sunday";
+	private static final String SEARCH_COMMAND_VALID_STANDARDFMT = "searCH 22:00 01 May 2017";
+	private static final String SEARCH_COMMAND_VALID_MONTH = "Search Apr";
+	private static final String SEARCH_COMMAND_VALID_MONTH_AND_YEAR = "Search MAY 2017";
 	private static final String SEARCH_COMMAND_VALID = "search dinner";
 	private static final String SEARCH_COMMAND_VALID_ALT = "find dinner";
 	private static final String SEARCH_COMMAND_VALID_CAP = "SEARCH dinner";
 	private static final String SEARCH_COMMAND_VALID_ALT_CAP = "FIND dinner";
-	private static final String SEARCH_COMMAND_VALID_FEEDBACK = "";
 	private static final String SEARCH_COMMAND_VALID_KEYWORD = "dinner";
+	private static final String SEARCH_COMMAND_INVALID_STANDARDFMT ="seARch 21:00 30 Feb 2016";
+	private static final String SEARCH_COMMAND_INVALID_STANDARDFMT_2 = "SEarCh 20:00 Ab May 2016";
+	private static final String SEARCH_COMMAND_VALID_FEEDBACK = "";
+	private static final String SEARCH_COMMAND_INVALID_FEEDBACK ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
 	
 	private static final String UNDO_COMMAND_VALID = "undo";
 	private static final String UNDO_COMMAND_VALID_FEEDBACK = "";
@@ -287,11 +295,18 @@ public class ParserTest {
 	
 	@Test
 	public void testSearchCommand() throws Exception {
+		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_EMPTY).getFeedBack());
 		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID).getFeedBack());
 		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_ALT).getFeedBack());
 		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_CAP).getFeedBack());
 		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_ALT_CAP).getFeedBack());
 		assertEquals(SEARCH_COMMAND_VALID_KEYWORD, parser.getHandler(SEARCH_COMMAND_VALID).getKeyWord());
+		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_MONTH).getFeedBack());
+		assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_MONTH_AND_YEAR).getFeedBack());
+        assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_FLEXICMD).getFeedBack());	
+        assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_STANDARDFMT).getFeedBack());	
+        assertEquals(SEARCH_COMMAND_INVALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_INVALID_STANDARDFMT).getFeedBack());	
+        assertEquals(SEARCH_COMMAND_INVALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_INVALID_STANDARDFMT_2).getFeedBack());	
 	}
 	
 	@Test
