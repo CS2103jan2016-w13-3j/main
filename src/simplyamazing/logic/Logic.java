@@ -69,7 +69,7 @@ public class Logic {
 	enum CommandType {
 		ADD_TASK, VIEW_LIST, DELETE_TASK,INVALID,
 		SEARCH_KEYWORD, UNDO_LAST, EDIT_TASK, SET_LOCATION,
-		MARK_TASK, HELP, EXIT;
+		MARK_TASK, UNMARK_TASK, HELP, EXIT;
 	};
 	
 	
@@ -102,6 +102,8 @@ public class Logic {
 			return CommandType.VIEW_LIST;
 		} else if (commandWord.equalsIgnoreCase("done")) {
 		 	return CommandType.MARK_TASK;
+		} else if (commandWord.equalsIgnoreCase("undone")){
+			return CommandType.UNMARK_TASK;
 		} else if (commandWord.equalsIgnoreCase("location")) {
 			return CommandType.SET_LOCATION;
 		} else if (commandWord.equalsIgnoreCase("search")) {
@@ -157,6 +159,9 @@ public class Logic {
 				break;
 			case MARK_TASK :
 				feedback = executeMarkCommand(commandHandler);
+				break;
+			case UNMARK_TASK :
+				feedback = executeUnMarkCommand(commandHandler);
 				break;
 			case HELP :
 				feedback = executeHelpCommand(commandHandler);
@@ -408,6 +413,46 @@ public class Logic {
 				}
 				 return storageObj.markMultipleTasksDone(tasksToMark);
 			}
+		}
+	}
+	
+	
+	private static String executeUnMarkCommand(Handler commandHandler) throws Exception {
+		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in edit");
+			return commandHandler.getFeedBack();	
+		}
+		
+		ArrayList<Integer> listToUnMark = commandHandler.getIndexList();
+		boolean isIndexValid = true;
+		int indexToUnMark;
+		
+		if(listToUnMark.size() == 1) {
+			logger.log(Level.INFO, "index valid, deleting now");
+			indexToUnMark = listToUnMark.get(0);
+			
+			isIndexValid = checkIndexValid(indexToUnMark, taskList);
+			if(isIndexValid == false) {
+				logger.log(Level.WARNING, "index given is invalid");
+				return ERROR_INVALID_INDEX;
+			}
+			Task taskToMark = taskList.get(indexToUnMark - 1);
+			return storageObj.markTaskUndone(taskToMark);
+			
+		} else {
+			ArrayList<Task> tasksToUnMark = new ArrayList<Task>();
+			
+			for(int i = 0; i< listToUnMark.size(); i++){
+				indexToUnMark = listToUnMark.get(i);
+				isIndexValid = checkIndexValid(indexToUnMark, taskList);
+				if(isIndexValid == false) {
+					logger.log(Level.WARNING, "index given is invalid");
+					return ERROR_INVALID_INDEX_MULTIPLE;
+				} else{
+					tasksToUnMark.add(taskList.get(indexToUnMark -1 ));
+				}
+			}
+			 return storageObj.markMultipleTasksUndone(tasksToUnMark);
 		}
 	}
 	
