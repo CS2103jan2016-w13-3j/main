@@ -37,6 +37,14 @@ public class FileManager {
 		return fileBuilder.createFile(filename);
 	}
 	
+	public File createTempFile(File file, String tempFilePath) throws Exception {
+		File tempFile = createFile(tempFilePath);
+		createBackup(file, tempFile);
+		file.delete();
+		file = tempFile;
+		return file;
+	}
+	
 	public boolean isDirectory(String location) {
 		return fileVerifier.isDirectory(location);
 	}

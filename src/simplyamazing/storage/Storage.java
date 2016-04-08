@@ -15,6 +15,7 @@ public class Storage {
 	private static final String FILENAME_STORAGE = "\\storage.txt";
 	private static final String FILENAME_TODO = "\\todo.txt";
 	private static final String FILENAME_DONE = "\\done.txt";
+	private static final String FILENAME_TEMP = "\\temp.txt";
 	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
 	private static final String FILENAME_DONE_BACKUP = "\\doneBackup.txt";
 
@@ -97,15 +98,8 @@ public class Storage {
 			if (isLocationSet()) { // When storage location has been set before
 				setupFiles();
 
-				File todoNew = fileManager.createFile(location+FILENAME_TODO);
-				fileManager.createBackup(todo, todoNew);
-				todo.delete();
-				todo = todoNew;
-
-				File doneNew = fileManager.createFile(location+FILENAME_DONE);
-				fileManager.createBackup(done, doneNew);
-				done.delete();
-				done = doneNew;
+				todo = fileManager.createTempFile(todo, location+FILENAME_TODO);
+				done = fileManager.createTempFile(done, location+FILENAME_DONE);
 
 				fileManager.cleanFile(storage);
 			}
@@ -490,13 +484,19 @@ public class Storage {
 		setupFiles();
 
 		if(!fileManager.isEmptyFile(todoBackup) || !fileManager.isEmptyFile(todo)) {
+			File temp = fileManager.createTempFile(todo, DIRECTORY_SYSTEM+FILENAME_TEMP);	
 			fileManager.restoreFromBackup(todo, todoBackup);
+			fileManager.restoreFromBackup(todoBackup, temp);
+			temp.delete();
 			taskList.resetTaskList();
 			assert(taskList.getTasks().size() == 0);
 			updateTaskData();
 		}
 		if(!fileManager.isEmptyFile(doneBackup) || !fileManager.isEmptyFile(done)) {
+			File temp = fileManager.createTempFile(done, DIRECTORY_SYSTEM+FILENAME_TEMP);;
 			fileManager.restoreFromBackup(done, doneBackup);
+			fileManager.restoreFromBackup(doneBackup, temp);
+			temp.delete();
 			taskList.resetCompletedTaskList();
 			assert(taskList.getCompletedTasks().size() == 0);
 			updateTaskData();
