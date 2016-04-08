@@ -23,7 +23,7 @@ public class ParserEdit {
 	private static Date endingDate = null;
 	private static int year;
 	public Handler parseEditCommand(Handler handler, String taskIndex, String taskInfoWithoutIndex) throws Exception {
-		com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
+		//com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
 		if (isInteger(taskIndex)) {
 			handler.setIndex(taskIndex);
 		} else {
@@ -48,25 +48,7 @@ public class ParserEdit {
 					handler.getTask().setStartTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 				} else {
 					boolean isStartFormatCorrect = followStandardFormat(value);
-					if(isStartFormatCorrect == true){
-						System.out.println("startTime use our format");
-						try{
-							startingDate = (Date)sdf.parse(value);
-						}catch (ParseException e) {
-							handler.setHasError(true);
-							handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-						}
-					}else{ 
-						System.out.println("startTime use Natty");
-						List<DateGroup> dateGroup3 = dateParser.parse(value);
-
-						if(dateGroup3.isEmpty()){
-							handler.setHasError(true);
-							handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-						}
-						List<Date> date3 = dateGroup3.get(0).getDates();
-						startingDate = date3.get(0);
-					}
+					editStartTime(sdf,isStartFormatCorrect,handler,value);
 					handler.getTask().setStartTime(startingDate);
 				}
 				break;
@@ -75,25 +57,7 @@ public class ParserEdit {
 					handler.getTask().setEndTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 				} else {
 					boolean isEndFormatCorrect = followStandardFormat(value);
-					if(isEndFormatCorrect == true){
-						System.out.println("endTime use our format");
-						try{
-							endingDate = (Date)sdf.parse(value);
-						}catch (ParseException e) {
-							handler.setHasError(true);
-							handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-						}
-					}else{
-						System.out.println("endTime use Natty");
-						List<DateGroup> dateGroup4 = dateParser.parse(value);
-
-						if(dateGroup4.isEmpty()){
-							handler.setHasError(true);
-							handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
-						}
-						List<Date> date4 = dateGroup4.get(0).getDates();
-						endingDate = date4.get(0);
-					}
+					editEndTime(sdf,isEndFormatCorrect,handler,value);
 					handler.getTask().setEndTime(endingDate);
 				}
 				break;
@@ -154,7 +118,50 @@ public class ParserEdit {
 			}*/
 		return handler;
 	}
+    private void editStartTime(SimpleDateFormat sdf,boolean isStartFormatCorrect,Handler handler,String value){
+    	com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
+    	if(isStartFormatCorrect == true){
+			System.out.println("startTime use our format");
+			try{
+				startingDate = (Date)sdf.parse(value);
+			}catch (ParseException e) {
+				handler.setHasError(true);
+				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+			}
+		}else{ 
+			System.out.println("startTime use Natty");
+			List<DateGroup> dateGroup3 = dateParser.parse(value);
 
+			if(dateGroup3.isEmpty()){
+				handler.setHasError(true);
+				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+			}
+			List<Date> date3 = dateGroup3.get(0).getDates();
+			startingDate = date3.get(0);
+		}
+    }
+    private void editEndTime(SimpleDateFormat sdf,boolean isEndFormatCorrect,Handler handler,String value){
+    	com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
+    	if(isEndFormatCorrect == true){
+			System.out.println("endTime use our format");
+			try{
+				endingDate = (Date)sdf.parse(value);
+			}catch (ParseException e) {
+				handler.setHasError(true);
+				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+			}
+		}else{
+			System.out.println("endTime use Natty");
+			List<DateGroup> dateGroup4 = dateParser.parse(value);
+
+			if(dateGroup4.isEmpty()){
+				handler.setHasError(true);
+				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+			}
+			List<Date> date4 = dateGroup4.get(0).getDates();
+			endingDate = date4.get(0);
+		}
+    }
 	public static boolean isInteger(String taskInfo) {
 		try {
 			Integer.parseInt(taskInfo);

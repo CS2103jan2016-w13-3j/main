@@ -14,8 +14,8 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_VALID_DESCRIPTION_CAP_SECONDCHAR = "eDit 1 description dancing";
 	private static final String EDIT_COMMAND_VALID_DESCRIPTION_CAP_THIRDCHAR = "edIt 1 description dancing";
 	private static final String EDIT_COMMAND_VALID_DESCRIPTION_CAP_FOURTHCHAR = "ediT 1 description dancing";
-	private static final String EDIT_COMMAND_VALID_ENDTIME = "edit 1 end 22:00 05 Apr 2016";
-	private static final String EDIT_COMMAND_VALID_STARTTIME = "edit 1 start 23:00 05 Apr 2016";
+	private static final String EDIT_COMMAND_VALID_ENDTIME = "edit 1 end 22:00 05 MAY 2016";
+	private static final String EDIT_COMMAND_VALID_STARTTIME = "edit 1 start 23:00 20 Apr 2016";
 	private static final String EDIT_COMMAND_VALID_PRIORITY = "edit 1 priority high";
 	private static final String EDIT_COMMAND_VALID_FEEDBACK = "";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_BEFORE_CURRENT = "edit 2 start 12:00 30 Mar 2016";
@@ -142,9 +142,11 @@ public class ParserTest {
 	private static final String SEARCH_COMMAND_VALID_KEYWORD = "dinner";
 	private static final String SEARCH_COMMAND_INVALID_STANDARDFMT ="seARch 21:00 30 Feb 2016";
 	private static final String SEARCH_COMMAND_INVALID_STANDARDFMT_2 = "SEarCh 20:00 Ab May 2016";
+	private static final String SEARCH_COMMAND_INVALID_MONTH = "SeARCH 18:00 23 UUU 2017";
+	private static final String SEARCH_COMMAND_INVALID_YEAR = "SEaRcH 18:00 23 MAY ABCD";
 	private static final String SEARCH_COMMAND_VALID_FEEDBACK = "";
 	private static final String SEARCH_COMMAND_INVALID_FEEDBACK ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
-	
+	private static final String SEARCH_COMMAND_INVALID_FEEDBACK_TO_NATTY ="";
 	private static final String UNDO_COMMAND_VALID = "undo";
 	private static final String UNDO_COMMAND_VALID_FEEDBACK = "";
 	
@@ -306,7 +308,9 @@ public class ParserTest {
         assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_FLEXICMD).getFeedBack());	
         assertEquals(SEARCH_COMMAND_VALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_VALID_STANDARDFMT).getFeedBack());	
         assertEquals(SEARCH_COMMAND_INVALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_INVALID_STANDARDFMT).getFeedBack());	
-        assertEquals(SEARCH_COMMAND_INVALID_FEEDBACK, parser.getHandler(SEARCH_COMMAND_INVALID_STANDARDFMT_2).getFeedBack());	
+        assertEquals(SEARCH_COMMAND_INVALID_FEEDBACK_TO_NATTY, parser.getHandler(SEARCH_COMMAND_INVALID_STANDARDFMT_2).getFeedBack());
+        assertEquals(SEARCH_COMMAND_INVALID_FEEDBACK_TO_NATTY, parser.getHandler(SEARCH_COMMAND_INVALID_MONTH).getFeedBack());	
+        assertEquals(SEARCH_COMMAND_INVALID_FEEDBACK_TO_NATTY, parser.getHandler(SEARCH_COMMAND_INVALID_YEAR).getFeedBack());	
 	}
 	
 	@Test
