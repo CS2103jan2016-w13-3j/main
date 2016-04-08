@@ -39,7 +39,9 @@ public class Storage {
 	private static final String MESSAGE_DELETED = "%1$s has been successfully deleted.";
 	private static final String MESSAGE_DELETED_MULTIPLE = "Provided tasks have been successfully deleted.";
 	private static final String MESSAGE_MARKED_DONE = "%1$s has been marked as done.";
+	private static final String MESSAGE_MARKED_UNDONE = "%1$s has been marked as undone.";
 	private static final String MESSAGE_MARKED_DONE_MULTIPLE = "Provided tasks have been marked as done.";
+	private static final String MESSAGE_MARKED_UNDONE_MULTIPLE = "Provided tasks have been marked as undone.";
 	private static final String MESSAGE_UPDATED = "%1$s has been successfully updated.";
 
 	private static final String MESSAGE_LOG_DIRECTORY_CREATED = "Directory for storage file is created successfully.";
@@ -53,7 +55,7 @@ public class Storage {
 	private static final String MESSAGE_LOG_TASK_LIST_UPDATED = "Task data is successfully loaded into the task list.";
 	private static final String MESSAGE_LOG_TASK_DATA_READABLE = "Content is readable from task data file.";
 	private static final String MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE = "Task list is successfully imported into the task data file.";
-
+	
 	private static Logger logger = Logger.getLogger("Storage");
 
 	private static boolean isEditing = false;
@@ -304,13 +306,11 @@ public class Storage {
 
 	private ArrayList<Task> viewTasks() {
 		ArrayList<Task> tasks = taskList.getTasks();
+		ArrayList<Task> overdueTasks = viewOverdueTasks();
 		ArrayList<Task> currentTasks = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
-			Date now = new Date();
-			Date startTime = task.getStartTime();
-			Date endTime = task.getEndTime();
-			if ((startTime.after(now) || startTime == Task.DEFAULT_DATE_VALUE) && (endTime.after(now) || endTime == Task.DEFAULT_DATE_VALUE)) {
+			if (!overdueTasks.contains(task)) {
 				currentTasks.add(task);
 			}
 		}
@@ -319,13 +319,12 @@ public class Storage {
 
 	private ArrayList<Task> viewEvents() {
 		ArrayList<Task> tasks = taskList.getTasks();
+		ArrayList<Task> overdueTasks = viewOverdueTasks();
 		ArrayList<Task> currentEvents = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
-			Date now = new Date();
 			Date startTime = task.getStartTime();
-			Date endTime = task.getEndTime();
-			if ((startTime.after(now) && endTime.after(now)) && startTime != Task.DEFAULT_DATE_VALUE) {
+			if (!overdueTasks.contains(task) && startTime != Task.DEFAULT_DATE_VALUE) {
 				currentEvents.add(task);
 			}
 		}
@@ -334,13 +333,12 @@ public class Storage {
 
 	private ArrayList<Task> viewDeadlines() {
 		ArrayList<Task> tasks = taskList.getTasks();
+		ArrayList<Task> overdueTasks = viewOverdueTasks();
 		ArrayList<Task> currentDeadlines = new ArrayList<Task>();
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
-			Date now = new Date();
 			Date startTime = task.getStartTime();
-			Date endTime = task.getEndTime();
-			if (endTime.after(now) && startTime == Task.DEFAULT_DATE_VALUE) {
+			if (!overdueTasks.contains(task) && startTime == Task.DEFAULT_DATE_VALUE) {
 				currentDeadlines.add(task);
 			}
 		}
@@ -450,6 +448,34 @@ public class Storage {
 		logger.log(Level.INFO, feedback);
 		return feedback;
 	}
+	
+	public String markTaskUndone(Task task) throws Exception {
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		tasks.add(task);
+		throwExceptionIfNotCompletedTask(tasks);
+
+		deleteTask(task);
+		
+		fileManager.createBackup(done, doneBackup);
+		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
+		
+		task.setDone(false);
+		taskList.addTaskToList(task, taskList.getTasks());
+
+		String feedback = String.format(MESSAGE_MARKED_UNDONE, task.toFilteredString());
+		logger.log(Level.INFO, feedback);
+		return feedback;
+	}
+	
+	private void throwExceptionIfNotCompletedTask(ArrayList<Task> tasks) throws Exception {
+		for (int i = 0; i < tasks.size(); i++) {
+			if(taskList.getTasks().contains(tasks.get(i))) {
+				String exceptionMessage = String.format(MESSAGE_COMPLETED_TASK, tasks.get(i).toFilteredString());
+				logger.log(Level.WARNING, exceptionMessage);
+				throw new Exception(exceptionMessage);
+			}
+		}
+	}
 
 	public String markMultipleTasksDone(ArrayList<Task> tasks) throws Exception {
 		
@@ -468,6 +494,25 @@ public class Storage {
 			logger.log(Level.INFO, feedback);
 		}
 		return MESSAGE_MARKED_DONE_MULTIPLE;
+	}
+	
+	public String markMultipleTasksUndone(ArrayList<Task> tasks) throws Exception {
+		
+		throwExceptionIfNotCompletedTask(tasks);
+
+		deleteMultipleTasks(tasks);
+		
+		fileManager.createBackup(done, doneBackup);
+		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
+		
+		for (int i = 0; i < tasks.size(); i++) {
+			tasks.get(i).setDone(false);
+			taskList.addTaskToList(tasks.get(i), taskList.getTasks());
+	
+			String feedback = String.format(MESSAGE_MARKED_UNDONE, tasks.get(i).toFilteredString());
+			logger.log(Level.INFO, feedback);
+		}
+		return MESSAGE_MARKED_UNDONE_MULTIPLE;
 	}
 	
 	private void moveToDoneFile(Task task) throws Exception {
