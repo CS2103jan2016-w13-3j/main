@@ -35,6 +35,9 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_NOTNONE_ENDTIME_NONE = "EDIT 2 stART 11:00 30 Apr 2017, EnD NOne";
 	private static final String EDIT_COMMAND_INVALID_ENDTIME = "EdIT 1 eND 21:00 45 MaR 2017";
 	private static final String EDIT_COMMAND_INVALID_ENDTIME_DUMMY = "EDit 1 ENd abCDEF";
+	private static final String EDIT_COMMAND_INVALID_ENDTIME_DATE = "eDIT 1 eND 23:59 AA MAy 2018";
+	private static final String EDIT_COMMAND_INVALID_ENDTIME_MONTH = "EDit 1 ENd 21:00 23 ABC 2019";
+	private static final String EDIT_COMMAND_INVALID_ENDTIME_YEAR = "EDIT 1 eND 20:00 23 OCT ABCD";
 	private static final String EDIT_COMMAND_INVALID_PRIORITY = "edit 1 priority abc";
 	private static final String EDIT_COMMAND_INVALID_INDEX_FEEDBACK = "Error: Index provided is not an Integer.";
 	private static final String EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK ="Error: Time provided must be after the current time";
@@ -43,6 +46,7 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_ERROR_MESSAGE_NO_END_TIME_FEEDBACK = "Error: Unable to allocate a start time when the task has no end time";
 	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
 	private static final String EDIT_COMMAND_INVALID_TIMEFORMAT_FEEDBACK = "Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
+	private static final String EDIT_COMMAND_INVALID_NATTY_FEEDBACK = "";
 	
 	private static final String ADD_COMMAND_TYPE_VALID = "add";
 	private static final String ADD_COMMAND_FLOATING_VALID = "add go home";
@@ -255,6 +259,9 @@ public class ParserTest {
 		assertEquals(EDIT_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_NONE_ENDTIME_BEFORE_TODAY).getFeedBack());
 		assertEquals(EDIT_COMMAND_ERROR_MESSAGE_NO_END_TIME_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_NOTNONE_ENDTIME_NONE).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_NATTY_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_ENDTIME_DATE).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_NATTY_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_ENDTIME_MONTH).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_TIMEFORMAT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_ENDTIME_YEAR).getFeedBack());
 	}
 	
     @Test//(expected = Exception.class)
