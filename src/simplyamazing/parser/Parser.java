@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 	SEARCH ("search", "find"),
 	UNDO ("undo"),
 	DONE ("mark", "complete", "finish", "done"),
+	UNDONE ("undone","unmark")
+	REDO ("redo")
 	HELP ("help", "?"),
 	LOCATION("location", "path", "address"),
 	EXIT("exit","quit","logout");
