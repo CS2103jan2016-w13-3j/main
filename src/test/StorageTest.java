@@ -23,6 +23,7 @@ public class StorageTest {
 	
 	private static final String PARAM_DESCRIPTION1 = "go gym";
 	private static final String PARAM_DESCRIPTION = "go swimming";
+	private static final String PARAM_DESCRIPTION2 = "go camping";
 	private static final String PARAM_PRIORITY = "high";
 	private static final String PARAM_END_TIME = "15:00 16 May 2016";
 	private static final String PARAM_END_TIME1 = "15:00 20 May 2016";
@@ -48,13 +49,17 @@ public class StorageTest {
 	private static final String PARAM_SEARCH_TASKS_MORE_KEYWORD = "go gym";
 	private static final String PARAM_RESTORE_NULL = null;
 	private static final String PARAM_RESTORE_EMPTY = "";
-	private static final String PARAM_RESTORE_COMMAND = "done 1";
+	private static final String PARAM_RESTORE_COMMAND = "delete 1";
 	
 	private static final String FEEDBACK_LOCATION_SET = "Storage location of task data has been sucessfully set as %1$s.";
 	private static final String FEEDBACK_ADDED = "%1$s has been added.";
 	private static final String FEEDBACK_UPDATED = "%1$s has been successfully updated.";
+	private static final String FEEDBACK_COMPLETED_TASK = "%1$s is a completed task.";
 	private static final String FEEDBACK_MARKED_DONE = "%1$s has been marked as done.";
+	private static final String FEEDBACK_INCOMPLETE_TASK = "%1$s is an incomplete task.";
+	private static final String FEEDBACK_MARKED_UNDONE = "%1$s has been marked as undone.";
 	private static final String FEEDBACK_MARKED_DONE_MULTIPLE = "Provided tasks have been marked as done.";
+	private static final String FEEDBACK_MARKED_UNDONE_MULTIPLE = "Provided tasks have been marked as undone.";
 	private static final String FEEDBACK_DELETED_MULTIPLE = "Provided tasks have been successfully deleted.";
 	private static final String FEEDBACK_DELETED = "%1$s has been successfully deleted.";
 	private static final String FEEDBACK_RESTORED = "\"%1$s\" command has been successfully undone.";
@@ -194,12 +199,18 @@ public class StorageTest {
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		todo.delete();
 		done.delete();
-		storage.addTask(new Task(PARAM_DESCRIPTION));
 		Task task = new Task(PARAM_DESCRIPTION), editedTask = new Task(PARAM_DESCRIPTION1, PARAM_START_TIME, PARAM_END_TIME);
 		editedTask.setPriority(PARAM_PRIORITY);
+		storage.addTask(task);
 		
-		// This is for the ‘not null’ partition 
+		// These are for the ‘not null’ partition 
 		assertEquals(String.format(FEEDBACK_UPDATED, editedTask.toFilteredString()), storage.editTask(task, editedTask));
+		
+		task = new Task(PARAM_DESCRIPTION, PARAM_START_TIME, PARAM_END_TIME);
+		editedTask = new Task(PARAM_DESCRIPTION1);
+		editedTask.setStartTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
+		editedTask.setEndTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
+		assertEquals(String.format(FEEDBACK_UPDATED, new Task(PARAM_DESCRIPTION1).toFilteredString()), storage.editTask(task, editedTask));
 	}
 	
 	/*
@@ -300,6 +311,27 @@ public class StorageTest {
 		assertEquals(2, storage.searchTasks(PARAM_SEARCH_TASKS_MORE_KEYWORD).size());
 	}
 	
+	/*
+	 * Operation to test: searchTasks(String keyword): ArrayList<Task>
+	 * Equivalence partition: 
+	 * keyword: [null] [not null]
+	 */
+	@Test(expected = Exception.class) 
+	public void testSearchTasksByDateMethodForException() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		try {
+			/* This is for the ‘null’ partition */
+			storage.searchTasksByDate(Task.convertStringToDate(PARAM_SEARCH_TASKS_NULL, Task.TIME_FORMAT));
+		} catch(AssertionError ae) {
+			throw new Exception();
+		}
+	}
+	
 	@Test
 	public void testSearchTasksByDateMethod() throws Exception {
 		Storage storage = new Storage();
@@ -312,14 +344,15 @@ public class StorageTest {
 		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME3)); // deadline
 		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_START_TIME, PARAM_END_TIME)); // event
 		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_START_TIME1, PARAM_END_TIME1)); // event
-		assertEquals(4, storage.getTaskList().getTasks().size());
-		assertEquals(4, storage.getFileManager().getLineCount(todo));
+		storage.addTask(new Task(PARAM_DESCRIPTION1)); // floating task
+		assertEquals(5, storage.getTaskList().getTasks().size());
+		assertEquals(5, storage.getFileManager().getLineCount(todo));
 		
 		// These are for the ‘not null’ partition 
-		assertEquals(3, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME).getEndTime()).size());
-		assertEquals(3, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME1).getEndTime()).size());
-		assertEquals(2, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME2).getEndTime()).size());
-		assertEquals(1, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME3).getEndTime()).size());
+		assertEquals(4, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME).getEndTime()).size());
+		assertEquals(4, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME1).getEndTime()).size());
+		assertEquals(3, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME2).getEndTime()).size());
+		assertEquals(2, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME3).getEndTime()).size());
 	}
 	
 	/*
@@ -349,15 +382,15 @@ public class StorageTest {
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
-		storage.addTask(new Task(PARAM_DESCRIPTION1));
 		Task task = new Task(PARAM_DESCRIPTION1);
+		storage.addTask(task);
 		
 		assertEquals(1, storage.getFileManager().getLineCount(todo));
 		assertEquals(0, storage.getFileManager().getLineCount(done));
 		storage.markTaskDone(task);
 		
 		// This is for the ‘already done’ partition 
-		storage.markTaskDone(task);
+		assertEquals(String.format(FEEDBACK_COMPLETED_TASK, task.toFilteredString()), storage.markTaskDone(task));
 	}
 	
 	@Test
@@ -368,9 +401,9 @@ public class StorageTest {
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
-		storage.addTask(new Task(PARAM_DESCRIPTION));
 		Task task = new Task(PARAM_DESCRIPTION);
-		
+		storage.addTask(task);
+			
 		// This is for the ‘not null’ partition
 		assertEquals(1, storage.getTaskList().getTasks().size());
 		assertEquals(1, storage.getFileManager().getLineCount(todo));
@@ -380,9 +413,85 @@ public class StorageTest {
 		assertEquals(1, storage.getFileManager().getLineCount(done));
 		
 		task = new Task(PARAM_DESCRIPTION1);
-		storage.addTask(new Task(PARAM_DESCRIPTION1));
+		storage.addTask(task);
 		assertEquals(String.format(FEEDBACK_MARKED_DONE, task.toFilteredString()), storage.markTaskDone(task));	
 		assertEquals(2, storage.getFileManager().getLineCount(done));
+	}
+	
+	/*
+	 * Operation to test: markTaskUndone(Task task): String
+	 * Equivalence partition: 
+	 * task: [null] [not null] [haven't done] 
+	 */	
+	@Test(expected = Exception.class) 
+	public void testMarkTaskUndoneMethodForException() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		Task task = null;
+		
+		// This is for the ‘null’ partition 
+		storage.markTaskUndone(task);
+	}
+	
+	@Test(expected = Exception.class) 
+	public void testMarkTaskUndoneMethodForUndoneTaskException() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		Task task = new Task(PARAM_DESCRIPTION1);
+		storage.addTask(task);
+		
+		// This is for the ‘haven't done’ partition 
+		assertEquals(1, storage.getTaskList().getTasks().size());
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
+		assertEquals(0, storage.getTaskList().getCompletedTasks().size());
+		assertEquals(0, storage.getFileManager().getLineCount(done));
+		assertEquals(String.format(FEEDBACK_INCOMPLETE_TASK, task.toFilteredString()), storage.markTaskUndone(task));
+	}
+	
+	@Test
+	public void testMarkTaskUndoneMethod() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		Task task = new Task(PARAM_DESCRIPTION);
+		storage.addTask(task);
+		storage.markTaskDone(task);
+		
+		// This is for the ‘not null’ partition
+		assertEquals(1, storage.getTaskList().getCompletedTasks().size());
+		assertEquals(1, storage.getFileManager().getLineCount(done));
+		assertEquals(String.format(FEEDBACK_MARKED_UNDONE, task.toFilteredString()), storage.markTaskUndone(task));	
+		assertEquals(0, storage.getFileManager().getLineCount(done));
+	}
+	
+	/*
+	 * Operation to test: markMultipleTasksDone(ArrayList<Task> tasks): String
+	 * Equivalence partition: 
+	 * task: [null] [not null] 
+	 */
+	@Test(expected = Exception.class) 
+	public void testMarkMultipleTasksDoneMethodForException() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		ArrayList<Task> tasks = null;
+		
+		// This is for the ‘null’ partition 
+		storage.markMultipleTasksDone(tasks);
 	}
 	
 	@Test
@@ -408,6 +517,55 @@ public class StorageTest {
 		assertEquals(0, storage.getFileManager().getLineCount(done));
 		assertEquals(String.format(FEEDBACK_MARKED_DONE_MULTIPLE), storage.markMultipleTasksDone(tasks));	
 		assertEquals(3, storage.getFileManager().getLineCount(done));
+	}
+	
+	/*
+	 * Operation to test: markMultipleTasksUndone(ArrayList<Task> tasks): String
+	 * Equivalence partition: 
+	 * task: [null] [not null] 
+	 */
+	@Test(expected = Exception.class) 
+	public void testMarkMultipleTasksUnoneMethodForException() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		ArrayList<Task> tasks = null;
+		
+		// This is for the ‘null’ partition 
+		storage.markMultipleTasksUndone(tasks);
+	}
+	
+	@Test
+	public void testMarkMultipleTasksUndoneMethod() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		Task task = new Task(PARAM_DESCRIPTION), doneTask1 = new Task(PARAM_DESCRIPTION1), doneTask2 = new Task(PARAM_DESCRIPTION2);
+		storage.addTask(task);
+		storage.addTask(doneTask1);
+		storage.addTask(doneTask2);
+		storage.markTaskDone(doneTask1);
+		storage.markTaskDone(doneTask2);
+		tasks.add(doneTask1);
+		tasks.add(doneTask2);
+		
+		// This is for the ‘not null’ partition
+		assertEquals(1, storage.getTaskList().getTasks().size());
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
+		assertEquals(2, storage.getTaskList().getCompletedTasks().size());
+		assertEquals(2, storage.getFileManager().getLineCount(done));
+		assertEquals(String.format(FEEDBACK_MARKED_UNDONE_MULTIPLE), storage.markMultipleTasksUndone(tasks));	
+		assertEquals(3, storage.getTaskList().getTasks().size());
+		assertEquals(3, storage.getFileManager().getLineCount(todo));
+		assertEquals(0, storage.getTaskList().getCompletedTasks().size());
+		assertEquals(0, storage.getFileManager().getLineCount(done));
 	}
 	
 	/*
@@ -451,6 +609,49 @@ public class StorageTest {
 	}
 	
 	/*
+	 * Operation to test: deleteMultipleTasks(ArrayList<Task> tasks): String
+	 * Equivalence partition: 
+	 * task: [null] [not null] 
+	 */
+	@Test(expected = Exception.class) 
+	public void testDeleteMultipleTasksForException() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		ArrayList<Task> tasks = null;
+		
+		// This is for the ‘null’ partition 
+		storage.deleteMultipleTasks(tasks);
+	}
+	
+	@Test
+	public void testDeleteMultipleTasksMethod() throws Exception {
+		Storage storage = new Storage();
+		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		Task task = new Task(PARAM_DESCRIPTION), doneTask1 = new Task(PARAM_DESCRIPTION1), doneTask2 = new Task(PARAM_DESCRIPTION2);
+		storage.addTask(task);
+		storage.addTask(doneTask1);
+		storage.addTask(doneTask2);
+		tasks.add(doneTask1);
+		tasks.add(doneTask2);
+		
+		// This is for the ‘not null’ partition
+		assertEquals(3, storage.getTaskList().getTasks().size());
+		assertEquals(3, storage.getFileManager().getLineCount(todo));
+		assertEquals(String.format(FEEDBACK_DELETED_MULTIPLE), storage.deleteMultipleTasks(tasks));	
+		assertEquals(1, storage.getTaskList().getTasks().size());
+		assertEquals(1, storage.getFileManager().getLineCount(todo));
+	}
+	
+	/*
 	 * Operation to test: restore(String previousCommand): String
 	 * Equivalence partition: 
 	 * previousCommand: [null] [not null] 
@@ -490,19 +691,16 @@ public class StorageTest {
 		
 		assertEquals(0, storage.getTaskList().getTasks().size());
 		assertEquals(0, storage.getFileManager().getLineCount(todo));
-		assertEquals(0, storage.getFileManager().getLineCount(done));
 		storage.addTask(task);
 		assertEquals(1, storage.getTaskList().getTasks().size());
 		assertEquals(1, storage.getFileManager().getLineCount(todo));
-		assertEquals(0, storage.getFileManager().getLineCount(done));
 		
-		
-		storage.markTaskDone(task);	
+		storage.deleteTask(task);
+		assertEquals(0, storage.getTaskList().getTasks().size());
 		assertEquals(0, storage.getFileManager().getLineCount(todo));
-		assertEquals(1, storage.getFileManager().getLineCount(done));
 		
 		assertEquals(String.format(FEEDBACK_RESTORED, PARAM_RESTORE_COMMAND), storage.restore(PARAM_RESTORE_COMMAND));
+		assertEquals(1, storage.getTaskList().getTasks().size());
 		assertEquals(1, storage.getFileManager().getLineCount(todo));
-		assertEquals(0, storage.getFileManager().getLineCount(done));
 	}
 }

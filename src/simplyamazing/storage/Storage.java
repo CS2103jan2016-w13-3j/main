@@ -459,14 +459,14 @@ public class Storage {
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		tasks.add(task);
 		throwExceptionIfNotCompletedTask(tasks);
-
-		deleteTask(task);
 		
 		fileManager.createBackup(done, doneBackup);
 		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
 		
+		deleteTask(task);
+		
 		task.setDone(false);
-		taskList.addTaskToList(task, taskList.getTasks());
+		moveToToDoFile(task);
 
 		String feedback = String.format(MESSAGE_MARKED_UNDONE, task.toFilteredString());
 		logger.log(Level.INFO, feedback);
@@ -505,15 +505,15 @@ public class Storage {
 	public String markMultipleTasksUndone(ArrayList<Task> tasks) throws Exception {
 		
 		throwExceptionIfNotCompletedTask(tasks);
-
-		deleteMultipleTasks(tasks);
 		
 		fileManager.createBackup(done, doneBackup);
 		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
 		
+		deleteMultipleTasks(tasks);
+		
 		for (int i = 0; i < tasks.size(); i++) {
 			tasks.get(i).setDone(false);
-			taskList.addTaskToList(tasks.get(i), taskList.getTasks());
+			moveToToDoFile(tasks.get(i));
 	
 			String feedback = String.format(MESSAGE_MARKED_UNDONE, tasks.get(i).toFilteredString());
 			logger.log(Level.INFO, feedback);
@@ -527,6 +527,16 @@ public class Storage {
 		int lineCountBeforeAdding = fileManager.getLineCount(done);
 		fileManager.importListToFile(taskList.getCompletedTasks(), done);
 		int lineCountAfterAdding = fileManager.getLineCount(done);
+		assert(lineCountAfterAdding == lineCountBeforeAdding + 1);
+		logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
+	}
+	
+	private void moveToToDoFile(Task task) throws Exception {
+		taskList.addTaskToList(task, taskList.getTasks());
+
+		int lineCountBeforeAdding = fileManager.getLineCount(todo);
+		fileManager.importListToFile(taskList.getTasks(), todo);
+		int lineCountAfterAdding = fileManager.getLineCount(todo);
 		assert(lineCountAfterAdding == lineCountBeforeAdding + 1);
 		logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
 	}
