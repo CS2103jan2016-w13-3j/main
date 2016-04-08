@@ -68,6 +68,22 @@ public class SystemTest {
 	private static final String COMMAND_SEARCH_TASKS_OTHER_KEYWORD =  COMMAND_SEARCH + CHARACTER_SPACE + "other";
 	private static final String COMMAND_RESTORE_EMPTY = "";
 	private static final String COMMAND_RESTORE = "restore";
+	private static final String COMMAND_HELP_INTEGER = COMMAND_HELP + CHARACTER_SPACE + "1";
+	private static final String COMMAND_HELP_INVALID = COMMAND_HELP + CHARACTER_SPACE + "ABC";
+	private static final String COMMAND_HELP_ALL = COMMAND_HELP;
+	private static final String COMMAND_HELP_LOCATION = COMMAND_HELP + CHARACTER_SPACE + COMMAND_SET_LOCATION;
+	private static final String COMMAND_HELP_ADD = COMMAND_HELP + CHARACTER_SPACE + COMMAND_ADD;
+	private static final String COMMAND_HELP_VIEW = COMMAND_HELP + CHARACTER_SPACE + COMMAND_VIEW;
+	private static final String COMMAND_HELP_EDIT = COMMAND_HELP + CHARACTER_SPACE + COMMAND_EDIT;
+	private static final String COMMAND_HELP_DELETE = COMMAND_HELP + CHARACTER_SPACE + COMMAND_DELETE;
+	private static final String COMMAND_HELP_UNDO = COMMAND_HELP + CHARACTER_SPACE + COMMAND_UNDO;
+	private static final String COMMAND_HELP_DONE = COMMAND_HELP + CHARACTER_SPACE + COMMAND_MARK_AS_DONE;
+	private static final String COMMAND_HELP_SEARCH = COMMAND_HELP + CHARACTER_SPACE + COMMAND_SEARCH;
+	private static final String COMMAND_HELP_EXIT = COMMAND_HELP + CHARACTER_SPACE + COMMAND_EXIT;
+	
+	
+	
+	
 	
 	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:\\Users\\Public\\Documents";
 	private static final String PARAM_DESCRIPTION = "go swimming";
@@ -97,6 +113,51 @@ public class SystemTest {
 	private static final String FEEDBACK_RESTORED = "\"%1$s\" command has been successfully undone.";
 	private static final Object FEEDBACK_EMPTY_LIST = "List is empty";
 	private static final Object FEEDBACK_NO_TASK_FOUND = "Error: There are no tasks containing the given keyword";
+	
+	
+	//@@author A0125136N
+	
+	
+	private static final String FEEDBACK_HELP_INTEGER = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
+	
+	
+	private static final String FEEDBACK_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";
+	
+	private static final String FEEDBACK_HELP_DONE = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n";
+	
+	private static final String FEEDBACK_HELP_DELETE = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1";
+	
+	private static final String FEEDBACK_HELP_SEARCH = "Search for tasks containing the given keyword\nCommand: search <keyword>\n\nExample:\nsearch meeting\n";
+	
+	private static final String FEEDBACK_HELP_EXIT ="Exit SimplyAmazing\nCommand: exit\n";
+	
+	
+	private static final String FEEDBACK_HELP_ALL = "Key in the following to view specific command formats:\n"
+			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
+			+ "7. help location\n8. help undo\n9. help exit\n";
+	
+	
+	private static final String FEEDBACK_HELP_VIEW = "1.Display all tasks\n Command: view\n\n2.Display tasks with deadlines\n"
+			+ "Command: view deadlines\n\n3.Display all events\nCommand: view events\n\n4.Display tasks without deadlines\nCommand: view tasks\n\n"
+			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n";
+	
+	
+	private static final String FEEDBACK_HELP_EDIT = "Edit content in a task\nCommand: edit <task index> <task header> <updated content>\n\n"
+			+ "Example:\n1. edit 4 description send marketing report\n\n2. edit 3 start 22:00 26 may 2016, end 22:40 26 may 2016\n\n"
+			+ "3. edit 1 priority high";
+	
+	
+	private static final String FEEDBACK_HELP_ADD =  "1.Add a task to the list\nCommand: add <task description>\n\nExample: add Prepare presentation\n\n\n"
+			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to\n<end time hh:mm> <end date dd MMM yyyy>\n\n"
+			+ "Example: add Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
+			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>\n\n"
+			+ "Example: add Submit marketing report by 17:00 20 Dec 2016\n";
+	
+	
+	private static final String FEEDBACK_HELP_LOCATION = "Sets the storage location or folder for application data\n"
+			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data";
+	
+	
 	
 	
 	/*
@@ -293,5 +354,37 @@ public class SystemTest {
 		assertEquals(false, parser.getHandler(COMMAND_SEARCH_TASKS_OTHER_KEYWORD).getHasError());
 		assertEquals(COMMAND_SEARCH, parser.getHandler(COMMAND_SEARCH_TASKS_OTHER_KEYWORD).getCommandType());
 		assertEquals(FEEDBACK_NO_TASK_FOUND, logic.executeCommand(COMMAND_SEARCH_TASKS_OTHER_KEYWORD));
+	}
+	
+	@Test 
+	public void testHelpMethod() throws Exception  {
+		Logic logic = new Logic();
+		Parser parser = new Parser();
+		Storage storage = new Storage();
+		
+		logic.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
+		
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		
+		
+		assertEquals(true, parser.getHandler(COMMAND_HELP_INVALID).getHasError());
+		assertEquals(COMMAND_VIEW, parser.getHandler(COMMAND_VIEW_TASKS_OTHERS).getCommandType());
+		assertEquals(parser.getHandler(COMMAND_VIEW_TASKS_OTHERS).getFeedBack(), logic.executeCommand(COMMAND_VIEW_TASKS_OTHERS));
+		
+		assertEquals(FEEDBACK_HELP_ALL, logic.executeCommand(COMMAND_HELP_ALL));
+		assertEquals(FEEDBACK_HELP_INTEGER, logic.executeCommand(COMMAND_HELP_INTEGER));
+		assertEquals(FEEDBACK_HELP_UNDO, logic.executeCommand(COMMAND_HELP_UNDO));
+		assertEquals(FEEDBACK_HELP_DONE, logic.executeCommand(COMMAND_HELP_DONE));
+		assertEquals(FEEDBACK_HELP_DELETE, logic.executeCommand(COMMAND_HELP_DELETE));
+		assertEquals(FEEDBACK_HELP_VIEW, logic.executeCommand(COMMAND_HELP_VIEW));
+		assertEquals(FEEDBACK_HELP_EDIT, logic.executeCommand(COMMAND_HELP_EDIT));
+		assertEquals(FEEDBACK_HELP_SEARCH, logic.executeCommand(COMMAND_HELP_SEARCH));
+		assertEquals(FEEDBACK_HELP_LOCATION, logic.executeCommand(COMMAND_HELP_LOCATION));
+		assertEquals(FEEDBACK_HELP_ADD, logic.executeCommand(COMMAND_HELP_ADD));
+		assertEquals(FEEDBACK_HELP_EXIT, logic.executeCommand(COMMAND_HELP_EXIT));
+		
 	}
 }
