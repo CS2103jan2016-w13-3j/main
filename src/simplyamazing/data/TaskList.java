@@ -60,7 +60,7 @@ public class TaskList {
 			if (!priorityLevel.matches(CHARACTER_SPACE)) {
 				task.setPriority(priorityLevel);
 			}
-			if (!status.matches(CHARACTER_SPACE)) {
+			if (status.matches(Task.STRING_STATUS_DONE)) {
 				task.setDone(true);
 			}
 			addTaskToList(task, taskList);

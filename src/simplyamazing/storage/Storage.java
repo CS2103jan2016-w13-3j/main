@@ -36,6 +36,7 @@ public class Storage {
 	private static final String MESSAGE_RESTORED = "\"%1$s\" command has been successfully undone.";
 	private static final String MESSAGE_INVALID_TASK_TYPE = "Unrecognized task type!";
 	private static final String MESSAGE_COMPLETED_TASK = "%1$s is a completed task.";
+	private static final String MESSAGE_INCOMPLETE_TASK = "%1$s is an incomplete task.";
 	private static final String MESSAGE_DELETED = "%1$s has been successfully deleted.";
 	private static final String MESSAGE_DELETED_MULTIPLE = "Provided tasks have been successfully deleted.";
 	private static final String MESSAGE_MARKED_DONE = "%1$s has been marked as done.";
@@ -342,7 +343,8 @@ public class Storage {
 		for (int i = 0; i < tasks.size(); i++) {
 			Task task = tasks.get(i);
 			Date startTime = task.getStartTime();
-			if (!overdueTasks.contains(task) && startTime == Task.DEFAULT_DATE_VALUE) {
+			Date endTime = task.getEndTime();
+			if (!overdueTasks.contains(task) && startTime == Task.DEFAULT_DATE_VALUE && endTime != Task.DEFAULT_DATE_VALUE) {
 				currentDeadlines.add(task);
 			}
 		}
@@ -474,7 +476,7 @@ public class Storage {
 	private void throwExceptionIfNotCompletedTask(ArrayList<Task> tasks) throws Exception {
 		for (int i = 0; i < tasks.size(); i++) {
 			if(taskList.getTasks().contains(tasks.get(i))) {
-				String exceptionMessage = String.format(MESSAGE_COMPLETED_TASK, tasks.get(i).toFilteredString());
+				String exceptionMessage = String.format(MESSAGE_INCOMPLETE_TASK, tasks.get(i).toFilteredString());
 				logger.log(Level.WARNING, exceptionMessage);
 				throw new Exception(exceptionMessage);
 			}

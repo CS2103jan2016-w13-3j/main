@@ -27,6 +27,9 @@ public class Task implements Comparable<Task>{
 	private static final String STRING_MEDIUM_PRIORITY = "medium";
 	private static final String STRING_LOW_PRIORITY = "low";
 	private static final String STRING_NO_PRIORITY = "none";
+	private static final String STRING_STATUS_INCOMPLETE = "incomplete";
+	private static final String STRING_STATUS_OVERDUE = "overdue";
+	public static final String STRING_STATUS_DONE = "done";
 	
 	public static final int ARRAY_POSITION_FOR_DESCRIPTION = 0;
 	public static final int ARRAY_POSITION_FOR_START_TIME = 1;
@@ -197,7 +200,7 @@ public class Task implements Comparable<Task>{
 		String startTimeString = CHARACTER_SPACE;
 		String endTimeString = CHARACTER_SPACE;
 		String priorityLevel = CHARACTER_SPACE;
-		String status = CHARACTER_SPACE;
+		String status = STRING_STATUS_INCOMPLETE;
 		
 		if (this.startTime != DEFAULT_DATE_VALUE) {
 			startTimeString = convertDateToString(this.startTime, TIME_FORMAT);
@@ -221,9 +224,15 @@ public class Task implements Comparable<Task>{
 				priorityLevel = CHARACTER_SPACE;
 				break;
 		}
+		Date now = new Date();
+		Date endTime = this.getEndTime();
+		if (endTime.before(now) && endTime != Task.DEFAULT_DATE_VALUE) {
+			status = STRING_STATUS_OVERDUE;
+			assert(!status.matches(STRING_STATUS_INCOMPLETE));
+		}
 		if (this.isDone()) {
-			status = "done";
-			assert(!status.matches(CHARACTER_SPACE));
+			status = STRING_STATUS_DONE;
+			assert(!status.matches(STRING_STATUS_INCOMPLETE));
 		}
 		return this.description.trim() + FIELD_SEPARATOR + startTimeString + FIELD_SEPARATOR + endTimeString + FIELD_SEPARATOR + priorityLevel + FIELD_SEPARATOR + status;
 	}
