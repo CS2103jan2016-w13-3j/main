@@ -15,6 +15,7 @@ public class ParserSearch {
 	private static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
 	private static final String ERROR_MESSAGE_TIME_FORMAT_INVALID ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
 	private static final String SPACE = " ";
+	private static final String EMPTY_STRING = "";
 	private static Date endingDate = null;
 	private static int year;
 	private static String outputYear = "";
@@ -28,45 +29,50 @@ public class ParserSearch {
 		return handler;
 	}
 	public boolean isSearchingKeyWord(Handler handler,String taskInfo) throws Exception {
-		String givenMonth = taskInfo.substring(0, 3).toLowerCase();
-		if(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
-				|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
-				|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec")){
-			String[] monthAndYear = taskInfo.split(SPACE);
-			if (monthAndYear.length == 2) {
-				outputYear = ""+ taskInfo.split(SPACE)[1];
-			}
-			handler.setKeyWord(givenMonth + SPACE + outputYear);
-			return false;
-		}
-
-		com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
-		boolean isEndFormatCorrect = followStandardFormat(taskInfo);
-		SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
-		sdf.setLenient(false);
-
-		if (isEndFormatCorrect == true){
-			try{
-				endingDate = (Date)sdf.parse(taskInfo);
-				handler.setHasEndDate(true);
-				handler.getTask().setEndTime(endingDate);
-			}catch (ParseException e) {
-				handler.setHasError(true);
-				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+		if(taskInfo.equals(EMPTY_STRING)){
+          handler.setKeyWord(taskInfo);
+          return false;
+		}else{
+			String givenMonth = taskInfo.substring(0, 3).toLowerCase();
+			if(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
+					|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
+					|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec")){
+				String[] monthAndYear = taskInfo.split(SPACE);
+				if (monthAndYear.length == 2) {
+					outputYear = ""+ taskInfo.split(SPACE)[1];
+				}
+				handler.setKeyWord(givenMonth + SPACE + outputYear);
 				return false;
 			}
-		}else{
-			List<DateGroup> dateGroup2 = dateParser.parse(taskInfo);
 
-			if(dateGroup2.isEmpty()){
-				return true;
-			}						
-			List<Date> date2 = dateGroup2.get(0).getDates();
-			endingDate = date2.get(0);
-			handler.setHasEndDate(true);
-			handler.getTask().setEndTime(endingDate);
+			com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
+			boolean isEndFormatCorrect = followStandardFormat(taskInfo);
+			SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
+			sdf.setLenient(false);
+
+			if (isEndFormatCorrect == true){
+				try{
+					endingDate = (Date)sdf.parse(taskInfo);
+					handler.setHasEndDate(true);
+					handler.getTask().setEndTime(endingDate);
+				}catch (ParseException e) {
+					handler.setHasError(true);
+					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+					return false;
+				}
+			}else{
+				List<DateGroup> dateGroup2 = dateParser.parse(taskInfo);
+
+				if(dateGroup2.isEmpty()){
+					return true;
+				}						
+				List<Date> date2 = dateGroup2.get(0).getDates();
+				endingDate = date2.get(0);
+				handler.setHasEndDate(true);
+				handler.getTask().setEndTime(endingDate);
+			}
+			return false;
 		}
-		return false;
 
 	}
 	public boolean followStandardFormat(String dateTimeString){
