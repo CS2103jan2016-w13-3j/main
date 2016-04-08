@@ -41,7 +41,8 @@ public class Logic {
 
 	private static final String MESSAGE_EMPTY_LIST = "List is empty";
 	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
-
+	private static final String MESSAGE_HELP_REDO = "Redo the most recent command\nCommand: redo\n";
+	private static final String MESSAGE_HELP_UNDONE = "Marks a completed task as undone\nCommand: undone <task index>\n\nExample:\nundone 2\n";
 	private static final String MESSAGE_HELP_EXIT = "Exit SimplyAmazing\nCommand: exit\n";
 	private static final String MESSAGE_HELP_SEARCH = "Search for tasks containing the given keyword\nCommand: search <keyword>\n\nExample:\nsearch meeting\n";
 	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";
@@ -53,7 +54,7 @@ public class Logic {
 
 	private static final String MESSAGE_HELP = "Key in the following to view specific command formats:\n"
 			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
-			+ "7. help location\n8. help undo\n9. help exit\n";
+			+ "7. help location\n8. help undo\n9. help redo\n10. help undone\n11. help exit\n";
 
 	private static final String MESSAGE_HELP_LOCATION = "Sets the storage location or folder for application data\n"
 			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data";
@@ -499,6 +500,10 @@ public class Logic {
 				return MESSAGE_HELP_LOCATION;
 			} else if (commandHandler.getKeyWord().equals("undo")) {
 				return MESSAGE_HELP_UNDO;
+			} else if (commandHandler.getKeyWord().equals("redo")) {
+				return MESSAGE_HELP_REDO;
+			} else if (commandHandler.getKeyWord().equals("undone")) {
+				return MESSAGE_HELP_UNDONE;
 			} else {
 				return MESSAGE_HELP_DONE;
 			}
