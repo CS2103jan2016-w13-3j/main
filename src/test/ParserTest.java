@@ -15,7 +15,9 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_VALID_DESCRIPTION_CAP_THIRDCHAR = "edIt 1 description dancing";
 	private static final String EDIT_COMMAND_VALID_DESCRIPTION_CAP_FOURTHCHAR = "ediT 1 description dancing";
 	private static final String EDIT_COMMAND_VALID_ENDTIME = "edit 1 end 22:00 05 MAY 2016";
+	private static final String EDIT_COMMAND_VALID_ENDTIME_NONE = "edit 1 EnD nONE";
 	private static final String EDIT_COMMAND_VALID_STARTTIME = "edit 1 start 23:00 20 Apr 2016";
+	private static final String EDIT_COMMAND_VALID_STARTTIME_NONE = "edit 1 START NoNe";
 	private static final String EDIT_COMMAND_VALID_PRIORITY = "edit 1 priority high";
 	private static final String EDIT_COMMAND_VALID_FEEDBACK = "";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_BEFORE_CURRENT = "edit 2 start 12:00 30 Mar 2016";
@@ -26,6 +28,7 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_AFTER_ENDTIME = "edit 2 start 23:00 18 Apr 2017, end 21:00 19 Apr 2016";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME = "edit 1 start 11:00 20 Apr 2016, end 11:00 20 Apr 2016";
+	private static final String EDIT_COMMAND_INVALID_STARTTIME_NONE_ENDTIME_BEFORE_TODAY = "edit 2 STarT none, END 22:00 05 APR 2016";
 	private static final String EDIT_COMMAND_INVALID_PRIORITY = "edit 1 priority abc";
 	private static final String EDIT_COMMAND_INVALID_INDEX_FEEDBACK = "Error: Index provided is not an Integer.";
 	private static final String EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK ="Error: Time provided must be after the current time";
@@ -219,8 +222,10 @@ public class ParserTest {
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION_CAP_SECONDCHAR).getFeedBack());
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION_CAP_THIRDCHAR).getFeedBack());
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_DESCRIPTION_CAP_FOURTHCHAR).getFeedBack());
-		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_ENDTIME).getFeedBack());
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_STARTTIME).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_STARTTIME_NONE).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_ENDTIME).getFeedBack());
+		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_ENDTIME_NONE).getFeedBack());
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_PRIORITY).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_INDEX_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_WITHOUT_INDEX).getFeedBack());
@@ -230,6 +235,7 @@ public class ParserTest {
 		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_TWO_KEYWORDS).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_AFTER_ENDTIME).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_NONE_ENDTIME_BEFORE_TODAY).getFeedBack());
 	}
 	
     @Test//(expected = Exception.class)

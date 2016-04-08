@@ -18,6 +18,7 @@ public class ParserEdit {
 	private static final String ERROR_MESSAGE_DATE_BEFORE_CURRENT ="Error: Time provided must be after the current time";
 	private static final String ERROR_MESSAGE_PRIORITY_LEVEL = "Error: Priority level can be only high, medium, low or none.";
 	private static final String ERROR_MESSAGE_TIME_FORMAT_INVALID ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
+	private static final String ERROR_MESSAGE_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
 	private static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
 	private static Date startingDate = null;
 	private static Date endingDate = null;
@@ -95,7 +96,7 @@ public class ParserEdit {
 				}
 			} else if(startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0){ // end time set as none
 				handler.setHasError(true);
-				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
+				handler.setFeedBack(ERROR_MESSAGE_NO_END_TIME);
 			}
 		} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // start time is modified
 			if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && !startingDate.after(todayDate)) {
