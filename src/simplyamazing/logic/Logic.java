@@ -72,7 +72,7 @@ public class Logic {
 	enum CommandType {
 		ADD_TASK, VIEW_LIST, DELETE_TASK,INVALID,
 		SEARCH_KEYWORD, UNDO_LAST, EDIT_TASK, SET_LOCATION,
-		MARK_TASK, UNMARK_TASK, HELP, EXIT;
+		MARK_TASK, UNMARK_TASK, REDO, HELP, EXIT;
 	};
 
 
@@ -102,6 +102,8 @@ public class Logic {
 			return CommandType.DELETE_TASK;
 		} else if (commandWord.equalsIgnoreCase("undo")) {
 			return CommandType.UNDO_LAST;
+		} else if (commandWord.equals("redo")) {
+			return CommandType.REDO;
 		} else if (commandWord.equalsIgnoreCase("view")) {
 			return CommandType.VIEW_LIST;
 		} else if (commandWord.equalsIgnoreCase("done")) {
@@ -155,6 +157,8 @@ public class Logic {
 		case UNDO_LAST :
 			feedback = executeUndoCommand(commandHandler);
 			break;
+		case REDO :
+			feedback = executeRedoCommand(commandHandler);
 		case SET_LOCATION :
 			feedback = executeSetLocationCommand(commandHandler);
 			break;
@@ -353,8 +357,21 @@ public class Logic {
 			return storageObj.restore(lastModifyCommand);
 		}
 	}
+	
+	
+	private static String executeRedoCommand(Handler commandHandler) throws Exception {
+		boolean hasPreviousCommand = isPreviousCommandValid();
 
+		if (hasPreviousCommand == false) {				
+			logger.log(Level.WARNING, "previous command is invalid");
+			return ERROR_PREVIOUS_COMMAND_INVALID;
 
+		} else {			
+			return storageObj.restore(lastModifyCommand);
+		}
+	}	
+		
+		
 	private static String executeSetLocationCommand(Handler commandHandler) throws Exception {
 
 		if (commandHandler.getHasError() == true) {			
@@ -562,6 +579,7 @@ public class Logic {
 		}
 	}
 
+	
 	public String getPreviousCommand(){
 		return previousCommandString;
 	}
