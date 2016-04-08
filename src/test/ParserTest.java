@@ -25,7 +25,9 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_INVALID_TWO_KEYWORDS = "edit 3 start 12:00 24 Mar 2016,end 15:00 26 Mar 2016";
 	private static final String EDIT_COMMAND_INVALID_WRONG_KEYWORD = "edit 2 drink";	
 	private static final String EDIT_COMMAND_INVALID_WITHOUT_INDEX = "edit startTime 12:00 20 Mar 2016";
-	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
+	
+	private static final String EDIT_COMMAND_INVALID_STARTTIME = "edit 1 STart 19:00 30 Feb 2017";
+	private static final String EDIT_COMMAND_INVALID_STARTTIME_DAMMY = "edit 1 StArT aBCD";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_AFTER_ENDTIME = "edit 2 start 23:00 18 Apr 2017, end 21:00 19 Apr 2016";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME = "edit 1 start 11:00 20 Apr 2016, end 11:00 20 Apr 2016";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_NONE_ENDTIME_BEFORE_TODAY = "edit 2 STarT none, END 22:00 05 APR 2016";
@@ -36,6 +38,8 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_INVALID_START_AFTER_END_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
 	private static final String EDIT_COMMAND_ERROR_MESSAGE_PRIORITY_LEVEL_FEEDBACK = "Error: Priority level can be only high, medium, low or none.";
 	private static final String EDIT_COMMAND_ERROR_MESSAGE_NO_END_TIME_FEEDBACK = "Error: Unable to allocate a start time when the task has no end time";
+	private static final String EDIT_COMMAND_INVALID_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
+	private static final String EDIT_COMMAND_INVALID_TIMEFORMAT_FEEDBACK = "Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
 	
 	private static final String ADD_COMMAND_TYPE_VALID = "add";
 	private static final String ADD_COMMAND_FLOATING_VALID = "add go home";
@@ -152,6 +156,7 @@ public class ParserTest {
 	private static final String SEARCH_COMMAND_VALID_FEEDBACK = "";
 	private static final String SEARCH_COMMAND_INVALID_FEEDBACK ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
 	private static final String SEARCH_COMMAND_INVALID_FEEDBACK_TO_NATTY ="";
+	
 	private static final String UNDO_COMMAND_VALID = "undo";
 	private static final String UNDO_COMMAND_VALID_FEEDBACK = "";
 	
@@ -230,6 +235,8 @@ public class ParserTest {
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_ENDTIME_NONE).getFeedBack());
 		assertEquals(EDIT_COMMAND_VALID_FEEDBACK, parser.getHandler(EDIT_COMMAND_VALID_PRIORITY).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_TIMEFORMAT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME).getFeedBack());
+		assertEquals(EDIT_COMMAND_INVALID_TIMEFORMAT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_DAMMY).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_INDEX_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_WITHOUT_INDEX).getFeedBack());
 		assertEquals(EDIT_COMMAND_ERROR_MESSAGE_PRIORITY_LEVEL_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_PRIORITY).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_BEFORE_CURRENT).getFeedBack());
@@ -273,7 +280,7 @@ public class ParserTest {
 	}
 
 	@Test//(expected = Exception.class)
-	public void testDoneCommand() throws Exception {
+	public void testDoneOrUnDoneCommand() throws Exception {
 		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID).getFeedBack());
 		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT).getFeedBack());
 		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT_2).getFeedBack());

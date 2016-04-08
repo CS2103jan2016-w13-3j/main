@@ -49,8 +49,7 @@ public class ParserEdit {
 					handler.getTask().setStartTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 				} else {
 					boolean isStartFormatCorrect = followStandardFormat(value);
-					editStartTime(sdf,isStartFormatCorrect,handler,value);
-					handler.getTask().setStartTime(startingDate);
+					handler = editStartTime(sdf,isStartFormatCorrect,handler,value);
 				}
 				break;
 			case "end" :
@@ -58,8 +57,7 @@ public class ParserEdit {
 					handler.getTask().setEndTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 				} else {
 					boolean isEndFormatCorrect = followStandardFormat(value);
-					editEndTime(sdf,isEndFormatCorrect,handler,value);
-					handler.getTask().setEndTime(endingDate);
+					handler = editEndTime(sdf,isEndFormatCorrect,handler,value);
 				}
 				break;
 			case "priority" :
@@ -119,7 +117,7 @@ public class ParserEdit {
 			}*/
 		return handler;
 	}
-    private void editStartTime(SimpleDateFormat sdf,boolean isStartFormatCorrect,Handler handler,String value){
+    private Handler editStartTime(SimpleDateFormat sdf,boolean isStartFormatCorrect,Handler handler,String value){
     	com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
     	if(isStartFormatCorrect == true){
 			System.out.println("startTime use our format");
@@ -136,12 +134,15 @@ public class ParserEdit {
 			if(dateGroup3.isEmpty()){
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+				return handler;
 			}
 			List<Date> date3 = dateGroup3.get(0).getDates();
 			startingDate = date3.get(0);
 		}
+    	handler.getTask().setStartTime(startingDate);
+    	return handler;
     }
-    private void editEndTime(SimpleDateFormat sdf,boolean isEndFormatCorrect,Handler handler,String value){
+    private Handler editEndTime(SimpleDateFormat sdf,boolean isEndFormatCorrect,Handler handler,String value){
     	com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
     	if(isEndFormatCorrect == true){
 			System.out.println("endTime use our format");
@@ -158,10 +159,13 @@ public class ParserEdit {
 			if(dateGroup4.isEmpty()){
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
+				return handler;
 			}
 			List<Date> date4 = dateGroup4.get(0).getDates();
 			endingDate = date4.get(0);
 		}
+    	handler.getTask().setEndTime(endingDate);
+    	return handler;
     }
 	public static boolean isInteger(String taskInfo) {
 		try {
