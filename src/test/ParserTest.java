@@ -263,7 +263,7 @@ public class ParserTest {
 		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT_CAP).getFeedBack());
 		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT_2_CAP).getFeedBack());
 		assertEquals(DONE_COMMAND_VALID_FEEDBACK, parser.getHandler(DONE_COMMAND_VALID_ALT_3_CAP).getFeedBack());
-		assertEquals(DONE_COMMAND_VALID_INDEX, parser.getHandler(DONE_COMMAND_VALID).getIndexList().get(0));
+		assertEquals(DONE_COMMAND_VALID_INDEX, parser.getHandler(DONE_COMMAND_VALID).getIndexList().get(0).toString());
 		assertEquals(DONE_COMMAND_INVALID_FEEDBACK,parser.getHandler(DONE_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
 	}
 	
