@@ -39,6 +39,7 @@ public class FileManager {
 	
 	public File createTempFile(File file, String tempFilePath) throws Exception {
 		File tempFile = createFile(tempFilePath);
+		createNewFile(tempFile);
 		createBackup(file, tempFile);
 		file.delete();
 		file = tempFile;
