@@ -15,7 +15,7 @@ import simplyamazing.parser.Parser;
 import simplyamazing.storage.Storage;
 
 public class Logic {
-	
+
 	private static Logger logger;
 	private static Parser parserObj;
 	private static Storage storageObj;
@@ -24,10 +24,10 @@ public class Logic {
 	private static String previousCommandString;
 	private static String previousCommandKeyword;
 	private static Handler commandHandler;
-	private static final String STRING_EMPTY = "";
 	
-	private static final String MESSAGE_EMPTY_LIST = "List is empty";
-	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
+	private static final String STRING_EMPTY = "";
+
+	private static final String ERROR_INVALID_DIRECTORY = "Error: Not a valid directory";
 	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
 	private static final String ERROR_INVALID_INDEX_MULTIPLE = "Error: One of the given indexes is invalid";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
@@ -37,8 +37,10 @@ public class Logic {
 	private static final String ERROR_START_SAME_AS_END ="Error: New start time cannot be the same as the end time";
 	private static final String ERROR_END_BEFORE_START = "Error: New end time cannot be before the start time";
 	private static final String ERROR_END_SAME_AS_START ="Error: New end time cannot be the same as the start time";
-	
-	
+
+	private static final String MESSAGE_EMPTY_LIST = "List is empty";
+	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
+
 	private static final String MESSAGE_HELP_EXIT = "Exit SimplyAmazing\nCommand: exit\n";
 	private static final String MESSAGE_HELP_SEARCH = "Search for tasks containing the given keyword\nCommand: search <keyword>\n\nExample:\nsearch meeting\n";
 	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";
@@ -47,14 +49,14 @@ public class Logic {
 	private static final String MESSAGE_HELP_EDIT = "Edit content in a task\nCommand: edit <task index> <task header> <updated content>\n\n"
 			+ "Example:\n1. edit 4 description send marketing report\n\n2. edit 3 start 22:00 26 may 2016, end 22:40 26 may 2016\n\n"
 			+ "3. edit 1 priority high";
-	
+
 	private static final String MESSAGE_HELP = "Key in the following to view specific command formats:\n"
 			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
 			+ "7. help location\n8. help undo\n9. help exit\n";
-	
+
 	private static final String MESSAGE_HELP_LOCATION = "Sets the storage location or folder for application data\n"
 			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data";
-	
+
 	private static final String MESSAGE_HELP_VIEW = "1.Display all tasks\n Command: view\n\n2.Display tasks with deadlines\n"
 			+ "Command: view deadlines\n\n3.Display all events\nCommand: view events\n\n4.Display tasks without deadlines\nCommand: view tasks\n\n"
 			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n";
@@ -64,15 +66,15 @@ public class Logic {
 			+ "Example: add Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
 			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>\n\n"
 			+ "Example: add Submit marketing report by 17:00 20 Dec 2016\n";
-	
-	
+
+
 	enum CommandType {
 		ADD_TASK, VIEW_LIST, DELETE_TASK,INVALID,
 		SEARCH_KEYWORD, UNDO_LAST, EDIT_TASK, SET_LOCATION,
 		MARK_TASK, UNMARK_TASK, HELP, EXIT;
 	};
-	
-	
+
+
 	public Logic(){
 		parserObj = new Parser();
 		storageObj = new Storage();
@@ -89,9 +91,10 @@ public class Logic {
 			fh.setFormatter(formatter);
 		} catch (Exception e){};
 	}
-	
-	
+
+
 	private static CommandType getCommandType(String commandWord) {
+		
 		if (commandWord.equalsIgnoreCase("add")) {
 			return CommandType.ADD_TASK;
 		} else if (commandWord.equalsIgnoreCase("delete")) {
@@ -101,8 +104,8 @@ public class Logic {
 		} else if (commandWord.equalsIgnoreCase("view")) {
 			return CommandType.VIEW_LIST;
 		} else if (commandWord.equalsIgnoreCase("done")) {
-		 	return CommandType.MARK_TASK;
-		} else if (commandWord.equalsIgnoreCase("undone")){
+			return CommandType.MARK_TASK;
+		} else if (commandWord.equalsIgnoreCase("undone")) {
 			return CommandType.UNMARK_TASK;
 		} else if (commandWord.equalsIgnoreCase("location")) {
 			return CommandType.SET_LOCATION;
@@ -112,75 +115,69 @@ public class Logic {
 			return CommandType.EDIT_TASK;
 		} else if (commandWord.equalsIgnoreCase("help")) {
 			return CommandType.HELP;
-		} else if (commandWord.equalsIgnoreCase("exit")){
+		} else if (commandWord.equalsIgnoreCase("exit")) {
 			return CommandType.EXIT;
 		} else {
 			return CommandType.INVALID;
 		}
 	}
-	
-	
+
+
 	public String executeCommand(String userCommand) throws Exception {
 		logger.log(Level.INFO, "going to execute command");
-		
-		
+
 		commandHandler = parserObj.getHandler(userCommand);
-	
 		assert commandHandler != null;                      
 		logger.log(Level.INFO, "commandHandler is not null");
-		
+
 		String commandWord = commandHandler.getCommandType();
 		CommandType commandType = getCommandType(commandWord);
-		
 		String feedback = STRING_EMPTY;
 		previousCommandString = userCommand;
-		
+
 		switch (commandType) {
-			case ADD_TASK :
-				feedback = executeAddCommand(commandHandler);
-				break;
-			case DELETE_TASK :
-				feedback = executeDeleteCommand(commandHandler);
-				break;
-			case VIEW_LIST :
-				feedback = executeViewCommand(commandHandler);
-				break;
-			case EDIT_TASK :
-				feedback = executeEditCommand(commandHandler);
-				break;
-			case SEARCH_KEYWORD :
-				feedback = executeSearchCommand(commandHandler);
-				break;
-			case UNDO_LAST :
-				feedback = executeUndoCommand(commandHandler);
-				break;
-			case SET_LOCATION :
-				feedback = executeSetLocationCommand(commandHandler);
-				break;
-			case MARK_TASK :
-				feedback = executeMarkCommand(commandHandler);
-				break;
-			case UNMARK_TASK :
-				feedback = executeUnMarkCommand(commandHandler);
-				break;
-			case HELP :
-				feedback = executeHelpCommand(commandHandler);
-				break;
-			case EXIT :
-				System.exit(0);
-			default:
-				return ERROR_INVALID_COMMAND;
+		case ADD_TASK :
+			feedback = executeAddCommand(commandHandler);
+			break;
+		case DELETE_TASK :
+			feedback = executeDeleteCommand(commandHandler);
+			break;
+		case VIEW_LIST :
+			feedback = executeViewCommand(commandHandler);
+			break;
+		case EDIT_TASK :
+			feedback = executeEditCommand(commandHandler);
+			break;
+		case SEARCH_KEYWORD :
+			feedback = executeSearchCommand(commandHandler);
+			break;
+		case UNDO_LAST :
+			feedback = executeUndoCommand(commandHandler);
+			break;
+		case SET_LOCATION :
+			feedback = executeSetLocationCommand(commandHandler);
+			break;
+		case MARK_TASK :
+			feedback = executeMarkCommand(commandHandler);
+			break;
+		case UNMARK_TASK :
+			feedback = executeUnMarkCommand(commandHandler);
+			break;
+		case HELP :
+			feedback = executeHelpCommand(commandHandler);
+			break;
+		case EXIT :
+			System.exit(0);
+		default:
+			return ERROR_INVALID_COMMAND;
 		}
-		
 		
 		previousCommandKeyword = commandWord;
 		previousCommandString = userCommand;
-		
 		assert previousCommandKeyword != null;
 		assert previousCommandString != null;
-		
 		boolean hasListBeenModified = isListModified(commandType);
-		
+
 		if(hasListBeenModified == true) {
 			logger.log(Level.INFO, "command has modified the list, setting new lastModify Command now");
 			lastModifyCommand = userCommand;
@@ -188,33 +185,34 @@ public class Logic {
 		logger.log(Level.INFO, "about to return to UI");
 		return feedback;
 	}
-	
-	
-	public String getHandlerCommandType(String userInput) throws Exception{
+
+
+	public String getHandlerCommandType(String userInput) throws Exception {
 		Handler handler = parserObj.getHandler(userInput);
 		return handler.getCommandType();
 	}
 
+	
 	private static String executeAddCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in add");
 			return commandHandler.getFeedBack();
-			
+
 		} else {
 			logger.log(Level.INFO, "no error with add, interacting with storage now");
 			Task taskToAdd = commandHandler.getTask();
 			assert taskToAdd != null;
 			return storageObj.addTask(taskToAdd);
-			
+
 		}
 	}
-	
-	
+
+
 	private static String executeViewCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in view");
 			return commandHandler.getFeedBack();
-			
+
 		} else {
 			logger.log(Level.INFO, "before executing view command");
 			String keyWord = commandHandler.getKeyWord();
@@ -223,174 +221,176 @@ public class Logic {
 			return convertListToString(taskList);
 		}
 	}
+
 	
 	public static String getView() throws Exception{
 		taskList = storageObj.viewTasks(STRING_EMPTY);
 		return convertListToString(taskList);
 	}
-	
-	
+
+
 	private static String executeEditCommand(Handler commandHandler) throws Exception {
-		
+
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in edit");
 			return commandHandler.getFeedBack();
-			
+
 		} else { 
+			// only one task can be edited at a time, hence check the index of the first task
 			ArrayList<Integer> listToEdit = commandHandler.getIndexList();
 			boolean isIndexValid = checkIndexValid(listToEdit.get(0), taskList);
-			
+
 			if (isIndexValid == false) {
 				logger.log(Level.WARNING, "index given is invalid");
 				return ERROR_INVALID_INDEX;
-				
+
 			} else {
 				logger.log(Level.INFO, "index valid, editing now");
 				int indexToEdit = listToEdit.get(0);
 				Task fieldsToChange = commandHandler.getTask();
 				Task originalTask = taskList.get(indexToEdit - 1);
 				String dateErrorMessage = hasDateError(fieldsToChange, originalTask);
-				
+
 				if (dateErrorMessage.equals(STRING_EMPTY)) {
 					logger.log(Level.INFO, "date field is valid, interacting with storage now");
 					return storageObj.editTask(originalTask, fieldsToChange);
-					
+
 				} else {
 					logger.log(Level.WARNING, "invalid date field");
 					return dateErrorMessage;
-					
+
 				}
 			}
 		}
 	}
 
-	
+
 	private static String executeDeleteCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in delete");
 			return commandHandler.getFeedBack();
-			
+
 		} else {
-			
+
 			ArrayList<Integer> listToDelete = commandHandler.getIndexList();
 			boolean isIndexValid = true;
 			int indexToDelete = -1;
-			if(listToDelete.size() == 1) {
-				logger.log(Level.INFO, "index valid, deleting now");
+			
+			if (listToDelete.size() == 1) {
+				logger.log(Level.INFO, "list contains only one task to delete");
 				indexToDelete = listToDelete.get(0);
-				
+
 				isIndexValid = checkIndexValid(indexToDelete, taskList);
-				if(isIndexValid == false) {
+				
+				if (isIndexValid == false) {
 					logger.log(Level.WARNING, "index given is invalid");
 					return ERROR_INVALID_INDEX;
 				}
 				Task taskToDelete = taskList.get(indexToDelete - 1);
 				return storageObj.deleteTask(taskToDelete);
 			} else {
-				
+
 				ArrayList<Task> tasksToDelete = new ArrayList<Task>();
-				for(int i = 0; i< listToDelete.size(); i++){
+				
+				for (int i = 0; i< listToDelete.size(); i++) {
 					indexToDelete = listToDelete.get(i);
 					isIndexValid = checkIndexValid(indexToDelete, taskList);
-					if(isIndexValid == false) {
+					if (isIndexValid == false) {
 						logger.log(Level.WARNING, "indexes given is invalid");
 						return ERROR_INVALID_INDEX_MULTIPLE;
-					} else{
+					} else {
 						tasksToDelete.add(taskList.get(indexToDelete -1 ));
 					}
 				}
-				 return storageObj.deleteMultipleTasks(tasksToDelete);
+				return storageObj.deleteMultipleTasks(tasksToDelete);
 			}
 		}
 	}
 
-	
+
 	private static String executeSearchCommand(Handler commandHandler) throws Exception {			
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in delete");
 			return commandHandler.getFeedBack();
-			
+
 		}
-		
+
 		if (commandHandler.getHasEndDate() == true) {
 			Date endDate = commandHandler.getTask().getEndTime();
 			taskList = storageObj.searchTasksByDate(endDate);
-			
-			if(taskList.size() == 0){
+
+			if (taskList.size() == 0) {
 				logger.log(Level.WARNING, "There are no tasks containing the keyword");
 				return MESSAGE_NO_TASKS_FOUND;
 			} else {
 				return convertListToString(taskList);
 			}
 		} else {
-		
+
 			String keyword = commandHandler.getKeyWord();
 			taskList = storageObj.searchTasks(keyword);
-		
-			if(taskList.size() == 0){
+
+			if (taskList.size() == 0) {
 				logger.log(Level.WARNING, "There are no tasks containing the keyword");
 				return MESSAGE_NO_TASKS_FOUND;
 			} else {
 				logger.log(Level.INFO, "tasks have been retrieved, converting into a string now");
-				String listInStringFormat = convertListToString(taskList);
-				return listInStringFormat;
+				return convertListToString(taskList);
 			}
 		}
 	}
-	
-	
+
+
 	private static String executeUndoCommand(Handler commandHandler) throws Exception {
 		boolean hasPreviousCommand = isPreviousCommandValid();
-			
+
 		if (hasPreviousCommand == false) {				
 			logger.log(Level.WARNING, "previous command is invalid");
 			return ERROR_PREVIOUS_COMMAND_INVALID;
-			
+
 		} else {			
 			return storageObj.restore(lastModifyCommand);
 		}
 	}
-	
-	
+
+
 	private static String executeSetLocationCommand(Handler commandHandler) throws Exception {
-		
+
 		if (commandHandler.getHasError() == true) {			
 			logger.log(Level.WARNING, "handler has reported an error in location");
 			return commandHandler.getFeedBack();
-			
+
 		} else {			
 			String directoryPath = commandHandler.getKeyWord();
 			assert directoryPath != null;
-			String feedback = "";
-			
+			String feedback = STRING_EMPTY;
+
 			try{
 				feedback = storageObj.setLocation(directoryPath);
 			} catch (Exception e){
-				feedback = "Error: Not a valid directory.";
-				//throw new Exception(feedback);
+				feedback = ERROR_INVALID_DIRECTORY;
 			}
 			return feedback;
-		
 		}
 	}
-	
-	
+
+
 	private static String executeMarkCommand(Handler commandHandler) throws Exception {
-		
+
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in edit");
 			return commandHandler.getFeedBack();
-			
+
 		} else {
-			
+
 			ArrayList<Integer> listToMark = commandHandler.getIndexList();
 			boolean isIndexValid = true;
 			int indexToMark;
-			
+
 			if(listToMark.size() == 1) {
 				logger.log(Level.INFO, "index valid, deleting now");
 				indexToMark = listToMark.get(0);
-				
+
 				isIndexValid = checkIndexValid(indexToMark, taskList);
 				if(isIndexValid == false) {
 					logger.log(Level.WARNING, "index given is invalid");
@@ -400,7 +400,7 @@ public class Logic {
 				return storageObj.markTaskDone(taskToMark);
 			} else {
 				ArrayList<Task> tasksToMark = new ArrayList<Task>();
-				
+
 				for(int i = 0; i< listToMark.size(); i++){
 					indexToMark = listToMark.get(i);
 					isIndexValid = checkIndexValid(indexToMark, taskList);
@@ -411,26 +411,26 @@ public class Logic {
 						tasksToMark.add(taskList.get(indexToMark -1 ));
 					}
 				}
-				 return storageObj.markMultipleTasksDone(tasksToMark);
+				return storageObj.markMultipleTasksDone(tasksToMark);
 			}
 		}
 	}
-	
-	
+
+
 	private static String executeUnMarkCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in edit");
 			return commandHandler.getFeedBack();	
 		}
-		
+
 		ArrayList<Integer> listToUnMark = commandHandler.getIndexList();
 		boolean isIndexValid = true;
 		int indexToUnMark;
-		
+
 		if(listToUnMark.size() == 1) {
 			logger.log(Level.INFO, "index valid, deleting now");
 			indexToUnMark = listToUnMark.get(0);
-			
+
 			isIndexValid = checkIndexValid(indexToUnMark, taskList);
 			if(isIndexValid == false) {
 				logger.log(Level.WARNING, "index given is invalid");
@@ -438,10 +438,10 @@ public class Logic {
 			}
 			Task taskToMark = taskList.get(indexToUnMark - 1);
 			return storageObj.markTaskUndone(taskToMark);
-			
+
 		} else {
 			ArrayList<Task> tasksToUnMark = new ArrayList<Task>();
-			
+
 			for(int i = 0; i< listToUnMark.size(); i++){
 				indexToUnMark = listToUnMark.get(i);
 				isIndexValid = checkIndexValid(indexToUnMark, taskList);
@@ -452,16 +452,16 @@ public class Logic {
 					tasksToUnMark.add(taskList.get(indexToUnMark -1 ));
 				}
 			}
-			 return storageObj.markMultipleTasksUndone(tasksToUnMark);
+			return storageObj.markMultipleTasksUndone(tasksToUnMark);
 		}
 	}
-	
-	
+
+
 	private static String executeHelpCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in help");
 			return commandHandler.getFeedBack();
-			
+
 		} else {
 			if(commandHandler.getKeyWord().equals(STRING_EMPTY)) {
 				return MESSAGE_HELP;
@@ -486,8 +486,8 @@ public class Logic {
 			}
 		}
 	}
-	
-	
+
+
 	private boolean isListModified(CommandType commandType) {
 		if (commandType.equals(CommandType.ADD_TASK)) {
 			return true;
@@ -501,8 +501,8 @@ public class Logic {
 			return false;
 		}
 	}
-	
-	
+
+
 	public static boolean checkIndexValid(int index, ArrayList<Task> list){
 		if(index <= 0 || index > list.size()){
 			return false;
@@ -510,27 +510,27 @@ public class Logic {
 			return true;
 		}
 	}
-	
-	
+
+
 	private static String hasDateError(Task fieldsToChange, Task originalTask) throws Exception{
 		Date newStartTime = fieldsToChange.getStartTime();
 		Date newEndTime = fieldsToChange.getEndTime();
 		Date previousStartTime = originalTask.getStartTime();
 		Date previousEndTime = originalTask.getEndTime();
-		
+
 		if(!(newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0 && newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0)) { // if both start time and end time are not modified
 			if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // start time is modified
 				if (previousEndTime.compareTo(Task.DEFAULT_DATE_VALUE) == 0) { // no end time => it's a floating task 
 					return ERROR_NO_END_TIME;
-					
+
 				} else {
 					if (newStartTime.after(previousEndTime)) {
 						return ERROR_START_AFTER_END;
-						
+
 					}
 					if (newStartTime.equals(previousEndTime)) {
 						return ERROR_START_SAME_AS_END;
-						
+
 					}
 
 				}
@@ -538,40 +538,40 @@ public class Logic {
 				if (previousStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // has start time => it's an event
 					if (newEndTime.before(previousStartTime)) {
 						return ERROR_END_BEFORE_START;
-						
+
 					}
 					if (newEndTime.equals(previousStartTime)) {
 						return ERROR_END_SAME_AS_START;
-						
+
 					}
 				}
 			} 
 		}
-		
+
 		return STRING_EMPTY;
 	}
-	
-	
+
+
 	private static boolean isPreviousCommandValid() {
 		if (lastModifyCommand.equals(STRING_EMPTY)) {
 			return false;
-			
+
 		} else {
 			return true;
 		}
 	}
-	
+
 	public String getPreviousCommand(){
 		return previousCommandString;
 	}
-	
-	
+
+
 	private static String convertListToString(ArrayList<Task> list) {
 		if (list.size() == 0) {
 			return MESSAGE_EMPTY_LIST;
 		}
 		String convertedList = STRING_EMPTY;
-		
+
 		for (int i = 0; i < list.size(); i++) {
 			Task taskToPrint = list.get(i);
 			convertedList += (i+1) + "," + taskToPrint.toString() + "\n";
