@@ -1,12 +1,12 @@
 //@@author A0112659A
 package simplyamazing.parser;
 
-public class ParserDone {
+public class ParserDoneOrUndone {
 	private final String COMMAND_INVALID = "Error: Index provided is not an Integer.";
 	private final String SPACE = " ";
 	private int size;
 
-	public Handler parserDoneCommand(Handler handler, String taskInfo) throws Exception {
+	public Handler parserDoneOrUndoneCommand(Handler handler, String taskInfo) throws Exception {
 
 		String[] indexes = taskInfo.split(SPACE);
 		size = indexes.length;

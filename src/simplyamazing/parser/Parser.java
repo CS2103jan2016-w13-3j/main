@@ -48,6 +48,8 @@ public class Parser {
 	private static final String COMMAND_MARK_AS_DONE_ALT = "mark";
 	private static final String COMMAND_MARK_AS_DONE_ALT_2 = "finish";
 	private static final String COMMAND_MARK_AS_DONE_ALT_3 = "complete";
+	private static final String COMMAND_UNMARK = "undone";
+	private static final String COMMAND_UNMARK_ALT = "unmark";
 	private static final String COMMAND_EXIT = "exit";
 	private static final String COMMAND_EXIT_ALT = "quit";
 	private static final String COMMAND_EXIT_ALT_2 = "logout";
@@ -102,10 +104,10 @@ public class Parser {
 		//assert parseLocation != null;
 		return parseLocation.parseLocationCmd(handler,removeFirstWord);
 	}
-	private Handler parserDoneCommand(Handler handler, String removeFirstWord) throws Exception {
-		ParserDone parserDone = new ParserDone();
+	private Handler parserDoneOrUndoneCommand(Handler handler, String removeFirstWord) throws Exception {
+		ParserDoneOrUndone parserDoneOrUndone = new ParserDoneOrUndone();
 		//assert parserDone != null;
-		return parserDone.parserDoneCommand(handler,removeFirstWord);
+		return parserDoneOrUndone.parserDoneOrUndoneCommand(handler,removeFirstWord);
 	}
 	private Handler parserHelpCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserHelp parserHelp = new ParserHelp();
@@ -153,8 +155,12 @@ public class Parser {
 			 break;
 		 case COMMAND_MARK_AS_DONE: case COMMAND_MARK_AS_DONE_ALT: case COMMAND_MARK_AS_DONE_ALT_2: case COMMAND_MARK_AS_DONE_ALT_3:
 			 handler.setCommandType(COMMAND_MARK_AS_DONE);
-			 handler = parserDoneCommand(handler, removeFirstWord);
+			 handler = parserDoneOrUndoneCommand(handler, removeFirstWord);
 		     break;
+		 case COMMAND_UNMARK: case COMMAND_UNMARK_ALT:
+		     handler.setCommandType(COMMAND_UNMARK);
+		     handler = parserDoneOrUndoneCommand(handler, removeFirstWord);
+	         break;
 		 case COMMAND_EXIT: case COMMAND_EXIT_ALT: case COMMAND_EXIT_ALT_2:
 			 handler.setCommandType(COMMAND_EXIT);
 		     break;

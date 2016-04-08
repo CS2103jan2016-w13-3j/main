@@ -29,11 +29,13 @@ public class ParserTest {
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_AFTER_ENDTIME = "edit 2 start 23:00 18 Apr 2017, end 21:00 19 Apr 2016";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME = "edit 1 start 11:00 20 Apr 2016, end 11:00 20 Apr 2016";
 	private static final String EDIT_COMMAND_INVALID_STARTTIME_NONE_ENDTIME_BEFORE_TODAY = "edit 2 STarT none, END 22:00 05 APR 2016";
+	private static final String EDIT_COMMAND_INVALID_STARTTIME_NOTNONE_ENDTIME_NONE = "EDIT 2 stART 11:00 30 Apr 2017, EnD NOne";
 	private static final String EDIT_COMMAND_INVALID_PRIORITY = "edit 1 priority abc";
 	private static final String EDIT_COMMAND_INVALID_INDEX_FEEDBACK = "Error: Index provided is not an Integer.";
 	private static final String EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK ="Error: Time provided must be after the current time";
 	private static final String EDIT_COMMAND_INVALID_START_AFTER_END_FEEDBACK = "Error: Start date and time cannot be after the End date and time";
 	private static final String EDIT_COMMAND_ERROR_MESSAGE_PRIORITY_LEVEL_FEEDBACK = "Error: Priority level can be only high, medium, low or none.";
+	private static final String EDIT_COMMAND_ERROR_MESSAGE_NO_END_TIME_FEEDBACK = "Error: Unable to allocate a start time when the task has no end time";
 	
 	private static final String ADD_COMMAND_TYPE_VALID = "add";
 	private static final String ADD_COMMAND_FLOATING_VALID = "add go home";
@@ -236,6 +238,7 @@ public class ParserTest {
 		assertEquals(EDIT_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_AFTER_ENDTIME).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_START_AFTER_END_FEEDBACK ,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_EQUAL_ENDTIME).getFeedBack());
 		assertEquals(EDIT_COMMAND_INVALID_DATE_BEFORE_CURRENT_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_NONE_ENDTIME_BEFORE_TODAY).getFeedBack());
+		assertEquals(EDIT_COMMAND_ERROR_MESSAGE_NO_END_TIME_FEEDBACK,parser.getHandler(EDIT_COMMAND_INVALID_STARTTIME_NOTNONE_ENDTIME_NONE).getFeedBack());
 	}
 	
     @Test//(expected = Exception.class)
