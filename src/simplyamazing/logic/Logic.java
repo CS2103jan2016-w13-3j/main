@@ -32,6 +32,7 @@ public class Logic {
 	private static final String ERROR_INVALID_INDEX_MULTIPLE = "Error: One of the given indexes is invalid";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo"; 
+	private static final String ERROR_PREVIOUS_COMMAND_INVALID_REDO = "Error: There is no previous command to redo";
 	private static final String ERROR_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
 	private static final String ERROR_INVALID_END_TIME = "Error: Unable to remove end time for an event";
 	private static final String ERROR_START_AFTER_END ="Error: New start time cannot be after the end time";
@@ -175,7 +176,7 @@ public class Logic {
 			feedback = executeMarkCommand(commandHandler);
 			break;
 		case UNMARK_TASK :
-			feedback = executeUnMarkCommand(commandHandler);
+			feedback = executeUnmarkCommand(commandHandler);
 			break;
 		case HELP :
 			feedback = executeHelpCommand(commandHandler);
@@ -367,7 +368,7 @@ public class Logic {
 
 		if (hasPreviousCommand == false) {				
 			logger.log(Level.WARNING, "previous command is invalid");
-			return ERROR_PREVIOUS_COMMAND_INVALID;
+			return ERROR_PREVIOUS_COMMAND_INVALID_REDO;
 
 		} else {			
 			return storageObj.restore(lastModifyCommand);
@@ -408,12 +409,12 @@ public class Logic {
 			boolean isIndexValid = true;
 			int indexToMark;
 
-			if(listToMark.size() == 1) {
+			if (listToMark.size() == 1) {
 				logger.log(Level.INFO, "index valid, deleting now");
 				indexToMark = listToMark.get(0);
 
 				isIndexValid = checkIndexValid(indexToMark, taskList);
-				if(isIndexValid == false) {
+				if (isIndexValid == false) {
 					logger.log(Level.WARNING, "index given is invalid");
 					return ERROR_INVALID_INDEX;
 				}
@@ -422,13 +423,13 @@ public class Logic {
 			} else {
 				ArrayList<Task> tasksToMark = new ArrayList<Task>();
 
-				for(int i = 0; i< listToMark.size(); i++){
+				for (int i = 0; i< listToMark.size(); i++) {
 					indexToMark = listToMark.get(i);
 					isIndexValid = checkIndexValid(indexToMark, taskList);
-					if(isIndexValid == false) {
+					if (isIndexValid == false) {
 						logger.log(Level.WARNING, "index given is invalid");
 						return ERROR_INVALID_INDEX_MULTIPLE;
-					} else{
+					} else {
 						tasksToMark.add(taskList.get(indexToMark -1 ));
 					}
 				}
@@ -438,42 +439,42 @@ public class Logic {
 	}
 
 
-	private static String executeUnMarkCommand(Handler commandHandler) throws Exception {
+	private static String executeUnmarkCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in edit");
 			return commandHandler.getFeedBack();	
 		}
 
-		ArrayList<Integer> listToUnMark = commandHandler.getIndexList();
+		ArrayList<Integer> listToUnmark = commandHandler.getIndexList();
 		boolean isIndexValid = true;
-		int indexToUnMark;
+		int indexToUnmark;
 
-		if(listToUnMark.size() == 1) {
+		if (listToUnmark.size() == 1) {
 			logger.log(Level.INFO, "index valid, deleting now");
-			indexToUnMark = listToUnMark.get(0);
+			indexToUnmark = listToUnmark.get(0);
 
-			isIndexValid = checkIndexValid(indexToUnMark, taskList);
-			if(isIndexValid == false) {
+			isIndexValid = checkIndexValid(indexToUnmark, taskList);
+			if (isIndexValid == false) {
 				logger.log(Level.WARNING, "index given is invalid");
 				return ERROR_INVALID_INDEX;
 			}
-			Task taskToMark = taskList.get(indexToUnMark - 1);
-			return storageObj.markTaskUndone(taskToMark);
+			Task taskToUnmark = taskList.get(indexToUnmark - 1);
+			return storageObj.markTaskUndone(taskToUnmark);
 
 		} else {
-			ArrayList<Task> tasksToUnMark = new ArrayList<Task>();
+			ArrayList<Task> tasksToUnmark = new ArrayList<Task>();
 
-			for(int i = 0; i< listToUnMark.size(); i++){
-				indexToUnMark = listToUnMark.get(i);
-				isIndexValid = checkIndexValid(indexToUnMark, taskList);
-				if(isIndexValid == false) {
+			for (int i = 0; i< listToUnmark.size(); i++) {
+				indexToUnmark = listToUnmark.get(i);
+				isIndexValid = checkIndexValid(indexToUnmark, taskList);
+				if (isIndexValid == false) {
 					logger.log(Level.WARNING, "index given is invalid");
 					return ERROR_INVALID_INDEX_MULTIPLE;
-				} else{
-					tasksToUnMark.add(taskList.get(indexToUnMark -1 ));
+				} else {
+					tasksToUnmark.add(taskList.get(indexToUnmark -1 ));
 				}
 			}
-			return storageObj.markMultipleTasksUndone(tasksToUnMark);
+			return storageObj.markMultipleTasksUndone(tasksToUnmark);
 		}
 	}
 
@@ -530,8 +531,8 @@ public class Logic {
 	}
 
 
-	public static boolean checkIndexValid(int index, ArrayList<Task> list){
-		if(index <= 0 || index > list.size()){
+	private static boolean checkIndexValid(int index, ArrayList<Task> list){
+		if (index <= 0 || index > list.size()) {
 			return false;
 		} else {
 			return true;
@@ -545,23 +546,23 @@ public class Logic {
 		Date previousStartTime = originalTask.getStartTime();
 		Date previousEndTime = originalTask.getEndTime();
 
-		if(!(newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0 && newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0)) { // if both start time and end time are not modified
+		if (!(newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0 && newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0)) { // if both start time and end time are not modified
 			if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // start time is modified
-				if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && previousEndTime.compareTo(Task.DEFAULT_DATE_VALUE) == 0) { // no end time => it's a floating task 
+				if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) !=0 && previousEndTime.compareTo(Task.DEFAULT_DATE_VALUE) == 0) { // no end time => it's a floating task 
 					return ERROR_NO_END_TIME;
 
 				} else { // it's a deadline
-					if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && newStartTime.after(previousEndTime)) {
+					if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) !=0 && newStartTime.after(previousEndTime)) {
 						return ERROR_START_AFTER_END;
 					}
-					if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && newStartTime.equals(previousEndTime)) {
+					if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) !=0 && newStartTime.equals(previousEndTime)) {
 						return ERROR_START_SAME_AS_END;
 
 					}
 				}
 			} else if (newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // end time is modified
 				if (previousStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // has start time => it's an event
-					if (newEndTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0) {
+					if (newEndTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) == 0) {
 						return ERROR_INVALID_END_TIME;
 					} else {
 						if (newEndTime.before(previousStartTime)) {

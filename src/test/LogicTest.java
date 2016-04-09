@@ -6,24 +6,21 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import simplyamazing.data.Task;
 import simplyamazing.logic.Logic;
-import simplyamazing.parser.Handler;
-import simplyamazing.parser.Parser;
-
-import java.util.ArrayList;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LogicTest {
-	private static ArrayList<Task> list = new ArrayList<Task>();
 	private static Logic logicObj= new Logic();
-	private static Parser parserObj = new Parser();
-	private static Handler handler = new Handler();
-	Task task1;
-	Task task2;
-	Task task3;
 	
+	private static String UNDO_NOTHING_FEEDBACK = "Error: There is no previous command to undo";
+	private static String REDO_NOTHING_FEEDBACK = "Error: There is no previous command to redo";
+	private static String ADD_INVALID_FEEDBACK = "Error: Please ensure the fields are correct";
+	private static String ADD_INVALID = "add ";
+	private static String UNRECOGNIZED_COMMAND = "hello";
+	private static String UNRECOGNIZED_COMMAND_STRING_EMPTY = "";
+	private static String UNRECOGNIZED_COMMAND_FEEDBACK = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
 	
+		
 	private static final String LOCATION_COMMAND_FAIL = "location just a placeholder";
 	private static final String LOCATION_COMMAND_PASS = "location C:\\Users\\Ishpal\\Desktop\\Task Data";
 	private static final String LOCATION_FEEDBACK_FAIL = "Error: Not a valid directory";
@@ -68,7 +65,57 @@ public class LogicTest {
 	private static final String DELETE_INVALID_INDEX_NEGATIVE = "delete -1";
 	private static final String DELETE_STRING = "delete hello";
 	private static final String DELETE_STRING_FEEDBACK = "Error: Index provided is not an Integer.";
+	private static final String DELETE_VALID_MULTIPLE = "delete 1 2";
+	private static final String DELETE_VALID_MULTIPLE_FEEDBACK = "Provided tasks have been successfully deleted.";
+	private static final String DELETE_INVALID_MULTIPLE = "delete 1 2 5";
+	private static final String DELETE_INVALID_MULTIPLE_FEEDBACK = "Error: One of the given indexes is invalid";
 	
+	
+	
+	
+	private static final String EDIT_INDEX_INVALID_FEEDBACK = "Error: The Index entered is invalid";
+	private static final String EDIT_INDEX_LARGER = "edit 10 priority high";
+	private static final String EDIT_INDEX_NEGATIVE = "edit -1 priority high";
+	private static final String EDIT_INDEX_ZERO = "edit 0 priority high";
+	private static final String EDIT_INDEX_STRING = "edit abc priority high";
+	private static final String EDIT_INDEX_STRING_FEEDBACK = "Error: Index provided is not an Integer.";
+	private static final String EDIT_INVALID_FIELD = "edit 1 anyfield anyvalue";
+	private static final String EDIT_INVALID_FIELD_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
+	
+	private static final String EDIT_TIME_BEFORE_CURRENT_FEEDBACK = "Error: Time provided must be after the current time";
+	private static final String EDIT_START_BEFORE_CURRENT = "edit 1 start 22:00 2 apr 2016";
+	private static final String EDIT_END_BEFORE_CURRENT = "edit 1 end 22:00 2 apr 2016";
+	private static final String EDIT_START_AFTER_END = "edit 1 start 00:00 26 may 2016";
+	private static final String EDIT_START_AFTER_END_FEEDBACK = "Error: New start time cannot be after the end time";
+	private static final String EDIT_START_EQUALS_END = "edit 1 start 23:59 25 may 2016";
+	private static final String EDIT_START_EQUALS_END_FEEDBACK = "Error: New start time cannot be the same as the end time";
+	private static final String EDIT_START_NO_END= "edit 3 start 17:00 20 may 2016";
+	private static final String EDIT_START_NO_END_FEEDBACK= "Error: Unable to allocate a start time when the task has no end time";
+	
+	private static final String EDIT_END_BEFORE_START = "edit 2 end 09:00 26 may 2016";
+	private static final String EDIT_END_BEFORE_START_FEEDBACK = "Error: New end time cannot be before the start time";
+	private static final String EDIT_END_EQUALS_START = "edit 2 end 09:30 26 may 2016";
+	private static final String EDIT_END_EQUALS_START_FEEDBACK = "Error: New end time cannot be the same as the start time";
+	
+	private static final String EDIT_EVENT_START_AFTER_END= "edit 3 start 11:00 20 may 2016, end 10:00 20 may 2016";
+	private static final String EDIT_EVENT_START_EQUAL_END= "edit 3 start 11:00 20 may 2016, end 11:00 20 may 2016";
+	private static final String EDIT_EVENT_START_BEFORE_CURRENT = "edit 3 start 12:00 3 apr 2016, end 10:00 20 may 2016";
+	private static final String EDIT_EVENT_START_AFTER_END_FEEDBACK= "Error: Start date and time cannot be after the End date and time";
+	
+	private static final String EDIT_VALID = "edit 3 description hello world";
+	private static final String EDIT_VALID_FEEDBACK = "Task [hello world] has been successfully updated.";
+	
+	private static final String EDIT_PRIORITY_HIGH = "Task [cs2103 peer review by 23:59 25 May 2016 with high priority] has been successfully updated."; 
+	private static final String EDIT_PRIORITY_HIGH_FEEDBACK = "edit 1 priority high"; 
+	private static final String EDIT_PRIORITY_MEDIUM =  "edit 1 priority medium";
+	private static final String EDIT_PRIORITY_MEDIUM_FEEDBACK = "Task [cs2103 peer review by 23:59 25 May 2016 with medium priority] has been successfully updated.";
+	private static final String EDIT_PRIORITY_LOW = "edit 1 priority low"; 
+	private static final String EDIT_PRIORITY_LOW_FEEDBACK = "Task [cs2103 peer review by 23:59 25 May 2016 with low priority] has been successfully updated.";
+	private static final String EDIT_PRIORITY_NONE = "edit 1 priority none";
+	private static final String EDIT_PRIORITY_NONE_FEEDBACK = "Task [cs2103 peer review by 23:59 25 May 2016] has been successfully updated.";
+	private static final String EDIT_PRIORITY_INVALID = "edit 1 priority nothing"; 
+	private static final String EDIT_PRIORITY_INVALID_FEEDBACK = "Error: Priority level can be only high, medium, low or none."; 
+
 	
 	
 	private static final String DONE_INVALID_INDEX_NEGATIVE = "done -1";
@@ -85,6 +132,19 @@ public class LogicTest {
 	private static final String DONE_VALID_FEEDBACK = "Task [hello world] has been marked as done.";
 	
 	
+	private static final String UNMARK_INVALID_INDEX_FEEDBACK = "Error: The Index entered is invalid";
+	private static final String UNMARK_INVALID_INDEX_NEGATIVE = "unmark -1";
+	private static final String UNMARK_INVALID_INDEX_ZERO = "unmark 0";
+	private static final String UNMARK_INVALID_INDEX_LARGER = "unmark 3";
+	private static final String UNMARK_INVALID_INDEX_STRING = "unmark abc";
+	private static final String UNMARK_INVALID_COMMAND_FEEDBACK = "Error: Index provided is not an Integer.";
+	private static final String UNMARK_INVALID_MULTIPLE = "unmark 1 2 3";
+	private static final String UNMARK_INVALID_MULTIPLE_FEEDBACK = "Error: One of the given indexes is invalid";
+	private static final String UNMARK_VALID_MULTIPLE = "unmark 1 2";
+	private static final String UNMARK_VALID_MULTIPLE_FEEDBACK = "Provided tasks have been marked as incomplete.";
+	private static final String UNMARK_VALID = "unmark 2";
+	private static final String UNMARK_VALID_FEEDBACK = "Task [hello world] has been marked as incomplete.";
+	
 	
 	private static final String SEARCH_VALID_KEYWORD = "search hello";
 	private static final String SEARCH_VALID_FEEDBACK = "1,hello world, , , ,incomplete\n";
@@ -97,7 +157,12 @@ public class LogicTest {
 	private static final String SEARCH_EMPTY_STRING_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete"
 			+ "\n3,hello world, , , ,incomplete\n";
 
+	private static final String UNDO = "undo";
+	private static final String UNDO_FEEDBACK = "\"unmark 2\" command has been successfully undone.";
 	
+	
+	private static final String REDO = "redo";
+	private static final String REDO_FEEDBACK = "\"unmark 2\" command has been successfully undone.";
 	
 	
 	private static final String HELP_INVALID = "help 1";
@@ -158,14 +223,15 @@ public class LogicTest {
 			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data\n\n\nNote: You may also use the keywords \"path\" or \"address\""
 			+ " instead of \"location\"";
 	
+
 	
 	@Test
 	public void test1ValidCommandTypes() throws Exception{
-		assertEquals("Error: There is no previous command to undo", logicObj.executeCommand("undo"));      // prob
-		assertEquals("Error: Please ensure the fields are correct",logicObj.executeCommand("add "));
-		assertEquals("Error: Invalid command entered. Please enter \"help\" to view all commands and their format", logicObj.executeCommand("hi"));
-		assertEquals("Error: Index provided is not an Integer.", logicObj.executeCommand("delete"));
-		assertEquals("Error: Invalid command entered. Please enter \"help\" to view all commands and their format", logicObj.executeCommand(""));
+		assertEquals(UNDO_NOTHING_FEEDBACK, logicObj.executeCommand(UNDO));  
+		assertEquals(REDO_NOTHING_FEEDBACK, logicObj.executeCommand(REDO));
+		assertEquals(ADD_INVALID_FEEDBACK,logicObj.executeCommand(ADD_INVALID));
+		assertEquals(UNRECOGNIZED_COMMAND_FEEDBACK, logicObj.executeCommand(UNRECOGNIZED_COMMAND));
+		assertEquals(UNRECOGNIZED_COMMAND_FEEDBACK, logicObj.executeCommand(UNRECOGNIZED_COMMAND_STRING_EMPTY));
 		
 	}
 	
@@ -193,17 +259,8 @@ public class LogicTest {
 	 */
 	public void test2AddCommand() throws Exception{
 		assertEquals(ADD_TASK_PASS_FEEDBACK, logicObj.executeCommand(ADD_TASK_PASS));
-		handler = parserObj.getHandler(ADD_TASK_PASS);
-		task3 = handler.getTask();
-		
 		assertEquals(ADD_DEADLINE_PASS_FEEDBACK, logicObj.executeCommand(ADD_DEADLINE_PASS));
-		handler = parserObj.getHandler(ADD_DEADLINE_PASS);
-		task1 = handler.getTask();
-		
-		assertEquals(ADD_EVENT_PASS_FEEDBACK, logicObj.executeCommand(ADD_EVENT_PASS));
-		handler = parserObj.getHandler(ADD_EVENT_PASS);
-		task2 = handler.getTask();
-		
+		assertEquals(ADD_EVENT_PASS_FEEDBACK, logicObj.executeCommand(ADD_EVENT_PASS));		
 		assertEquals(ADD_ERROR_MESSAGE, logicObj.executeCommand(ADD_TASK_WITH_STARTIME_ONLY));
 		assertEquals(ADD_TASK_ENDTIME_BEFORE_STARTIME_FEEDBACK, logicObj.executeCommand(ADD_TASK_ENDTIME_BEFORE_STARTIME));
 		assertEquals(ADD_BEFORE_CURRENT_FEEDBACK, logicObj.executeCommand(ADD_END_BEFORE_CURRENT));
@@ -212,7 +269,7 @@ public class LogicTest {
 	
 	
 	@Test
-	public void test3HelpCommand() throws Exception{
+	public void test31HelpCommand() throws Exception{
 		assertEquals(HELP_VALID_FEEDBACK, logicObj.executeCommand(HELP_VALID));
 		assertEquals(HELP_INVALID_FEEDBACK, logicObj.executeCommand(HELP_INVALID));
 		assertEquals(HELP_VALID_UNDO_FEEDBACK, logicObj.executeCommand(HELP_VALID_UNDO));
@@ -230,74 +287,75 @@ public class LogicTest {
 
 	
 	/*
-	 * The following test case has 2 different partitions, based on whether the command is valid or invalid.
+	 * The following test case has 2 partitions, based on whether the search results can be found or not.
 	 * It also checks the corner case where the user does not give a keyword after the search command
 	 */
 	@Test
 	public void test3SearchCommand() throws Exception{
+		//results not found partition
 		assertEquals(SEARCH_NOT_FOUND_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
-		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
-		assertEquals(SEARCH_EMPTY_STRING_FEEDBACK,logicObj.executeCommand(SEARCH_EMPTY_STRING));
-		
 		logicObj.executeCommand("edit 3 end 19:00 1 Jun 2016");
 		assertEquals(SEARCH_NOT_FOUND_FEEDBACK, logicObj.executeCommand(SEARCH_WRONG_DATE));
-		logicObj.executeCommand("undo");
+		logicObj.executeCommand(UNDO);
+		
+		// results found partition
+		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
+		assertEquals(SEARCH_EMPTY_STRING_FEEDBACK,logicObj.executeCommand(SEARCH_EMPTY_STRING));
 		assertEquals(SEARCH_VALID_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_DATE));
 	}
 	
 	
+	
 	@Test
+	/*
+	 * The following test has 2 partitions, valid and invalid, based on the validity of the command
+	 */
 	public void test4ViewCommand() throws Exception{
-		
+		// invalid partition
 		assertEquals(VIEW_INVALID_FEEDBACK, logicObj.executeCommand(VIEW_INVALID));
+		// valid partition
 		assertEquals(VIEW_EMPTY_LIST, logicObj.executeCommand(VIEW_DONE));
 		assertEquals(VIEW_EMPTY_LIST, logicObj.executeCommand(VIEW_OVERDUE));
 		assertEquals(VIEW_VALID_FEEDBACK,logicObj.executeCommand(VIEW_VALID));
 		
-	}
+	}	
 	
 	
 	@Test 
 	public void test5EditCommand() throws Exception{
-		logicObj.executeCommand("view");
+		logicObj.executeCommand(VIEW_VALID);
 		
 		// test indexes first
-		assertEquals("Error: The Index entered is invalid", logicObj.executeCommand("edit 10 priority high"));
-		assertEquals("Error: The Index entered is invalid", logicObj.executeCommand("edit -1 priority high"));
-		assertEquals("Error: The Index entered is invalid", logicObj.executeCommand("edit 0 priority high"));
-		assertEquals("Error: Index provided is not an Integer.", logicObj.executeCommand("edit abc priority high"));
-		
-		assertEquals("Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields",logicObj.executeCommand("edit 1 anyfield anyvalue"));
-		
-		
-		assertEquals("Error: Time provided must be after the current time",logicObj.executeCommand("edit 1 start 22:00 2 apr 2016"));
-		assertEquals("Error: New start time cannot be after the end time",logicObj.executeCommand("edit 1 start 00:00 26 may 2016"));
-		assertEquals("Error: Time provided must be after the current time", logicObj.executeCommand("edit 1 end 22:00 2 apr 2016"));
-		assertEquals("Error: New start time cannot be the same as the end time",logicObj.executeCommand("edit 1 start 23:59 25 may 2016"));
-		
-		assertEquals("Task [hello world] has been successfully updated.", logicObj.executeCommand("edit 3 description hello world"));
-		assertEquals("Error: Unable to allocate a start time when the task has no end time", logicObj.executeCommand("edit 3 start 17:00 20 may 2016"));
-		assertEquals("Error: Start date and time cannot be after the End date and time", logicObj.executeCommand("edit 3 start 11:00 20 may 2016, end 10:00 20 may 2016"));
-		assertEquals("Error: Start date and time cannot be after the End date and time", logicObj.executeCommand("edit 3 start 11:00 20 may 2016, end 11:00 20 may 2016"));
-		assertEquals("Error: Time provided must be after the current time", logicObj.executeCommand("edit 3 start 12:00 3 apr 2016, end 10:00 20 may 2016"));
-		
-		assertEquals("Error: New end time cannot be before the start time", logicObj.executeCommand("edit 2 end 09:00 26 may 2016"));
-		assertEquals("Error: New end time cannot be the same as the start time", logicObj.executeCommand("edit 2 end 09:30 26 may 2016"));
+		assertEquals(EDIT_INDEX_INVALID_FEEDBACK, logicObj.executeCommand(EDIT_INDEX_LARGER));
+		assertEquals(EDIT_INDEX_INVALID_FEEDBACK, logicObj.executeCommand(EDIT_INDEX_NEGATIVE));
+		assertEquals(EDIT_INDEX_INVALID_FEEDBACK, logicObj.executeCommand(EDIT_INDEX_ZERO));
+		assertEquals(EDIT_INDEX_STRING_FEEDBACK, logicObj.executeCommand(EDIT_INDEX_STRING));
+		assertEquals(EDIT_INVALID_FIELD_FEEDBACK,logicObj.executeCommand(EDIT_INVALID_FIELD));
 		
 		
-		assertEquals("Error: Priority level can be only high, medium, low or none.",logicObj.executeCommand("edit 1 priority nothing"));
-		assertEquals("Task [cs2103 peer review by 23:59 25 May 2016 with high priority] has been successfully updated.",logicObj.executeCommand("edit 1 priority high"));
-		assertEquals("Task [cs2103 peer review by 23:59 25 May 2016 with medium priority] has been successfully updated.",logicObj.executeCommand("edit 1 priority medium"));
-		assertEquals("Task [cs2103 peer review by 23:59 25 May 2016 with low priority] has been successfully updated.",logicObj.executeCommand("edit 1 priority low"));
-		assertEquals("Task [cs2103 peer review by 23:59 25 May 2016] has been successfully updated.",logicObj.executeCommand("edit 1 priority none"));
+		assertEquals(EDIT_TIME_BEFORE_CURRENT_FEEDBACK,logicObj.executeCommand(EDIT_START_BEFORE_CURRENT));
+		assertEquals(EDIT_START_AFTER_END_FEEDBACK,logicObj.executeCommand(EDIT_START_AFTER_END));
+		assertEquals(EDIT_TIME_BEFORE_CURRENT_FEEDBACK, logicObj.executeCommand(EDIT_END_BEFORE_CURRENT));
+		assertEquals(EDIT_START_EQUALS_END_FEEDBACK,logicObj.executeCommand(EDIT_START_EQUALS_END));
+		
+		assertEquals(EDIT_START_NO_END_FEEDBACK, logicObj.executeCommand(EDIT_START_NO_END));
+		assertEquals(EDIT_EVENT_START_AFTER_END_FEEDBACK, logicObj.executeCommand(EDIT_EVENT_START_AFTER_END));
+		assertEquals(EDIT_EVENT_START_AFTER_END_FEEDBACK, logicObj.executeCommand(EDIT_EVENT_START_EQUAL_END));
+		assertEquals(EDIT_TIME_BEFORE_CURRENT_FEEDBACK, logicObj.executeCommand(EDIT_EVENT_START_BEFORE_CURRENT));
+		
+		assertEquals(EDIT_END_BEFORE_START_FEEDBACK, logicObj.executeCommand(EDIT_END_BEFORE_START));
+		assertEquals(EDIT_END_EQUALS_START_FEEDBACK, logicObj.executeCommand(EDIT_END_EQUALS_START));
+		
+		assertEquals(EDIT_PRIORITY_INVALID_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_INVALID));
+		
+		assertEquals(EDIT_VALID_FEEDBACK, logicObj.executeCommand(EDIT_VALID));
+		assertEquals(EDIT_PRIORITY_HIGH,logicObj.executeCommand(EDIT_PRIORITY_HIGH_FEEDBACK));
+		assertEquals(EDIT_PRIORITY_MEDIUM_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_MEDIUM));
+		assertEquals(EDIT_PRIORITY_LOW_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_LOW));
+		assertEquals(EDIT_PRIORITY_NONE_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_NONE));
 	
 	
 	}
-	
-	
-	
-	
-	
 	
 	
 	/*
@@ -306,17 +364,20 @@ public class LogicTest {
 	 * expected
 	 */
 	@Test
+	
 	public void test6DeleteCommand() throws Exception{
-		logicObj.executeCommand("view");
+		// invalid partition
+		logicObj.executeCommand(VIEW_VALID);
 		assertEquals(DELETE_STRING_FEEDBACK, logicObj.executeCommand(DELETE_STRING));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_LARGER));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_ZERO));
-
-		assertEquals("Error: One of the given indexes is invalid", logicObj.executeCommand("delete 1 2 5"));
-		assertEquals("Provided tasks have been successfully deleted.", logicObj.executeCommand("delete 1 2"));
-		logicObj.executeCommand("undo");
-		logicObj.executeCommand("view");
+		assertEquals(DELETE_INVALID_MULTIPLE_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_MULTIPLE));
+		
+		// valid partition
+		assertEquals(DELETE_VALID_MULTIPLE_FEEDBACK, logicObj.executeCommand(DELETE_VALID_MULTIPLE));
+		logicObj.executeCommand(UNDO);
+		logicObj.executeCommand(VIEW_VALID);
 		assertEquals(DELETE_VALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_VALID_INDEX));
 
 	}
@@ -329,94 +390,57 @@ public class LogicTest {
 	 */
 	
 	public void test71MarkCommand() throws Exception{
-		logicObj.executeCommand("view");
+		logicObj.executeCommand(VIEW_VALID);
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_LARGER));
 		assertEquals(DONE_INVALID_COMMAND_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_STRING));
-		logicObj.executeCommand("view");
+		logicObj.executeCommand(VIEW_VALID);
 		assertEquals(DONE_INVALID_INDEX_MULTIPLE_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_MULTIPLE));
 		assertEquals(DONE_VALID_INDEX_MULTIPLE_FEEDBACK, logicObj.executeCommand(DONE_VALID_INDEX_MULTIPLE));
-		logicObj.executeCommand("undo");
-		logicObj.executeCommand("view");
+		logicObj.executeCommand(UNDO);
+		logicObj.executeCommand(VIEW_VALID);
 		assertEquals(DONE_VALID_FEEDBACK, logicObj.executeCommand(DONE_VALID_INDEX));
 	}
 	
 	
-	private static final String UNMARK_INVALID_INDEX_FEEDBACK = "Error: The Index entered is invalid";
-	private static final String UNMARK_INVALID_INDEX_NEGATIVE = "unmark -1";
-	private static final String UNMARK_INVALID_INDEX_ZERO = "unmark 0";
-	private static final String UNMARK_INVALID_INDEX_LARGER = "unmark 3";
-	private static final String UNMARK_INVALID_INDEX_STRING = "unmark abc";
-	private static final String UNMARK_INVALID_COMMAND_FEEDBACK = "Error: Index provided is not an Integer.";
-	private static final String UNMARK_INVALID_MULTIPLE = "unmark 1 2 3";
-	private static final String UNMARK_INVALID_MULTIPLE_FEEDBACK = "Error: One of the given indexes is invalid";
-	private static final String UNMARK_VALID_MULTIPLE = "unmark 1 2";
-	private static final String UNMARK_VALID_MULTIPLE_FEEDBACK = "Provided tasks have been marked as incomplete.";
-	private static final String UNMARK_VALID = "unmark 2";
-	private static final String UNMARK_VALID_FEEDBACK = "Task [hello world] has been marked as incomplete.";
-	
 	@Test
 	public void test7UnmarkCommand() throws Exception{
-		logicObj.executeCommand("view");
+		logicObj.executeCommand(VIEW_VALID);
 		logicObj.executeCommand("done 1");
-		logicObj.executeCommand("view done");
+		logicObj.executeCommand(VIEW_DONE);
 		assertEquals(UNMARK_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_INDEX_NEGATIVE));
-		logicObj.executeCommand("view done");
+		logicObj.executeCommand(VIEW_DONE);
 		assertEquals(UNMARK_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_INDEX_ZERO));
-		logicObj.executeCommand("view done");
+		logicObj.executeCommand(VIEW_DONE);
 		assertEquals(UNMARK_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_INDEX_LARGER));
-		logicObj.executeCommand("view done");
+		logicObj.executeCommand(VIEW_DONE);
 		assertEquals(UNMARK_INVALID_COMMAND_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_INDEX_STRING));
-		logicObj.executeCommand("view done");
+		logicObj.executeCommand(VIEW_DONE);
 		assertEquals(UNMARK_INVALID_MULTIPLE_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_MULTIPLE));
-		logicObj.executeCommand("view done");
+		logicObj.executeCommand(VIEW_DONE);
 		assertEquals(UNMARK_VALID_MULTIPLE_FEEDBACK, logicObj.executeCommand(UNMARK_VALID_MULTIPLE));
-		logicObj.executeCommand("undo");
-		logicObj.executeCommand("view done");
+		logicObj.executeCommand(UNDO);
+		logicObj.executeCommand(VIEW_DONE);
 		assertEquals(UNMARK_VALID_FEEDBACK, logicObj.executeCommand(UNMARK_VALID));
 	}
 	
-	
 
-	@Test
 	/*
 	 * The following test case contains 3 equivalent partitions, a negative partition where the value is below what is expected,
 	 * a positive partition, where the value is larger than expected and the final partition where the value is within what is
 	 * expected
 	 */
 	
-	public void test8ValidIndex(){
-		list.clear();
-		addItemsToList(5);
-		
-		// this is the boundary case for negative value partition. Other values include -2, -10, -10000
-		assertFalse(Logic.checkIndexValid(-3, list)); 
-		assertFalse(Logic.checkIndexValid(0, list));
-		
-		// this is the boundary case for the correct value partition. Values should range from [1,5]
-		assertTrue(Logic.checkIndexValid(1, list));
-		
-		// this is the boundary case for positive value partition. Other values include 10, 1000, 10000
-		assertFalse(Logic.checkIndexValid(6, list));
-	}
 		
 	@Test
 	public void test91UndoCommand() throws Exception {
-		assertEquals("\"unmark 2\" command has been successfully undone.", logicObj.executeCommand("undo"));
+		assertEquals(UNDO_FEEDBACK, logicObj.executeCommand(UNDO));
 		
 	}
 	
 	@Test
 	public void test9RedoCommand() throws Exception {
-		assertEquals("\"unmark 2\" command has been successfully undone.", logicObj.executeCommand("redo"));
-	}
-	
-	
-	
-	public void addItemsToList(int numItemsToAdd) {
-		for(int i=0; i<numItemsToAdd; i++) {
-			list.add(new Task());
-		}
+		assertEquals(REDO_FEEDBACK, logicObj.executeCommand(REDO));
 	}
 }
