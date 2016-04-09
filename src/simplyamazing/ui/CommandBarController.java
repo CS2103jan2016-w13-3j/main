@@ -14,17 +14,20 @@ public class CommandBarController {
 		commandBar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.isActionKey()) {
-					if(e.getKeyCode() == KeyEvent.VK_UP) {
-						ui.getUserCommand();
+				if (e.isActionKey()) {
+					if (e.getKeyCode() == KeyEvent.VK_UP) {
+						commandBar.setText(ui.getPreviousUserCommand());
 					}
 				} else {
-					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 						ui.executeUserCommand();
-						commandBar.setText(STRING_NULL);
 					} 
 				}
 			}
 		});
+	}
+	
+	public void clearCommand(final JTextField commandBar) {
+		commandBar.setText(STRING_NULL);
 	}
 }

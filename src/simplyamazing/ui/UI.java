@@ -58,7 +58,7 @@ public class UI {
 					logic = new Logic();
 					String taskDataString = window.getTaskData();
 					if (taskDataString.contains(CHARACTER_NEW_LINE)) {
-						window.updateTaskTable();
+						window.updateTaskDataTable();
 					} else {
 						window.scrollPane.setVisible(false);
 					}
@@ -124,7 +124,7 @@ public class UI {
 	}
 	
 	private void setupTaskDataPanel(Object[][] taskData) {
-		taskDataPanel = new TaskDataPanel(taskData, false);
+		taskDataPanel = new TaskDataPanel(taskData);
 	}
 
 	private void setupAppLogo() {
@@ -166,6 +166,7 @@ public class UI {
 	public void executeUserCommand() {
 		String feedback = null;
 		String command = commandBar.getText();
+		commandBarController.clearCommand(commandBar);
 		feedbackArea.setText(STRING_NULL);
 		try {
 			feedback = logic.executeCommand(command);
@@ -191,7 +192,7 @@ public class UI {
 				}
 			} else { // only feedback
 				if (getTaskData().contains(CHARACTER_NEW_LINE)) {
-					updateTaskTable();
+					updateTaskDataTable();
 				} else {
 					scrollPane.setVisible(false);
 				}
@@ -206,8 +207,7 @@ public class UI {
 					logger.log(Level.INFO, feedback);
 				}
 				feedbackArea.setText(feedback);
-			}
-			commandBar.setText(STRING_NULL); 
+			} 
 		} catch (Exception e1) {
 			feedback = getErrorMessage(e1);
 			logger.log(Level.WARNING, feedback);
@@ -216,7 +216,7 @@ public class UI {
 		}
 	}
 	
-	private void updateTaskTable() throws Exception {
+	private void updateTaskDataTable() throws Exception {
 		String[] tasks = getTaskData().split(CHARACTER_NEW_LINE);
 		
 		String[][] taskData = new String[tasks.length][6];
@@ -234,8 +234,8 @@ public class UI {
 		return taskDataString;
 	}
 
-	public void getUserCommand() {
+	public String getPreviousUserCommand() {
 		String command = logic.getPreviousCommand();
-		commandBar.setText(command);
+		return command;
 	}
 }
