@@ -2,6 +2,7 @@
 package simplyamazing.ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
@@ -31,12 +32,12 @@ public class TaskDataPanel {
 		if (!isResizable) {
 			taskDataTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		}
-		columnModel.getColumn(0).setPreferredWidth(29);
-		columnModel.getColumn(1).setPreferredWidth(220);
+		columnModel.getColumn(0).setPreferredWidth(40);
+		columnModel.getColumn(1).setPreferredWidth(300);
 		columnModel.getColumn(2).setPreferredWidth(150);
 		columnModel.getColumn(3).setPreferredWidth(150);
-		columnModel.getColumn(4).setPreferredWidth(60);
-		columnModel.getColumn(5).setPreferredWidth(50);
+		columnModel.getColumn(4).setPreferredWidth(64);
+		columnModel.getColumn(5).setPreferredWidth(99);
 	}
 	
 	public JTable getTaskDataPanel() {

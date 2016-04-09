@@ -27,19 +27,22 @@ public class UI {
 
 	private static final String CHARACTER_NEW_LINE = "\n";
 	public static final String FIELD_SEPARATOR = ",";
+	private static final String STRING_NULL = "";
 	private static final String STRING_ERROR = "Error";
 	
 	private static Logger logger = Logger.getLogger("UI");
 	
 	private JFrame frame;
-	private JSeparator separator, separator_1;
-	private JTextArea txtrHeader;
+	private static JSeparator separator, separator_1;
+	private static JTextArea appLogo;
 	private JScrollPane scrollPane;
+	private static JTextField commandBar;	
+	private static JTextArea feedbackArea;
+	
 	
 	private static Logic logic;
 	private static CommandBarController commandBarController;
 	private static TaskDataPanel taskDataPanel;
-	private static FeedbackArea feedbackArea;
 	private static InstructionPanel instructionPanel;
 
 	/**
@@ -51,7 +54,7 @@ public class UI {
 				try {
 					UI window = new UI();
 					window.frame.setVisible(true);
-					commandBarController.getCommandBar().requestFocusInWindow();
+					commandBar.requestFocusInWindow();
 					logic = new Logic();
 					String taskDataString = window.getTaskData();
 					if (taskDataString.contains(CHARACTER_NEW_LINE)) {
@@ -59,8 +62,8 @@ public class UI {
 					} else {
 						window.scrollPane.setVisible(false);
 					}
-					feedbackArea.colorCodeFeedback(Color.BLACK);
-					feedbackArea.setFeedback(MESSAGE_WELCOME);
+					feedbackArea.setForeground(Color.BLACK);
+					feedbackArea.setText(MESSAGE_WELCOME);
 					logger.log(Level.INFO, MESSAGE_WELCOME);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -97,21 +100,22 @@ public class UI {
 	private void setupScrollPane() {
 		scrollPane = new JScrollPane();
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
-		scrollPane.setBounds(10, 57, 676, 539);
+		scrollPane.setBounds(10, 67, 804, 442);
 	}
 
 	private void addUIComponentsToFrame() {
-		frame.getContentPane().add(txtrHeader);
+		frame.getContentPane().add(appLogo);
 		frame.getContentPane().add(separator_1);
 		frame.getContentPane().add(scrollPane);
 		frame.getContentPane().add(separator);
-		frame.getContentPane().add(feedbackArea.getFeedbackArea());
-		frame.getContentPane().add(commandBarController.getCommandBar());
+		frame.getContentPane().add(feedbackArea);
+		frame.getContentPane().add(commandBar);
 	}
 
 	private void setupFeedbackArea() {
-		feedbackArea = new FeedbackArea();
-		feedbackArea.getFeedbackArea().setBounds(10, 620, 676, 22);
+		feedbackArea = new JTextArea();
+		feedbackArea.setEditable(false);
+		feedbackArea.setBounds(10, 542, 804, 22);
 	}
 
 	private void setupInstructionPanel() {
@@ -124,30 +128,35 @@ public class UI {
 	}
 
 	private void setupAppLogo() {
-		txtrHeader = new JTextArea();
-		txtrHeader.setFont(new Font("Lucida Calligraphy", Font.BOLD, 16));
-		txtrHeader.setEditable(false);
-		txtrHeader.setText("Welcome to SimplyAmazing!");
-		txtrHeader.setBounds(208, 0, 278, 33);
+		appLogo = new JTextArea();
+		appLogo.setFont(new Font("Lucida Calligraphy", Font.BOLD, 16));
+		appLogo.setEditable(false);
+		appLogo.setText("Welcome to SimplyAmazing!");
+		appLogo.setBounds(273, 10, 278, 33);
 	}
 
 	private void setupSeparators() {
 		separator = new JSeparator();
-		separator.setBounds(10, 607, 676, 2);
+		separator.setBounds(10, 529, 804, 2);
 		separator_1 = new JSeparator();
-		separator_1.setBounds(10, 44, 676, 2);
+		separator_1.setBounds(10, 54, 804, 2);
 	}
 
 	private void setupCommandBar() {
+		commandBar = new JTextField();
+		commandBar.setForeground(Color.BLACK);
+		commandBar.setToolTipText("Type your command here.");
+		commandBar.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		commandBar.setColumns(10);
+		commandBar.setBounds(10, 575, 804, 33);
 		commandBarController = new CommandBarController();
-		commandBarController.getCommandBar().setBounds(10, 653, 676, 33);
-		commandBarController.handleKeyPressedEvent(this);
+		commandBarController.handleKeyPressedEvent(this, commandBar);
 	}
 
 	private void setupFrame() {
 		frame = new JFrame();
 		frame.setResizable(false);
-		frame.setBounds(100, 100, 700, 725);
+		frame.setBounds(100, 100, 830, 657);
 		frame.setForeground(new Color(255, 255, 255));
 		frame.getContentPane().setBackground(SystemColor.window);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -156,8 +165,8 @@ public class UI {
 
 	public void executeUserCommand() {
 		String feedback = null;
-		String command = commandBarController.getCommand();
-		feedbackArea.clear();
+		String command = commandBar.getText();
+		feedbackArea.setText(STRING_NULL);
 		try {
 			feedback = logic.executeCommand(command);
 			logger.log(Level.INFO, MESSAGE_LOG_USER_COMMAND_EXECUTED);
@@ -187,23 +196,23 @@ public class UI {
 					scrollPane.setVisible(false);
 				}
 				if (feedback.contains(STRING_ERROR)) {
-					feedbackArea.colorCodeFeedback(Color.RED);
+					feedbackArea.setForeground(Color.RED);
 					logger.log(Level.WARNING, feedback);
 				} else {
 					if (feedback.matches(MESSAGE_EMPTY_LIST) || feedback.matches(MESSAGE_NO_TASKS_FOUND)) {
 						scrollPane.setVisible(false);
 					}
-					feedbackArea.colorCodeFeedback(COLOR_DARK_GREEN);
+					feedbackArea.setForeground(COLOR_DARK_GREEN);
 					logger.log(Level.INFO, feedback);
 				}
-				feedbackArea.setFeedback(feedback);
+				feedbackArea.setText(feedback);
 			}
-			commandBarController.clear(); 
+			commandBar.setText(STRING_NULL); 
 		} catch (Exception e1) {
 			feedback = getErrorMessage(e1);
 			logger.log(Level.WARNING, feedback);
-			feedbackArea.colorCodeFeedback(Color.RED);
-			feedbackArea.setFeedback(feedback);
+			feedbackArea.setForeground(Color.RED);
+			feedbackArea.setText(feedback);
 		}
 	}
 	
@@ -227,6 +236,6 @@ public class UI {
 
 	public void getUserCommand() {
 		String command = logic.getPreviousCommand();
-		commandBarController.setCommand(command);
+		commandBar.setText(command);
 	}
 }
