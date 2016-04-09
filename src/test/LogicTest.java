@@ -26,10 +26,11 @@ public class LogicTest {
 	
 	private static final String LOCATION_COMMAND_FAIL = "location just a placeholder";
 	private static final String LOCATION_COMMAND_PASS = "location C:\\Users\\Ishpal\\Desktop\\Task Data";
-	private static final String LOCATION_FEEDBACK_FAIL = "Error: Not a valid directory.";
+	private static final String LOCATION_FEEDBACK_FAIL = "Error: Not a valid directory";
 	private static final String LOCATION_FEEDBACK_PASS = "Storage location of task data has been sucessfully set as C:\\Users\\Ishpal\\Desktop\\Task Data.";
 	private static final String LOCATION_EMPTY_STRING = "location ";
 	private static final String LOCATION_EMPTY_STRING_FEEDBACK = "Error: Location provided is invalid";
+	
 	
 	
 	private static final String ADD_TASK_PASS = "add hello world";
@@ -46,11 +47,14 @@ public class LogicTest {
 	private static final String ADD_START_BEFORE_CURRENT = "add visit the dentist from 22:00 2 Apr 2016 to 23:00 2 Apr 2016";
 	private static final String ADD_BEFORE_CURRENT_FEEDBACK = "Error: Time provided must be after the current time";
 	
+	
+	
 	private static final String VIEW_INVALID = "view nothing";
 	private static final String VIEW_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help view\" command to see all the valid keywords" ;
 	private static final String VIEW_EMPTY_LIST = "List is empty";
 	private static final String VIEW_DONE = "view done";
 	private static final String VIEW_OVERDUE = "view overdue";
+	
 	
 	
 	private static final String DELETE_VALID_INDEX = "delete 2";
@@ -62,6 +66,8 @@ public class LogicTest {
 	private static final String DELETE_STRING = "delete hello";
 	private static final String DELETE_STRING_FEEDBACK = "Error: Index provided is not an Integer.";
 	
+	
+	
 	private static final String DONE_INVALID_INDEX_NEGATIVE = "done -1";
 	private static final String DONE_INVALID_INDEX_ZERO = "done 0";
 	private static final String DONE_INVALID_INDEX_LARGER = "done 30";
@@ -72,60 +78,77 @@ public class LogicTest {
 	private static final String DONE_INVALID_INDEX_MULTIPLE_FEEDBACK = "Error: One of the given indexes is invalid";
 	private static final String DONE_VALID_INDEX_MULTIPLE = "done 1 2";
 	private static final String DONE_VALID_INDEX_MULTIPLE_FEEDBACK = "Provided tasks have been marked as done.";
-	
 	private static final String DONE_VALID_INDEX  = "done 2";
 	private static final String DONE_VALID_FEEDBACK = "Task [hello world] has been marked as done.";
 	
 	
+	
 	private static final String SEARCH_VALID_KEYWORD = "search hello";
-	private static final String SEARCH_VALID_FEEDBACK = "1,hello world, , , , \n";
+	private static final String SEARCH_VALID_FEEDBACK = "1,hello world, , , ,incomplete\n";
 	private static final String SEARCH_INVALID_KEYWORD = "search joke";
-	private static final String SEARCH_INVALID_FEEDBACK = "Error: There are no tasks containing the given keyword";
+	private static final String SEARCH_INVALID_FEEDBACK = "There are no tasks containing the given keyword";
 	private static final String SEARCH_EMPTY_STRING = "search ";
-	private static final String SEARCH_ALL_TASKS = "1,cs2103 peer review, ,23:59 25 May 2016, , \n2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, , \n3,hello world, , , , \n";
+	private static final String SEARCH_ALL_TASKS = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete"
+			+ "\n3,hello world, , , ,incomplete\n";
+	
+	
 	
 	private static final String HELP_INVALID = "help 1";
 	private static final String HELP_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
-	private static final String HELP_VALID_UNDO = "help undo";
-	private static final String HELP_VALID_UNDO_FEEDBACK = "Undo the most recent command\nCommand: undo\n";
-	private static final String HELP_VALID_REDO = "help redo";
-	private static final String HELP_VALID_REDO_FEEDBACK = "Redo the most recent command\nCommand: redo\n";
-	private static final String HELP_VALID_UNDONE = "help undone";
-	private static final String HELP_VALID_UNDONE_FEEDBACK = "Marks a completed task as undone\nCommand: undone <task index>\n\nExample:\nundone 2\n";
-	private static final String HELP_VALID_DONE = "help done";
-	private static final String HELP_VALID_DONE_FEEDBACK = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n";
-	private static final String HELP_VALID_DELETE = "help delete";
-	private static final String HELP_VALID_DELETE_FEEDBACK = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1";
-	private static final String HELP_VALID_SEARCH = "help search";
-	private static final String HELP_VALID_SEARCH_FEEDBACK = "Search for tasks containing the given keyword\nCommand: search <keyword>\n\nExample:\nsearch meeting\n";
-	private static final String HELP_VALID_EXIT = "help exit";
-	private static final String HELP_VALID_EXIT_FEEDBACK ="Exit SimplyAmazing\nCommand: exit\n";
 	
 	private static final String HELP_VALID = "help";
 	private static final String HELP_VALID_FEEDBACK = "Key in the following to view specific command formats:\n"
 			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
-			+ "7. help location\n8. help undo\n9. help exit\n";
+			+ "7. help location\n8. help undo\n9. help redo\n10. help undone\n11. help exit\n";
+	
+	private static final String HELP_VALID_UNDO = "help undo";
+	private static final String HELP_VALID_UNDO_FEEDBACK = "Undo the most recent command\nCommand: undo\n";
+	
+	private static final String HELP_VALID_REDO = "help redo";
+	private static final String HELP_VALID_REDO_FEEDBACK = "Redo the most recent command\nCommand: redo\n";
+	
+	private static final String HELP_VALID_UNDONE = "help undone";
+	private static final String HELP_VALID_UNDONE_FEEDBACK = "Marks a completed task as undone\nCommand: undone <task index>\n\nExample:\nundone 2\n\n\n"
+			+ "Note: You may also use the keyword \"unmark\" instead of \"undone\"";
+	
+	private static final String HELP_VALID_DONE = "help done";
+	private static final String HELP_VALID_DONE_FEEDBACK = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n\n\n"
+			+ "Note: You may also use the keywords \"mark\", \"complete\" or \"finish\" instead of \"done\"";
+	
+	private static final String HELP_VALID_DELETE = "help delete";
+	private static final String HELP_VALID_DELETE_FEEDBACK = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1\n\n\n"
+			+ "Note: You may also use the keywords \"-\", \"del\", \"remove\" or \"cancel\" instead of \"delete\"";
+			
+	private static final String HELP_VALID_SEARCH = "help search";
+	private static final String HELP_VALID_SEARCH_FEEDBACK = "Search for tasks containing the given keyword\nCommand: search <keyword>\n\nExample:\nsearch meeting\n\n\n"
+			+ "Note: You may also use the keyword \"find\" instead of \"search\"";
+	
+	private static final String HELP_VALID_EXIT = "help exit";
+	private static final String HELP_VALID_EXIT_FEEDBACK = "Exits SimplyAmazing\nCommand: exit\n\n\nNote: You may also use \"logout\" or \"quit\" instead of \"exit\"";
 	
 	private static final String HELP_VALID_VIEW = "help view";
 	private static final String HELP_VALID_VIEW_FEEDBACK = "1.Display all tasks\n Command: view\n\n2.Display tasks with deadlines\n"
 			+ "Command: view deadlines\n\n3.Display all events\nCommand: view events\n\n4.Display tasks without deadlines\nCommand: view tasks\n\n"
-			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n";
+			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n\n"
+			+ "Note: You may also use the keywords \"display\", \"show\" or \"list\" instead of \"view\"";
 	
 	private static final String HELP_VALID_EDIT = "help edit";
 	private static final String HELP_VALID_EDIT_FEEDBACK = "Edit content in a task\nCommand: edit <task index> <task header> <updated content>\n\n"
 			+ "Example:\n1. edit 4 description send marketing report\n\n2. edit 3 start 22:00 26 may 2016, end 22:40 26 may 2016\n\n"
-			+ "3. edit 1 priority high";
+			+ "3. edit 1 priority high\n\n\nNote: You may also use the keywords \"change\" or \"update\" instead of \"edit\"";
 	
 	private static final String HELP_VALID_ADD = "help add";
 	private static final String HELP_VALID_ADD_FEEDBACK =  "1.Add a task to the list\nCommand: add <task description>\n\nExample: add Prepare presentation\n\n\n"
 			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to\n<end time hh:mm> <end date dd MMM yyyy>\n\n"
 			+ "Example: add Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
 			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>\n\n"
-			+ "Example: add Submit marketing report by 17:00 20 Dec 2016\n";
+			+ "Example: add Submit marketing report by 17:00 20 Dec 2016\n\n\n"
+			+ "Note: You may use the keyword \"+\" instead of \"add\"";
 	
 	private static final String HELP_VALID_LOCATION = "help location";
 	private static final String HELP_VALID_LOCATION_FEEDBACK = "Sets the storage location or folder for application data\n"
-			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data";
+			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data\n\n\nNote: You may also use the keywords \"path\" or \"address\""
+			+ " instead of \"location\"";
 	
 	
 	@Test
@@ -139,26 +162,28 @@ public class LogicTest {
 	}
 	
 	@Test
-	public void test2SetLocationPass() throws Exception {
-		assertEquals(LOCATION_FEEDBACK_PASS, logicObj.executeCommand(LOCATION_COMMAND_PASS));
-	}
-	
-	@Test
 	/*
-	 * This test case has 2 partitions, namely correct and incorrect. These refer to the validity of the command input
+	 * This test case has 2 partitions, namely valid and invalid. These refer to the validity of the command input
 	 * The correct partition encompasses all valid file paths while the incorrect encompasses all invalid file paths
 	 */
-	public void test3SetLocationFail() throws Exception{
-			assertEquals(LOCATION_FEEDBACK_FAIL, logicObj.executeCommand(LOCATION_COMMAND_FAIL));
-			assertEquals(LOCATION_EMPTY_STRING_FEEDBACK, logicObj.executeCommand(LOCATION_EMPTY_STRING));
+	public void testSetLocation() throws Exception {
+		// valid partition
+		assertEquals(LOCATION_FEEDBACK_PASS, logicObj.executeCommand(LOCATION_COMMAND_PASS));
+
+		// invalid partition
+		assertEquals(LOCATION_EMPTY_STRING_FEEDBACK, logicObj.executeCommand(LOCATION_EMPTY_STRING));
+		assertEquals(LOCATION_FEEDBACK_FAIL, logicObj.executeCommand(LOCATION_COMMAND_FAIL));
+	
 	}
+	
+
 	
 	
 	@Test
 	/*
 	 * The following test has 2 equivalent partitions, valid and invalid commands.
 	 */
-	public void test4AddCommand() throws Exception{
+	public void test2AddCommand() throws Exception{
 		assertEquals(ADD_TASK_PASS_FEEDBACK, logicObj.executeCommand(ADD_TASK_PASS));
 		handler = parserObj.getHandler(ADD_TASK_PASS);
 		task3 = handler.getTask();
@@ -179,7 +204,7 @@ public class LogicTest {
 	
 	
 	@Test
-	public void test5HelpCommand() throws Exception{
+	public void test3HelpCommand() throws Exception{
 		assertEquals(HELP_VALID_FEEDBACK, logicObj.executeCommand(HELP_VALID));
 		assertEquals(HELP_INVALID_FEEDBACK, logicObj.executeCommand(HELP_INVALID));
 		assertEquals(HELP_VALID_UNDO_FEEDBACK, logicObj.executeCommand(HELP_VALID_UNDO));
@@ -201,7 +226,7 @@ public class LogicTest {
 	 * It also checks the corner case where the user does not give a keyword after the search command
 	 */
 	@Test
-	public void test6SearchCommand() throws Exception{
+	public void test3SearchCommand() throws Exception{
 		assertEquals(SEARCH_INVALID_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
 		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
 		assertEquals(SEARCH_ALL_TASKS,logicObj.executeCommand(SEARCH_EMPTY_STRING));
@@ -209,7 +234,7 @@ public class LogicTest {
 	
 	
 	@Test
-	public void test7ViewCommand() throws Exception{
+	public void test4ViewCommand() throws Exception{
 		
 		assertEquals(VIEW_INVALID_FEEDBACK, logicObj.executeCommand(VIEW_INVALID));
 		assertEquals(VIEW_EMPTY_LIST, logicObj.executeCommand(VIEW_DONE));
@@ -222,7 +247,7 @@ public class LogicTest {
 	
 	
 	@Test 
-	public void test81EditCommand() throws Exception{
+	public void test5EditCommand() throws Exception{
 		logicObj.executeCommand("view");
 		
 		// test indexes first
@@ -270,14 +295,14 @@ public class LogicTest {
 	 * expected
 	 */
 	@Test
-	public void test8DeleteCommand() throws Exception{
+	public void test6DeleteCommand() throws Exception{
 		logicObj.executeCommand("view");
 		assertEquals(DELETE_STRING_FEEDBACK, logicObj.executeCommand(DELETE_STRING));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_LARGER));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_ZERO));
 
-		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand("delete 1 2 5"));
+		assertEquals("Error: One of the given indexes is invalid", logicObj.executeCommand("delete 1 2 5"));
 		assertEquals("Provided tasks have been successfully deleted.", logicObj.executeCommand("delete 1 2"));
 		logicObj.executeCommand("undo");
 		logicObj.executeCommand("view");
@@ -292,7 +317,7 @@ public class LogicTest {
 	 * expected and the last one where a string is given instead of an integer
 	 */
 	
-	public void test91MarkCommand() throws Exception{
+	public void test7MarkCommand() throws Exception{
 		logicObj.executeCommand("view");
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
@@ -306,6 +331,43 @@ public class LogicTest {
 		assertEquals(DONE_VALID_FEEDBACK, logicObj.executeCommand(DONE_VALID_INDEX));
 	}
 	
+	
+	private static final String UNMARK_INVALID_INDEX_FEEDBACK = "Error: The Index entered is invalid";
+	private static final String UNMARK_INVALID_INDEX_NEGATIVE = "unmark -1";
+	private static final String UNMARK_INVALID_INDEX_ZERO = "unmark 0";
+	private static final String UNMARK_INVALID_INDEX_LARGER = "unmark 3";
+	private static final String UNMARK_INVALID_INDEX_STRING = "unmark abc";
+	private static final String UNMARK_INVALID_COMMAND_FEEDBACK = "Error: Index provided is not an Integer.";
+	private static final String UNMARK_INVALID_MULTIPLE = "unmark 1 2 3";
+	private static final String UNMARK_INVALID_MULTIPLE_FEEDBACK = "Error: One of the given indexes is invalid";
+	private static final String UNMARK_VALID_MULTIPLE = "unmark 1 2";
+	private static final String UNMARK_VALID_MULTIPLE_FEEDBACK = "Provided tasks have been marked as undone.";
+	private static final String UNMARK_VALID = "unmark 2";
+	private static final String UNMARK_VALID_FEEDBACK = "";
+	
+	/*@Test
+	public void test71MarkCommand() throws Exception{
+		logicObj.executeCommand("view");
+		logicObj.executeCommand("done 1");
+		logicObj.executeCommand("done 1");
+		logicObj.executeCommand("view done");
+		assertEquals(UNMARK_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_INDEX_NEGATIVE));
+		logicObj.executeCommand("view done");
+		assertEquals(UNMARK_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_INDEX_ZERO));
+		logicObj.executeCommand("view done");
+		assertEquals(UNMARK_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_INDEX_LARGER));
+		logicObj.executeCommand("view done");
+		assertEquals(UNMARK_INVALID_COMMAND_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_INDEX_STRING));
+		logicObj.executeCommand("view done");
+		assertEquals(UNMARK_INVALID_MULTIPLE_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_MULTIPLE));
+		logicObj.executeCommand("view done");
+		assertEquals(UNMARK_VALID_FEEDBACK, logicObj.executeCommand(UNMARK_VALID));
+		logicObj.executeCommand("undo");
+		logicObj.executeCommand("view done");
+		assertEquals(UNMARK_VALID_MULTIPLE_FEEDBACK, logicObj.executeCommand(UNMARK_VALID_MULTIPLE));
+	}
+	
+	
 
 	@Test
 	/*
@@ -314,7 +376,7 @@ public class LogicTest {
 	 * expected
 	 */
 	
-	public void test92ValidIndex(){
+	public void test8ValidIndex(){
 		list.clear();
 		addItemsToList(5);
 		
@@ -330,14 +392,13 @@ public class LogicTest {
 	}
 		
 	@Test
-	public void test93UndoCommand() throws Exception {
+	public void test91UndoCommand() throws Exception {
 		assertEquals("\"done 2\" command has been successfully undone.", logicObj.executeCommand("undo"));
+		
 	}
 	
-	@Test
-	public void test9ExitCommand() throws Exception {
-		assertEquals("", logicObj.executeCommand("exit"));
-	}
+
+	
 	
 	
 	public void addItemsToList(int numItemsToAdd) {

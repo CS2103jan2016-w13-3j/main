@@ -167,6 +167,7 @@ public class Logic {
 			break;
 		case REDO :
 			feedback = executeRedoCommand(commandHandler);
+			break;
 		case SET_LOCATION :
 			feedback = executeSetLocationCommand(commandHandler);
 			break;
