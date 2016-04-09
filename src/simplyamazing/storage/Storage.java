@@ -40,7 +40,7 @@ public class Storage {
 	private static final String MESSAGE_DELETED = "%1$s has been successfully deleted.";
 	private static final String MESSAGE_DELETED_MULTIPLE = "Provided tasks have been successfully deleted.";
 	private static final String MESSAGE_MARKED_DONE = "%1$s has been marked as done.";
-	private static final String MESSAGE_MARKED_UNDONE = "%1$s has been marked as undone.";
+	private static final String MESSAGE_MARKED_UNDONE = "%1$s has been marked as incomplete.";
 	private static final String MESSAGE_MARKED_DONE_MULTIPLE = "Provided tasks have been marked as done.";
 	private static final String MESSAGE_MARKED_UNDONE_MULTIPLE = "Provided tasks have been marked as incomplete.";
 	private static final String MESSAGE_UPDATED = "%1$s has been successfully updated.";

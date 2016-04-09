@@ -42,13 +42,13 @@ public class Logic {
 	private static final String MESSAGE_EMPTY_LIST = "List is empty";
 	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
 	private static final String MESSAGE_HELP_REDO = "Redo the most recent command\nCommand: redo\n";
-	private static final String MESSAGE_HELP_UNDONE = "Marks a completed task as undone\nCommand: undone <task index>\n\nExample:\nundone 2\n\n\n"
+	private static final String MESSAGE_HELP_UNMARK = "Unmarks a completed task\nCommand: undone <task index>\n\nExample:\nundone 2\n\n\n"
 			+ "Note: You may also use the keyword \"unmark\" instead of \"undone\"";
 	private static final String MESSAGE_HELP_EXIT = "Exits SimplyAmazing\nCommand: exit\n\n\nNote: You may also use \"logout\" or \"quit\" instead of \"exit\"";
-	private static final String MESSAGE_HELP_SEARCH = "Search for tasks containing the given keyword\nCommand: search <keyword>\n\nExample:\nsearch meeting\n\n\n"
+	private static final String MESSAGE_HELP_SEARCH = "Search for tasks containing the given keyword or date \nCommand: search <keyword> or search<date>\n\nExample:\nsearch meeting\n\n\n"
 			+ "Note: You may also use the keyword \"find\" instead of \"search\"";
 	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";
-	private static final String MESSAGE_HELP_DONE = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n\n\n"
+	private static final String MESSAGE_HELP_MARK = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n\n\n"
 			+ "Note: You may also use the keywords \"mark\", \"complete\" or \"finish\" instead of \"done\"";
 	private static final String MESSAGE_HELP_DELETE = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1\n\n\n"
 			+ "Note: You may also use the keywords \"-\", \"del\", \"remove\" or \"cancel\" instead of \"delete\"";
@@ -57,8 +57,8 @@ public class Logic {
 			+ "3. edit 1 priority high\n\n\nNote: You may also use the keywords \"change\" or \"update\" instead of \"edit\"";
 
 	private static final String MESSAGE_HELP = "Key in the following to view specific command formats:\n"
-			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
-			+ "7. help location\n8. help undo\n9. help redo\n10. help undone\n11. help exit\n";
+			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help search \n6. help mark\n"
+			+ "7. help unmark\n8. help undo\n9. help redo\n10. help location \n11. help exit\n";
 
 	private static final String MESSAGE_HELP_LOCATION = "Sets the storage location or folder for application data\n"
 			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data\n\n\nNote: You may also use the keywords \"path\" or \"address\""
@@ -198,12 +198,6 @@ public class Logic {
 		}
 		logger.log(Level.INFO, "about to return to UI");
 		return feedback;
-	}
-
-
-	public String getHandlerCommandType(String userInput) throws Exception {
-		Handler handler = parserObj.getHandler(userInput);
-		return handler.getCommandType();
 	}
 
 	
@@ -511,9 +505,9 @@ public class Logic {
 			} else if (commandHandler.getKeyWord().equals("redo")) {
 				return MESSAGE_HELP_REDO;
 			} else if (commandHandler.getKeyWord().equals("undone")) {
-				return MESSAGE_HELP_UNDONE;
+				return MESSAGE_HELP_UNMARK;
 			} else {
-				return MESSAGE_HELP_DONE;
+				return MESSAGE_HELP_MARK;
 			}
 		}
 	}
@@ -527,6 +521,8 @@ public class Logic {
 		} else if (commandType.equals(CommandType.EDIT_TASK)) {
 			return true;
 		} else if (commandType.equals(CommandType.MARK_TASK)) {
+			return true;
+		} else if (commandType.equals(CommandType.UNMARK_TASK)) {
 			return true;
 		} else {
 			return false;

@@ -54,6 +54,9 @@ public class LogicTest {
 	private static final String VIEW_EMPTY_LIST = "List is empty";
 	private static final String VIEW_DONE = "view done";
 	private static final String VIEW_OVERDUE = "view overdue";
+	private static final String VIEW_VALID = "view";
+	private static final String VIEW_VALID_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete\n"
+			+ "3,hello world, , , ,incomplete\n";
 	
 	
 	
@@ -86,10 +89,14 @@ public class LogicTest {
 	private static final String SEARCH_VALID_KEYWORD = "search hello";
 	private static final String SEARCH_VALID_FEEDBACK = "1,hello world, , , ,incomplete\n";
 	private static final String SEARCH_INVALID_KEYWORD = "search joke";
-	private static final String SEARCH_INVALID_FEEDBACK = "There are no tasks containing the given keyword";
+	private static final String SEARCH_NOT_FOUND_FEEDBACK = "There are no tasks containing the given keyword";
+	private static final String SEARCH_WRONG_DATE = "search 25 Dec 2016";
+	private static final String SEARCH_VALID_DATE = "search 25 May 2016";
+	private static final String SEARCH_VALID_DATE_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hello world, , , ,incomplete\n";
 	private static final String SEARCH_EMPTY_STRING = "search ";
-	private static final String SEARCH_ALL_TASKS = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete"
+	private static final String SEARCH_EMPTY_STRING_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete"
 			+ "\n3,hello world, , , ,incomplete\n";
+
 	
 	
 	
@@ -98,8 +105,9 @@ public class LogicTest {
 	
 	private static final String HELP_VALID = "help";
 	private static final String HELP_VALID_FEEDBACK = "Key in the following to view specific command formats:\n"
-			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
-			+ "7. help location\n8. help undo\n9. help redo\n10. help undone\n11. help exit\n";
+			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help search \n6. help mark\n"
+			+ "7. help unmark\n8. help undo\n9. help redo\n10. help location \n11. help exit\n";
+
 	
 	private static final String HELP_VALID_UNDO = "help undo";
 	private static final String HELP_VALID_UNDO_FEEDBACK = "Undo the most recent command\nCommand: undo\n";
@@ -108,7 +116,7 @@ public class LogicTest {
 	private static final String HELP_VALID_REDO_FEEDBACK = "Redo the most recent command\nCommand: redo\n";
 	
 	private static final String HELP_VALID_UNDONE = "help undone";
-	private static final String HELP_VALID_UNDONE_FEEDBACK = "Marks a completed task as undone\nCommand: undone <task index>\n\nExample:\nundone 2\n\n\n"
+	private static final String HELP_VALID_UNDONE_FEEDBACK =  "Unmarks a completed task\nCommand: undone <task index>\n\nExample:\nundone 2\n\n\n"
 			+ "Note: You may also use the keyword \"unmark\" instead of \"undone\"";
 	
 	private static final String HELP_VALID_DONE = "help done";
@@ -120,7 +128,7 @@ public class LogicTest {
 			+ "Note: You may also use the keywords \"-\", \"del\", \"remove\" or \"cancel\" instead of \"delete\"";
 			
 	private static final String HELP_VALID_SEARCH = "help search";
-	private static final String HELP_VALID_SEARCH_FEEDBACK = "Search for tasks containing the given keyword\nCommand: search <keyword>\n\nExample:\nsearch meeting\n\n\n"
+	private static final String HELP_VALID_SEARCH_FEEDBACK = "Search for tasks containing the given keyword or date \nCommand: search <keyword> or search<date>\n\nExample:\nsearch meeting\n\n\n"
 			+ "Note: You may also use the keyword \"find\" instead of \"search\"";
 	
 	private static final String HELP_VALID_EXIT = "help exit";
@@ -227,9 +235,14 @@ public class LogicTest {
 	 */
 	@Test
 	public void test3SearchCommand() throws Exception{
-		assertEquals(SEARCH_INVALID_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
+		assertEquals(SEARCH_NOT_FOUND_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
 		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
-		assertEquals(SEARCH_ALL_TASKS,logicObj.executeCommand(SEARCH_EMPTY_STRING));
+		assertEquals(SEARCH_EMPTY_STRING_FEEDBACK,logicObj.executeCommand(SEARCH_EMPTY_STRING));
+		
+		logicObj.executeCommand("edit 3 end 19:00 1 Jun 2016");
+		assertEquals(SEARCH_NOT_FOUND_FEEDBACK, logicObj.executeCommand(SEARCH_WRONG_DATE));
+		logicObj.executeCommand("undo");
+		assertEquals(SEARCH_VALID_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_DATE));
 	}
 	
 	
@@ -239,9 +252,7 @@ public class LogicTest {
 		assertEquals(VIEW_INVALID_FEEDBACK, logicObj.executeCommand(VIEW_INVALID));
 		assertEquals(VIEW_EMPTY_LIST, logicObj.executeCommand(VIEW_DONE));
 		assertEquals(VIEW_EMPTY_LIST, logicObj.executeCommand(VIEW_OVERDUE));
-		assertEquals("1,"+task1.toString()+"\n"
-				+ "2,"+task2.toString()+"\n"
-				+ "3,"+task3.toString()+"\n",logicObj.executeCommand("view"));
+		assertEquals(VIEW_VALID_FEEDBACK,logicObj.executeCommand(VIEW_VALID));
 		
 	}
 	
@@ -317,7 +328,7 @@ public class LogicTest {
 	 * expected and the last one where a string is given instead of an integer
 	 */
 	
-	public void test7MarkCommand() throws Exception{
+	public void test71MarkCommand() throws Exception{
 		logicObj.executeCommand("view");
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
@@ -341,14 +352,13 @@ public class LogicTest {
 	private static final String UNMARK_INVALID_MULTIPLE = "unmark 1 2 3";
 	private static final String UNMARK_INVALID_MULTIPLE_FEEDBACK = "Error: One of the given indexes is invalid";
 	private static final String UNMARK_VALID_MULTIPLE = "unmark 1 2";
-	private static final String UNMARK_VALID_MULTIPLE_FEEDBACK = "Provided tasks have been marked as undone.";
+	private static final String UNMARK_VALID_MULTIPLE_FEEDBACK = "Provided tasks have been marked as incomplete.";
 	private static final String UNMARK_VALID = "unmark 2";
-	private static final String UNMARK_VALID_FEEDBACK = "";
+	private static final String UNMARK_VALID_FEEDBACK = "Task [hello world] has been marked as incomplete.";
 	
-	/*@Test
-	public void test71MarkCommand() throws Exception{
+	@Test
+	public void test7UnmarkCommand() throws Exception{
 		logicObj.executeCommand("view");
-		logicObj.executeCommand("done 1");
 		logicObj.executeCommand("done 1");
 		logicObj.executeCommand("view done");
 		assertEquals(UNMARK_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_INDEX_NEGATIVE));
@@ -361,10 +371,10 @@ public class LogicTest {
 		logicObj.executeCommand("view done");
 		assertEquals(UNMARK_INVALID_MULTIPLE_FEEDBACK, logicObj.executeCommand(UNMARK_INVALID_MULTIPLE));
 		logicObj.executeCommand("view done");
-		assertEquals(UNMARK_VALID_FEEDBACK, logicObj.executeCommand(UNMARK_VALID));
+		assertEquals(UNMARK_VALID_MULTIPLE_FEEDBACK, logicObj.executeCommand(UNMARK_VALID_MULTIPLE));
 		logicObj.executeCommand("undo");
 		logicObj.executeCommand("view done");
-		assertEquals(UNMARK_VALID_MULTIPLE_FEEDBACK, logicObj.executeCommand(UNMARK_VALID_MULTIPLE));
+		assertEquals(UNMARK_VALID_FEEDBACK, logicObj.executeCommand(UNMARK_VALID));
 	}
 	
 	
@@ -393,11 +403,14 @@ public class LogicTest {
 		
 	@Test
 	public void test91UndoCommand() throws Exception {
-		assertEquals("\"done 2\" command has been successfully undone.", logicObj.executeCommand("undo"));
+		assertEquals("\"unmark 2\" command has been successfully undone.", logicObj.executeCommand("undo"));
 		
 	}
 	
-
+	@Test
+	public void test9RedoCommand() throws Exception {
+		assertEquals("\"unmark 2\" command has been successfully undone.", logicObj.executeCommand("redo"));
+	}
 	
 	
 	
