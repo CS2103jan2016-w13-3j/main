@@ -183,6 +183,15 @@ public class ParserTest {
 	private static final String UNDO_COMMAND_VALID = "undo";
 	private static final String UNDO_COMMAND_VALID_FEEDBACK = "";
 	
+	private static final String REDO_COMMAND_VALID = "redo";
+	private static final String REDO_COMMAND_VALID_FEEDBACK = "";
+	
+	private static final String UNDONE_COMMAND_VALID = "undone 1 2";
+	private static final String UNDONE_COMMAND_VALID_ALT = "unMARK 1";
+	private static final String UNDONE_COMMAND_VALID_FEEDBACK = "";
+	private static final String UNDONE_COMMAND_INVALID_WRONG_KEYWORD = "done WOrk";
+	private static final String UNDONE_COMMAND_INVALID_FEEDBACK = "Error: Index provided is not an Integer.";
+	
 	private static final String EXIT_COMMAND_VALID = "exit";
 	private static final String EXIT_COMMAND_VALID_ALT ="quit";
 	private static final String EXIT_COMMAND_VALID_ALT_2 ="logout";
@@ -397,7 +406,17 @@ public class ParserTest {
 	public void testInvalidCommand() throws Exception {
 		assertEquals(WRONG_COMMAND_TYPE_FEEDBACK, parser.getHandler(WRONG_COMMAND_TYPE).getFeedBack());
 	}
+	@Test
+	public void testRedoCommand() throws Exception {
+		assertEquals(REDO_COMMAND_VALID_FEEDBACK, parser.getHandler(REDO_COMMAND_VALID).getFeedBack());
+	}
 	
-	
+	@Test
+	public void testUndoneCommand() throws Exception {
+		assertEquals(UNDONE_COMMAND_VALID_FEEDBACK , parser.getHandler(UNDONE_COMMAND_VALID).getFeedBack());
+		assertEquals(UNDONE_COMMAND_VALID_FEEDBACK , parser.getHandler(UNDONE_COMMAND_VALID_ALT).getFeedBack());
+		assertEquals(UNDONE_COMMAND_INVALID_FEEDBACK , parser.getHandler(UNDONE_COMMAND_INVALID_WRONG_KEYWORD).getFeedBack());
+		
+	}
 
 }
