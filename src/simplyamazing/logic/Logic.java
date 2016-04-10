@@ -14,6 +14,14 @@ import simplyamazing.parser.Handler;
 import simplyamazing.parser.Parser;
 import simplyamazing.storage.Storage;
 
+/*
+ * This class manages the flow of the program execution for SimplyAmazing.
+ * It is responsible for breaking down the user's command, with the help of the Parser component and then
+ * executing the instruction through interacting with the Storage component.
+ * 
+ * @author A0125136N
+ */
+
 public class Logic {
  
 	private static Logger logger;
@@ -22,15 +30,14 @@ public class Logic {
 	private static ArrayList<Task> taskList;
 	private static String lastModifyCommand;
 	private static String previousCommandString;
-	private static String previousCommandKeyword;
 	private static Handler commandHandler;
 	
 	private static final String STRING_EMPTY = "";
-
+	
+	//The following are error messages which will be displayed to the user
 	private static final String ERROR_INVALID_DIRECTORY = "Error: Not a valid directory";
 	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
 	private static final String ERROR_INVALID_INDEX_MULTIPLE = "Error: One of the given indexes is invalid";
-	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID = "Error: There is no previous command to undo"; 
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID_REDO = "Error: There is no previous command to redo";
 	private static final String ERROR_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
@@ -39,39 +46,60 @@ public class Logic {
 	private static final String ERROR_START_SAME_AS_END ="Error: New start time cannot be the same as the end time";
 	private static final String ERROR_END_BEFORE_START = "Error: New end time cannot be before the start time";
 	private static final String ERROR_END_SAME_AS_START ="Error: New end time cannot be the same as the start time";
+	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\""
+			+ " to view all commands and their format";
 
+	// The following are messages which will be displayed to the user
 	private static final String MESSAGE_EMPTY_LIST = "List is empty";
 	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
 	private static final String MESSAGE_HELP_REDO = "Redo the most recent command\nCommand: redo\n";
-	private static final String MESSAGE_HELP_UNMARK = "Unmarks a completed task\nCommand: undone <task index>\n\nExample:\nundone 2\n\n\n"
-			+ "Note: You may also use the keyword \"unmark\" instead of \"undone\"";
-	private static final String MESSAGE_HELP_EXIT = "Exits SimplyAmazing\nCommand: exit\n\n\nNote: You may also use \"logout\" or \"quit\" instead of \"exit\"";
-	private static final String MESSAGE_HELP_SEARCH = "Search for tasks containing the given keyword or date \nCommand: search <keyword> or search<date>\n\nExample:\nsearch meeting\n\n\n"
-			+ "Note: You may also use the keyword \"find\" instead of \"search\"";
 	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";
-	private static final String MESSAGE_HELP_MARK = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n\n\n"
+	
+	private static final String MESSAGE_HELP_EXIT = "Exits SimplyAmazing\nCommand: exit\n\n\nNote: You may also use "
+			+ "\"logout\" or \"quit\" instead of \"exit\"";
+	
+	private static final String MESSAGE_HELP_UNMARK = "Unmarks a completed task\nCommand: undone <task index>\n\n"
+			+ "Example:\nundone 2\n\n\nNote: You may also use the keyword \"unmark\" instead of \"undone\"";
+	
+	private static final String MESSAGE_HELP_SEARCH = "Search for tasks containing the given keyword or date \n"
+			+ "Command: search <keyword> or search<date>\n\nExample:\nsearch meeting\n\n\n"
+			+ "Note: You may also use the keyword \"find\" instead of \"search\"";
+	
+	private static final String MESSAGE_HELP_MARK = "Marks task as completed\nCommand: done <task index>\n\n"
+			+ "Example:\ndone 2\n\n\n"
 			+ "Note: You may also use the keywords \"mark\", \"complete\" or \"finish\" instead of \"done\"";
-	private static final String MESSAGE_HELP_DELETE = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1\n\n\n"
+	
+	private static final String MESSAGE_HELP_DELETE = "Delete task from list\nCommand: delete <task index>\n\n"
+			+ "Example:\ndelete 1\n\n\n"
 			+ "Note: You may also use the keywords \"-\", \"del\", \"remove\" or \"cancel\" instead of \"delete\"";
-	private static final String MESSAGE_HELP_EDIT = "Edit content in a task\nCommand: edit <task index> <task header> <updated content>\n\n"
-			+ "Example:\n1. edit 4 description send marketing report\n\n2. edit 3 start 22:00 26 may 2016, end 22:40 26 may 2016\n\n"
-			+ "3. edit 1 priority high\n\n\nNote: You may also use the keywords \"change\" or \"update\" instead of \"edit\"";
+	
+	private static final String MESSAGE_HELP_EDIT = "Edit content in a task\nCommand: edit <task index> <task header> "
+			+ "<updated content>\n\n"
+			+ "Example:\n1. edit 4 description send marketing report\n\n2. edit 3 start 22:00 26 may 2016,"
+			+ " end 22:40 26 may 2016\n\n3. edit 1 priority high\n\n\n"
+			+ "Note: You may also use the keywords \"change\" or \"update\" instead of \"edit\"";
 
 	private static final String MESSAGE_HELP = "Key in the following to view specific command formats:\n"
 			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help search \n6. help mark\n"
 			+ "7. help unmark\n8. help undo\n9. help redo\n10. help location \n11. help exit\n";
 
 	private static final String MESSAGE_HELP_LOCATION = "Sets the storage location or folder for application data\n"
-			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data\n\n\nNote: You may also use the keywords \"path\" or \"address\""
-			+ " instead of \"location\"";
+			+ "Command: location <path>\n" + "\n"
+			+ "Example:\nlocation C:\\Users\\Jim\\Desktop\\Task Data\n\n\n"
+			+ "Note: You may also use the keywords \"path\" or \"address\" instead of \"location\"";
 
-	private static final String MESSAGE_HELP_VIEW = "1.Display all tasks\n Command: view\n\n2.Display tasks with deadlines\n"
-			+ "Command: view deadlines\n\n3.Display all events\nCommand: view events\n\n4.Display tasks without deadlines\nCommand: view tasks\n\n"
-			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n\n"
+	private static final String MESSAGE_HELP_VIEW = "1.Display all tasks\n Command: view\n\n"
+			+ "2.Display tasks with deadlines\nCommand: view deadlines\n\n"
+			+ "3.Display all events\nCommand: view events\n\n"
+			+ "4.Display tasks without deadlines\nCommand: view tasks\n\n"
+			+ "5.Display completed tasks\nCommand: view done\n\n"
+			+ "6.Display overdue tasks\nCommand: view overdue\n\n\n"
 			+ "Note: You may also use the keywords \"display\", \"show\" or \"list\" instead of \"view\"";
 
-	private static final String MESSAGE_HELP_ADD_TASK = "1.Add a task to the list\nCommand: add <task description>\n\nExample: add Prepare presentation\n\n\n"
-			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to\n<end time hh:mm> <end date dd MMM yyyy>\n\n"
+	private static final String MESSAGE_HELP_ADD_TASK = "1.Add a task to the list\nCommand: add <task description>\n\n"
+			+ "Example: add Prepare presentation\n\n\n2.Add an event to the list\n"
+			+ "command: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to\n<end time hh:mm> "
+			+ "<end date dd MMM yyyy>\n\n"
 			+ "Example: add Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
 			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>\n\n"
 			+ "Example: add Submit marketing report by 17:00 20 Dec 2016\n\n\n"
@@ -85,26 +113,27 @@ public class Logic {
 	};
 
 
-	public Logic(){
+	public Logic() {
 		parserObj = new Parser();
 		storageObj = new Storage();
 		taskList = new ArrayList<Task>();
 		commandHandler = new Handler();
 		lastModifyCommand = STRING_EMPTY;
-		previousCommandKeyword = STRING_EMPTY;
 		previousCommandString = STRING_EMPTY;
 		logger = Logger.getLogger("simplyamazing");
-		try{
-			//java.util.logging.FileHandler.append=true;
+		try {
 			FileHandler fh = new FileHandler("C:\\Users\\Public\\SimplyAmazing\\logFile.txt", true);
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();  
 			fh.setFormatter(formatter);
-		} catch (Exception e){};
+		} catch (Exception e) {
+			System.out.println("Error while setting up filehandler");
+		}
 	}
 
 
 	private static CommandType getCommandType(String commandWord) {
+		assert commandWord != null;
 		
 		if (commandWord.equalsIgnoreCase("add")) {
 			return CommandType.ADD_TASK;
@@ -135,7 +164,12 @@ public class Logic {
 		}
 	}
 
-
+	
+	/*
+	 * This method controls how the command is executed, based on the different command types given.
+	 * It is also responsible for passing on feedback messages, regarding the status of the commands,
+	 * to the UI
+	 */
 	public String executeCommand(String userCommand) throws Exception {
 		logger.log(Level.INFO, "going to execute command");
 
@@ -188,13 +222,11 @@ public class Logic {
 			return ERROR_INVALID_COMMAND;
 		}
 		
-		previousCommandKeyword = commandWord;
 		previousCommandString = userCommand;
-		assert previousCommandKeyword != null;
 		assert previousCommandString != null;
-		boolean hasListBeenModified = isListModified(commandType);
+		boolean isListModified = hasListBeenModified(commandType);
 
-		if(hasListBeenModified == true) {
+		if (isListModified == true) {
 			logger.log(Level.INFO, "command has modified the list, setting new lastModify Command now");
 			lastModifyCommand = userCommand;
 		}
@@ -203,6 +235,10 @@ public class Logic {
 	}
 
 	
+	/*
+	 * This method is responsible for executing the add command and reporting on its success to the 
+	 * UI
+	 */
 	private static String executeAddCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in add");
@@ -217,7 +253,10 @@ public class Logic {
 		}
 	}
 
-
+	/*
+	 * This method is responsible for executing the view command. It returns a String containing
+	 * either all pending tasks, overdue tasks or completed task, to the UI.
+	 */
 	private static String executeViewCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in view");
@@ -232,13 +271,11 @@ public class Logic {
 		}
 	}
 
-	
-	public static String getView() throws Exception{
-		taskList = storageObj.viewTasks(STRING_EMPTY);
-		return convertListToString(taskList);
-	}
 
-
+	/*
+	 * This method is responsible for the execution of the Edit command. It reports on the success of
+	 * the command to the UI. 
+	 */
 	private static String executeEditCommand(Handler commandHandler) throws Exception {
 
 		if (commandHandler.getHasError() == true) {
@@ -248,7 +285,7 @@ public class Logic {
 		} else { 
 			// only one task can be edited at a time, hence check the index of the first task
 			ArrayList<Integer> listToEdit = commandHandler.getIndexList();
-			boolean isIndexValid = checkIndexValid(listToEdit.get(0), taskList);
+			boolean isIndexValid = canRetrieveIndex(listToEdit.get(0));
 
 			if (isIndexValid == false) {
 				logger.log(Level.WARNING, "index given is invalid");
@@ -275,6 +312,10 @@ public class Logic {
 	}
 
 
+	/*
+	 * This method executes the delete command. The status of the command, whether it is successful or
+	 * unsuccessful will be returned to the UI which will then display it to the user.
+	 */
 	private static String executeDeleteCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in delete");
@@ -290,39 +331,49 @@ public class Logic {
 				logger.log(Level.INFO, "list contains only one task to delete");
 				indexToDelete = listToDelete.get(0);
 
-				isIndexValid = checkIndexValid(indexToDelete, taskList);
+				isIndexValid = canRetrieveIndex(indexToDelete);
 				
 				if (isIndexValid == false) {
 					logger.log(Level.WARNING, "index given is invalid");
 					return ERROR_INVALID_INDEX;
 				}
+				
+				logger.log(Level.INFO, "index valid, interacting with storage now");
 				Task taskToDelete = taskList.get(indexToDelete - 1);
 				return storageObj.deleteTask(taskToDelete);
+				
 			} else {
-
+				
+				logger.log(Level.INFO, "list contains more than one task to delete");
 				ArrayList<Task> tasksToDelete = new ArrayList<Task>();
 				
-				for (int i = 0; i< listToDelete.size(); i++) {
+				for (int i = 0; i < listToDelete.size(); i++) {
 					indexToDelete = listToDelete.get(i);
-					isIndexValid = checkIndexValid(indexToDelete, taskList);
+					isIndexValid = canRetrieveIndex(indexToDelete);
+					
 					if (isIndexValid == false) {
-						logger.log(Level.WARNING, "indexes given is invalid");
+						logger.log(Level.WARNING, "one of the indexes given is invalid");
 						return ERROR_INVALID_INDEX_MULTIPLE;
 					} else {
-						tasksToDelete.add(taskList.get(indexToDelete -1 ));
+						tasksToDelete.add(taskList.get(indexToDelete - 1));
 					}
 				}
+				logger.log(Level.INFO, "all indexes valid, interacting with storage now");
 				return storageObj.deleteMultipleTasks(tasksToDelete);
 			}
 		}
 	}
 
-
+	
+	/*
+	 * This method executes the search command which allows the user to search for tasks
+	 * based on a given date or an description. It returns a shortlist of tasks containing the specified
+	 * keyword/date to the UI and this will then be shown to the user.
+	 */
 	private static String executeSearchCommand(Handler commandHandler) throws Exception {			
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in delete");
 			return commandHandler.getFeedBack();
-
 		}
 
 		if (commandHandler.getHasEndDate() == true) {
@@ -330,7 +381,7 @@ public class Logic {
 			taskList = storageObj.searchTasksByDate(endDate);
 
 			if (taskList.size() == 0) {
-				logger.log(Level.WARNING, "There are no tasks containing the keyword");
+				logger.log(Level.INFO, "There are no tasks containing the keyword");
 				return MESSAGE_NO_TASKS_FOUND;
 			} else {
 				return convertListToString(taskList);
@@ -341,7 +392,7 @@ public class Logic {
 			taskList = storageObj.searchTasks(keyword);
 
 			if (taskList.size() == 0) {
-				logger.log(Level.WARNING, "There are no tasks containing the keyword");
+				logger.log(Level.INFO, "There are no tasks containing the keyword");
 				return MESSAGE_NO_TASKS_FOUND;
 			} else {
 				logger.log(Level.INFO, "tasks have been retrieved, converting into a string now");
@@ -350,33 +401,46 @@ public class Logic {
 		}
 	}
 
-
+	
+	/*
+	 * This method executes the undo command, which allows the user to undo their most
+	 * recent command.
+	 */
 	private static String executeUndoCommand(Handler commandHandler) throws Exception {
-		boolean hasPreviousCommand = isPreviousCommandValid();
+		boolean isPreviousCommandValid = hasPreviousCommand();
 
-		if (hasPreviousCommand == false) {				
-			logger.log(Level.WARNING, "previous command is invalid");
+		if (isPreviousCommandValid == false) {				
+			logger.log(Level.WARNING, "nothing to undo");
 			return ERROR_PREVIOUS_COMMAND_INVALID;
 
 		} else {			
+			logger.log(Level.INFO, "there is a previous command, undoing now");
 			return storageObj.restore(lastModifyCommand);
 		}
 	}
 	
 	
+	/*
+	 * This method allows the user to redo an action that has recently been undone.
+	 */
 	private static String executeRedoCommand(Handler commandHandler) throws Exception {
-		boolean hasPreviousCommand = isPreviousCommandValid();
+		boolean isPreviousCommandValid = hasPreviousCommand();
 
-		if (hasPreviousCommand == false) {				
-			logger.log(Level.WARNING, "previous command is invalid");
+		if (isPreviousCommandValid == false) {				
+			logger.log(Level.WARNING, "no previous command to redo");
 			return ERROR_PREVIOUS_COMMAND_INVALID_REDO;
 
 		} else {			
+			logger.log(Level.INFO, "previous command is valid, redoing now");
 			return storageObj.restore(lastModifyCommand);
 		}
 	}	
 		
-		
+	
+	/*
+	 * This method allows the user to set the storage location so that SimplyAmazing would be able
+	 * to save the user's data into the specified location
+	 */
 	private static String executeSetLocationCommand(Handler commandHandler) throws Exception {
 
 		if (commandHandler.getHasError() == true) {			
@@ -389,8 +453,10 @@ public class Logic {
 			String feedback = STRING_EMPTY;
 
 			try{
+				logger.log(Level.INFO, "setting the location");
 				feedback = storageObj.setLocation(directoryPath);
 			} catch (Exception e){
+				logger.log(Level.WARNING, "storage has reported an error in location");
 				feedback = ERROR_INVALID_DIRECTORY;
 			}
 			return feedback;
@@ -398,6 +464,10 @@ public class Logic {
 	}
 
 
+	/*
+	 * This method allows the mark command to be executed so that a user would be able to
+	 * mark a task as completed.
+	 */
 	private static String executeMarkCommand(Handler commandHandler) throws Exception {
 
 		if (commandHandler.getHasError() == true) {
@@ -411,35 +481,45 @@ public class Logic {
 			int indexToMark;
 
 			if (listToMark.size() == 1) {
-				logger.log(Level.INFO, "index valid, deleting now");
+				logger.log(Level.INFO, "only one task to delete");
 				indexToMark = listToMark.get(0);
 
-				isIndexValid = checkIndexValid(indexToMark, taskList);
+				isIndexValid = canRetrieveIndex(indexToMark);
 				if (isIndexValid == false) {
 					logger.log(Level.WARNING, "index given is invalid");
 					return ERROR_INVALID_INDEX;
 				}
+				
+				logger.log(Level.INFO, "index valid, interacting with storage now");
 				Task taskToMark = taskList.get(indexToMark - 1);
 				return storageObj.markTaskDone(taskToMark);
+				
 			} else {
 				ArrayList<Task> tasksToMark = new ArrayList<Task>();
 
-				for (int i = 0; i< listToMark.size(); i++) {
+				for (int i = 0; i < listToMark.size(); i++) {
 					indexToMark = listToMark.get(i);
-					isIndexValid = checkIndexValid(indexToMark, taskList);
+					isIndexValid = canRetrieveIndex(indexToMark);
+					
 					if (isIndexValid == false) {
-						logger.log(Level.WARNING, "index given is invalid");
+						logger.log(Level.WARNING, "one of the indexes given is invalid");
 						return ERROR_INVALID_INDEX_MULTIPLE;
 					} else {
-						tasksToMark.add(taskList.get(indexToMark -1 ));
+						tasksToMark.add(taskList.get(indexToMark - 1 ));
 					}
 				}
+				logger.log(Level.INFO, "indexes valid, interacting with storage now");
 				return storageObj.markMultipleTasksDone(tasksToMark);
 			}
 		}
 	}
 
-
+	
+	/*
+	 * This method allows the unmark command to be executed so that the user would be able
+	 * to unmark a completed task. Before this command can be successfully executed the user
+	 * will have to execute the "view done" command.
+	 */
 	private static String executeUnmarkCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in edit");
@@ -451,41 +531,50 @@ public class Logic {
 		int indexToUnmark;
 
 		if (listToUnmark.size() == 1) {
-			logger.log(Level.INFO, "index valid, deleting now");
+			logger.log(Level.INFO, "only 1 index to unmark");
 			indexToUnmark = listToUnmark.get(0);
 
-			isIndexValid = checkIndexValid(indexToUnmark, taskList);
+			isIndexValid = canRetrieveIndex(indexToUnmark);
 			if (isIndexValid == false) {
 				logger.log(Level.WARNING, "index given is invalid");
 				return ERROR_INVALID_INDEX;
 			}
+			logger.log(Level.INFO, "index valid, unmarking now");
 			Task taskToUnmark = taskList.get(indexToUnmark - 1);
 			return storageObj.markTaskUndone(taskToUnmark);
 
 		} else {
 			ArrayList<Task> tasksToUnmark = new ArrayList<Task>();
 
-			for (int i = 0; i< listToUnmark.size(); i++) {
+			for (int i = 0; i < listToUnmark.size(); i++) {
 				indexToUnmark = listToUnmark.get(i);
-				isIndexValid = checkIndexValid(indexToUnmark, taskList);
+				isIndexValid = canRetrieveIndex(indexToUnmark);
+				
 				if (isIndexValid == false) {
-					logger.log(Level.WARNING, "index given is invalid");
+					logger.log(Level.WARNING, "one of the indexes given is invalid");
 					return ERROR_INVALID_INDEX_MULTIPLE;
 				} else {
-					tasksToUnmark.add(taskList.get(indexToUnmark -1 ));
+					tasksToUnmark.add(taskList.get(indexToUnmark - 1 ));
 				}
 			}
+			logger.log(Level.INFO, "indexes valid, interacting with storage to unmark");
 			return storageObj.markMultipleTasksUndone(tasksToUnmark);
 		}
 	}
 
-
+	
+	/*
+	 * This method allows the help command to be executed. It returns the required
+	 * help message to the UI.
+	 */
 	private static String executeHelpCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in help");
 			return commandHandler.getFeedBack();
 
 		} else {
+			logger.log(Level.INFO, "no error, keyword is valid.");
+			
 			if(commandHandler.getKeyWord().equals(STRING_EMPTY)) {
 				return MESSAGE_HELP;
 			} else if (commandHandler.getKeyWord().equals("add")) {
@@ -506,7 +595,7 @@ public class Logic {
 				return MESSAGE_HELP_UNDO;
 			} else if (commandHandler.getKeyWord().equals("redo")) {
 				return MESSAGE_HELP_REDO;
-			} else if (commandHandler.getKeyWord().equals("undone")) {
+			} else if (commandHandler.getKeyWord().equals("unmark")) {
 				return MESSAGE_HELP_UNMARK;
 			} else {
 				return MESSAGE_HELP_MARK;
@@ -514,8 +603,15 @@ public class Logic {
 		}
 	}
 
-
-	private boolean isListModified(CommandType commandType) {
+	
+	/*
+	 * This method checks if a command has modified the list of tasks. This
+	 * ensures that the undo and redo commands function correctly by undoing or 
+	 * redoing only commands which have modified the list of tasks.
+	 */
+	private static boolean hasListBeenModified(CommandType commandType) {
+		assert commandType != null;
+		
 		if (commandType.equals(CommandType.ADD_TASK)) {
 			return true;
 		} else if (commandType.equals(CommandType.DELETE_TASK)) {
@@ -531,25 +627,37 @@ public class Logic {
 		}
 	}
 
-
-	private static boolean checkIndexValid(int index, ArrayList<Task> list){
-		if (index <= 0 || index > list.size()) {
+	
+	/*
+	 * This method checks to see if an index given by the user is valid or invalid.
+	 * This ensures that the program is able to detect if the user has given an invalid
+	 * index and would allow the program to act accordingly
+	 */
+	private static boolean canRetrieveIndex(int index) {
+		if (index <= 0 || index > taskList.size()) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-
-	private static String hasDateError(Task fieldsToChange, Task originalTask) throws Exception{
+	
+	/*
+	 * This method checks if the edited date/dates specified by the user is/are valid
+	 * or invalid. If invalid then an error message will be created.
+	 */
+	private static String hasDateError(Task fieldsToChange, Task originalTask) throws Exception {
 		Date newStartTime = fieldsToChange.getStartTime();
 		Date newEndTime = fieldsToChange.getEndTime();
 		Date previousStartTime = originalTask.getStartTime();
 		Date previousEndTime = originalTask.getEndTime();
-
-		if (!(newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0 && newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0)) { // if both start time and end time are not modified
-			if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // start time is modified
-				if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) !=0 && previousEndTime.compareTo(Task.DEFAULT_DATE_VALUE) == 0) { // no end time => it's a floating task 
+		
+		// if both start time and end time are not modified
+		if (!(newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0 && newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0)) { 
+			// start time is modified
+			if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
+				// no end time => it's a floating task 
+				if (newStartTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) !=0 && previousEndTime.compareTo(Task.DEFAULT_DATE_VALUE) == 0) { 
 					return ERROR_NO_END_TIME;
 
 				} else { // it's a deadline
@@ -562,7 +670,8 @@ public class Logic {
 					}
 				}
 			} else if (newEndTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // end time is modified
-				if (previousStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // has start time => it's an event
+				// has start time => it's an event
+				if (previousStartTime.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { 
 					if (newEndTime.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) == 0) {
 						return ERROR_INVALID_END_TIME;
 					} else {
@@ -576,12 +685,11 @@ public class Logic {
 				}
 			} 
 		}
-
 		return STRING_EMPTY;
 	}
 
-
-	private static boolean isPreviousCommandValid() {
+	
+	private static boolean hasPreviousCommand() {
 		if (lastModifyCommand.equals(STRING_EMPTY)) {
 			return false;
 
@@ -589,22 +697,40 @@ public class Logic {
 			return true;
 		}
 	}
-
 	
-	public String getPreviousCommand(){
+	
+	/*
+	 * This method returns the previous command to the UI so that it can be made available for the user
+	 */
+	public String getPreviousCommand() {
 		return previousCommandString;
 	}
+	
+	
+	/*
+	 * This method returns the a String containing all the tasks in the list so that the 
+	 * UI is able to display them to the user
+	 */
+	public static String getView() throws Exception {
+		taskList = storageObj.viewTasks(STRING_EMPTY);
+		return convertListToString(taskList);
+	}
 
-
-	private static String convertListToString(ArrayList<Task> list) {
-		if (list.size() == 0) {
+	
+	/*
+	 * This method receives a list of tasks and converts it to a String, which can then
+	 * be used by the UI to display to the user
+	 */
+	private static String convertListToString(ArrayList<Task> listToConvert) {
+		assert listToConvert != null;
+		if (listToConvert.size() == 0) {
 			return MESSAGE_EMPTY_LIST;
 		}
 		String convertedList = STRING_EMPTY;
 
-		for (int i = 0; i < list.size(); i++) {
-			Task taskToPrint = list.get(i);
-			convertedList += (i+1) + "," + taskToPrint.toString() + "\n";
+		for (int i = 0; i < listToConvert.size(); i++) {
+			Task taskToPrint = listToConvert.get(i);
+			convertedList += (i + 1) + "," + taskToPrint.toString() + "\n";
 		}
 		return convertedList;
 	}

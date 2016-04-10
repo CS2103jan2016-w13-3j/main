@@ -7,8 +7,8 @@ public class ParserHelp {
 	private final String STRING_VIEW = "view";
 	private final String STRING_UNDO = "undo";
 	private final String STRING_REDO = "redo";
-	private final String STRING_DONE = "done";
-	private final String STRING_UNDONE = "undone";
+	private final String STRING_MARK = "mark";
+	private final String STRING_UNMARK = "unmark";
 	private final String STRING_EDIT = "edit";
 	private final String STRING_SEARCH = "search";
 	private final String STRING_LOCATION = "location";
@@ -34,11 +34,11 @@ public class ParserHelp {
 		case STRING_REDO:
 			handler.setKeyWord(STRING_REDO);
 			break;
-		case STRING_DONE:
-			handler.setKeyWord(STRING_DONE);
+		case STRING_MARK:
+			handler.setKeyWord(STRING_MARK);
 			break;
-		case STRING_UNDONE:
-			handler.setKeyWord(STRING_UNDONE);
+		case STRING_UNMARK:
+			handler.setKeyWord(STRING_UNMARK);
 			break;
 		case STRING_EDIT:
 			handler.setKeyWord(STRING_EDIT);
