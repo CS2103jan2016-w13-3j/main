@@ -67,9 +67,9 @@ public class Parser {
 	private String removeFirstWord = STRING_EMPTY;
 
 	public Parser() {
-		logger = Logger.getLogger("Parser");
+		logger = Logger.getLogger("simplyamazing");
 		try{
-			FileHandler fh = new FileHandler("C:\\Users\\Public\\SimplyAmzing\\logFile.log");
+			FileHandler fh = new FileHandler("C:\\Users\\Public\\SimplyAmazing\\logFile.txt", true);
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();  
 			fh.setFormatter(formatter);

@@ -93,9 +93,10 @@ public class Logic {
 		lastModifyCommand = STRING_EMPTY;
 		previousCommandKeyword = STRING_EMPTY;
 		previousCommandString = STRING_EMPTY;
-		logger = Logger.getLogger("Logic");
+		logger = Logger.getLogger("simplyamazing");
 		try{
-			FileHandler fh = new FileHandler("C:\\Users\\Ishpal\\Desktop\\Task Data\\logFile.log");
+			//java.util.logging.FileHandler.append=true;
+			FileHandler fh = new FileHandler("C:\\Users\\Public\\SimplyAmazing\\logFile.txt", true);
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();  
 			fh.setFormatter(formatter);

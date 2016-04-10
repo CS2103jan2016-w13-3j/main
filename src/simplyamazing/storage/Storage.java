@@ -59,7 +59,7 @@ public class Storage {
 	private static final String MESSAGE_LOG_TASK_DATA_READABLE = "Content is readable from task data file.";
 	private static final String MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE = "Task list is successfully imported into the task data file.";
 	
-	private static Logger logger  = Logger.getLogger("Storage");
+	private static Logger logger  = Logger.getLogger("simplyamazing");
 
 	private static boolean isEditing = false;
 
@@ -72,7 +72,7 @@ public class Storage {
 		fileManager = new FileManager();
 		
 		try{
-			FileHandler fh = new FileHandler(DIRECTORY_SYSTEM+File.separator+"logFile.log");
+			FileHandler fh = new FileHandler(DIRECTORY_SYSTEM+File.separator+"logFile.txt", true);
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();  
 			fh.setFormatter(formatter);
