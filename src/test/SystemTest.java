@@ -34,7 +34,7 @@ public class SystemTest {
 	private static final String COMMAND_REDO = "redo";
 	private static final String COMMAND_SET_LOCATION = "location";
 	private static final String COMMAND_MARK_AS_DONE = "done";
-	private static final String COMMAND_UNDONE = "undone";
+	private static final String COMMAND_UNMARK = "unmark";
 	private static final String COMMAND_EXIT = "exit";
 	private static final String COMMAND_INVALID = "abcd";
 	
@@ -79,11 +79,11 @@ public class SystemTest {
 	private static final String COMMAND_HELP_EDIT = COMMAND_HELP + CHARACTER_SPACE + COMMAND_EDIT;
 	private static final String COMMAND_HELP_DELETE = COMMAND_HELP + CHARACTER_SPACE + COMMAND_DELETE;
 	private static final String COMMAND_HELP_UNDO = COMMAND_HELP + CHARACTER_SPACE + COMMAND_UNDO;
-	private static final String COMMAND_HELP_DONE = COMMAND_HELP + CHARACTER_SPACE + COMMAND_MARK_AS_DONE;
+	private static final String COMMAND_HELP_MARK = COMMAND_HELP + CHARACTER_SPACE + "mark";
 	private static final String COMMAND_HELP_SEARCH = COMMAND_HELP + CHARACTER_SPACE + COMMAND_SEARCH;
 	private static final String COMMAND_HELP_EXIT = COMMAND_HELP + CHARACTER_SPACE + COMMAND_EXIT;
 	private static final String COMMAND_HELP_REDO = COMMAND_HELP + CHARACTER_SPACE + COMMAND_REDO;
-	private static final String COMMAND_HELP_UNDONE = COMMAND_HELP + CHARACTER_SPACE + COMMAND_UNDONE;
+	private static final String COMMAND_HELP_UNMARK = COMMAND_HELP + CHARACTER_SPACE + COMMAND_UNMARK;
 	private static final String COMMAND_DELETE_NEGATIVE_INDEX = COMMAND_DELETE + CHARACTER_SPACE + "-1";
 	private static final String COMMAND_DELETE_ZERO_INDEX = COMMAND_DELETE + CHARACTER_SPACE + "0";
 	private static final String COMMAND_DELETE_LARGER_INDEX = COMMAND_DELETE + CHARACTER_SPACE + "4";
@@ -91,14 +91,13 @@ public class SystemTest {
 	private static final String COMMAND_DELETE_MULTIPLE_INVALID = COMMAND_DELETE + CHARACTER_SPACE + "1 2 4";
 	private static final String COMMAND_DELETE_SINGLE = COMMAND_DELETE + CHARACTER_SPACE + "1";
 	private static final String COMMAND_DELETE_MULTIPLE = COMMAND_DELETE + CHARACTER_SPACE + "1 2";
-	
-	private static final String COMMAND_DONE_NEGATIVE_INDEX = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "-1";
-	private static final String COMMAND_DONE_ZERO_INDEX = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "0";
-	private static final String COMMAND_DONE_LARGER_INDEX = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "4";
-	private static final String COMMAND_DONE_STRING = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + COMMAND_INVALID;
-	private static final String COMMAND_DONE_MULTIPLE_INVALID = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "1 2 4";
-	private static final String COMMAND_DONE_SINGLE = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "1";
-	private static final String COMMAND_DONE_MULTIPLE = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "1 2";
+	private static final String COMMAND_MARK_NEGATIVE_INDEX = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "-1";
+	private static final String COMMAND_MARK_ZERO_INDEX = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "0";
+	private static final String COMMAND_MARK_LARGER_INDEX = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "4";
+	private static final String COMMAND_MARK_STRING = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + COMMAND_INVALID;
+	private static final String COMMAND_MARK_MULTIPLE_INVALID = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "1 2 4";
+	private static final String COMMAND_MARK_SINGLE = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "1";
+	private static final String COMMAND_MARK_MULTIPLE = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "1 2";
 	
 	
 	
@@ -142,13 +141,12 @@ public class SystemTest {
 	
 	//@@author A0125136N
 	
-	
 	private static final String FEEDBACK_HELP_INTEGER = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
 	private static final String FEEDBACK_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";;
 	private static final String FEEDBACK_HELP_REDO = "Redo the most recent command\nCommand: redo\n";
 	private static final String FEEDBACK_HELP_UNMARK = "Unmarks a completed task\nCommand: undone <task index>\n\nExample:\nundone 2\n\n\n"
 			+ "Note: You may also use the keyword \"unmark\" instead of \"undone\"";
-	private static final String FEEDBACK_HELP_DONE = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n\n\n"
+	private static final String FEEDBACK_HELP_MARK = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n\n\n"
 			+ "Note: You may also use the keywords \"mark\", \"complete\" or \"finish\" instead of \"done\"";
 	
 	private static final String FEEDBACK_HELP_DELETE = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1\n\n\n"
@@ -430,9 +428,9 @@ public class SystemTest {
 		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_EDIT).getCommandType());
 		assertEquals(FEEDBACK_HELP_EDIT, logic.executeCommand(COMMAND_HELP_EDIT));
 		
-		assertEquals(false, parser.getHandler(COMMAND_HELP_DONE).getHasError());
-		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_DONE).getCommandType());
-		assertEquals(FEEDBACK_HELP_DONE, logic.executeCommand(COMMAND_HELP_DONE));
+		assertEquals(false, parser.getHandler(COMMAND_HELP_MARK).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_MARK).getCommandType());
+		assertEquals(FEEDBACK_HELP_MARK, logic.executeCommand(COMMAND_HELP_MARK));
 		
 		assertEquals(false, parser.getHandler(COMMAND_HELP_UNDO).getHasError());
 		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_UNDO).getCommandType());
@@ -450,9 +448,9 @@ public class SystemTest {
 		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_EXIT).getCommandType());
 		assertEquals(FEEDBACK_HELP_EXIT, logic.executeCommand(COMMAND_HELP_EXIT));
 		
-		assertEquals(false, parser.getHandler(COMMAND_HELP_UNDONE).getHasError());
-		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_UNDONE).getCommandType());
-		assertEquals(FEEDBACK_HELP_UNMARK, logic.executeCommand(COMMAND_HELP_UNDONE));
+		assertEquals(false, parser.getHandler(COMMAND_HELP_UNMARK).getHasError());
+		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_UNMARK).getCommandType());
+		assertEquals(FEEDBACK_HELP_UNMARK, logic.executeCommand(COMMAND_HELP_UNMARK));
 		
 		assertEquals(false, parser.getHandler(COMMAND_HELP_REDO).getHasError());
 		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_REDO).getCommandType());
@@ -528,38 +526,38 @@ public class SystemTest {
 		logic.executeCommand(COMMAND_ADD_EVENT);
 		
 		// test for invalid indexes
-		assertEquals(false, parser.getHandler(COMMAND_DONE_NEGATIVE_INDEX).getHasError());
-		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_NEGATIVE_INDEX).getCommandType());
-		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_DONE_NEGATIVE_INDEX));
+		assertEquals(false, parser.getHandler(COMMAND_MARK_NEGATIVE_INDEX).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_MARK_NEGATIVE_INDEX).getCommandType());
+		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_MARK_NEGATIVE_INDEX));
 		
-		assertEquals(false, parser.getHandler(COMMAND_DONE_ZERO_INDEX).getHasError());
-		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_ZERO_INDEX).getCommandType());
-		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_DONE_ZERO_INDEX));
+		assertEquals(false, parser.getHandler(COMMAND_MARK_ZERO_INDEX).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_MARK_ZERO_INDEX).getCommandType());
+		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_MARK_ZERO_INDEX));
 		
-		assertEquals(false, parser.getHandler(COMMAND_DONE_LARGER_INDEX).getHasError());
-		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_LARGER_INDEX).getCommandType());
-		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_DONE_LARGER_INDEX));
+		assertEquals(false, parser.getHandler(COMMAND_MARK_LARGER_INDEX).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_MARK_LARGER_INDEX).getCommandType());
+		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_MARK_LARGER_INDEX));
 		
-		assertEquals(true, parser.getHandler(COMMAND_DONE_STRING).getHasError());
-		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_STRING).getCommandType());
-		assertEquals(FEEDBACK_INDEX_IS_STRING, logic.executeCommand(COMMAND_DONE_STRING));
+		assertEquals(true, parser.getHandler(COMMAND_MARK_STRING).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_MARK_STRING).getCommandType());
+		assertEquals(FEEDBACK_INDEX_IS_STRING, logic.executeCommand(COMMAND_MARK_STRING));
 		
-		assertEquals(false, parser.getHandler(COMMAND_DONE_MULTIPLE_INVALID).getHasError());
-		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_MULTIPLE_INVALID).getCommandType());
-		assertEquals(FEEDBACK_MULTIPLE_INVALID, logic.executeCommand(COMMAND_DONE_MULTIPLE_INVALID));
+		assertEquals(false, parser.getHandler(COMMAND_MARK_MULTIPLE_INVALID).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_MARK_MULTIPLE_INVALID).getCommandType());
+		assertEquals(FEEDBACK_MULTIPLE_INVALID, logic.executeCommand(COMMAND_MARK_MULTIPLE_INVALID));
 		
 		// valid done
 		assertEquals(3, storage.getFileManager().getLineCount(todo));
 		
 		logic.executeCommand(COMMAND_VIEW_TASKS_EMPTY);
-		assertEquals(false, parser.getHandler(COMMAND_DONE_SINGLE).getHasError());
-		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_SINGLE).getCommandType());
-		assertEquals(String.format(FEEDBACK_MARKED_DONE, parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toFilteredString()), logic.executeCommand(COMMAND_DONE_SINGLE));
+		assertEquals(false, parser.getHandler(COMMAND_MARK_SINGLE).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_MARK_SINGLE).getCommandType());
+		assertEquals(String.format(FEEDBACK_MARKED_DONE, parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toFilteredString()), logic.executeCommand(COMMAND_MARK_SINGLE));
 		
 		logic.executeCommand(COMMAND_VIEW_TASKS_EMPTY);
-		assertEquals(false, parser.getHandler(COMMAND_DONE_MULTIPLE).getHasError());
-		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_MULTIPLE).getCommandType());
-		assertEquals(FEEDBACK_MULTIPLE_DONE_VALID, logic.executeCommand(COMMAND_DONE_MULTIPLE));
+		assertEquals(false, parser.getHandler(COMMAND_MARK_MULTIPLE).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_MARK_MULTIPLE).getCommandType());
+		assertEquals(FEEDBACK_MULTIPLE_DONE_VALID, logic.executeCommand(COMMAND_MARK_MULTIPLE));
 	}
 	
 	@Test
