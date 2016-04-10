@@ -62,9 +62,7 @@ public class UI {
 					} else {
 						window.scrollPane.setVisible(false);
 					}
-					feedbackArea.setForeground(Color.BLACK);
-					feedbackArea.setText(MESSAGE_WELCOME);
-					logger.log(Level.INFO, MESSAGE_WELCOME);
+					setFeedback(MESSAGE_WELCOME, Color.BLACK);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -197,16 +195,13 @@ public class UI {
 					scrollPane.setVisible(false);
 				}
 				if (feedback.contains(STRING_ERROR)) {
-					feedbackArea.setForeground(Color.RED);
-					logger.log(Level.WARNING, feedback);
+					setFeedback(feedback, Color.RED);
 				} else {
 					if (feedback.matches(MESSAGE_EMPTY_LIST) || feedback.matches(MESSAGE_NO_TASKS_FOUND)) {
 						scrollPane.setVisible(false);
 					}
-					feedbackArea.setForeground(COLOR_DARK_GREEN);
-					logger.log(Level.INFO, feedback);
+					setFeedback(feedback, COLOR_DARK_GREEN);
 				}
-				feedbackArea.setText(feedback);
 			} 
 		} catch (Exception e1) {
 			feedback = getErrorMessage(e1);
@@ -214,6 +209,12 @@ public class UI {
 			feedbackArea.setForeground(Color.RED);
 			feedbackArea.setText(feedback);
 		}
+	}
+
+	private static void setFeedback(String feedback, Color color) {
+		feedbackArea.setForeground(color);
+		logger.log(Level.WARNING, feedback);
+		feedbackArea.setText(feedback);
 	}
 	
 	private void updateTaskDataTable() throws Exception {

@@ -11,13 +11,13 @@ import simplyamazing.data.Task;
 import simplyamazing.data.TaskList;
 
 public class Storage {
-	private static final String DIRECTORY_SYSTEM = "C:\\Users\\Public\\SimplyAmzing";
-	private static final String FILENAME_STORAGE = "\\storage.txt";
-	private static final String FILENAME_TODO = "\\todo.txt";
-	private static final String FILENAME_DONE = "\\done.txt";
-	private static final String FILENAME_TEMP = "\\temp.txt";
-	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
-	private static final String FILENAME_DONE_BACKUP = "\\doneBackup.txt";
+	private static final String DIRECTORY_SYSTEM = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "SimplyAmzing";
+	private static final String FILENAME_STORAGE = File.separator + "storage.txt";
+	private static final String FILENAME_TODO = File.separator + "todo.txt";
+	private static final String FILENAME_DONE = File.separator + "done.txt";
+	private static final String FILENAME_TEMP = File.separator + "temp.txt";
+	private static final String FILENAME_TODO_BACKUP = File.separator + "todoBackup.txt";
+	private static final String FILENAME_DONE_BACKUP = File.separator + "doneBackup.txt";
 
 	private static final String CHARACTER_SPACE = " ";
 	private static final String STRING_EMPTY = "";
@@ -91,27 +91,27 @@ public class Storage {
 	}
 
 	public String setLocation(String location) throws Exception {
-		if(!fileManager.isDirectory(location)) {
+		if(!fileManager.isAbsolutePath(location)) {
 			logger.log(Level.WARNING, MESSAGE_NOT_DIRECTORY);
-			throw new Exception(MESSAGE_NOT_DIRECTORY);
-		} else {	
-			if (!fileManager.isFileExisting(storage)) {
-				fileManager.createNewFile(storage);
-			}
-			if (isLocationSet()) { // When storage location has been set before
-				setupFiles();
-
-				todo = fileManager.createTempFile(todo, location+FILENAME_TODO);
-				done = fileManager.createTempFile(done, location+FILENAME_DONE);
-
-				fileManager.cleanFile(storage);
-			}
-			fileManager.writeToFile(storage, location);
-
-			String feedback = String.format(MESSAGE_LOCATION_SET, location);
-			logger.log(Level.INFO, feedback);
-			return feedback;
+			location = fileManager.getAbsolutePath(location);
+		} 
+		
+		if (!fileManager.isFileExisting(storage)) {
+			fileManager.createNewFile(storage);
 		}
+		if (isLocationSet()) { // When storage location has been set before
+			setupFiles();
+
+			todo = fileManager.createTempFile(todo, location+FILENAME_TODO);
+			done = fileManager.createTempFile(done, location+FILENAME_DONE);
+
+			fileManager.cleanFile(storage);
+		}
+		fileManager.writeToFile(storage, location);
+
+		String feedback = String.format(MESSAGE_LOCATION_SET, location);
+		logger.log(Level.INFO, feedback);
+		return feedback;
 	}
 
 	public String getLocation() throws Exception {
