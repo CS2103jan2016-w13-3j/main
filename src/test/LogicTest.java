@@ -3,22 +3,38 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+
 import org.junit.Test;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 import simplyamazing.logic.Logic;
+import simplyamazing.storage.Storage;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LogicTest {
-	private static Logic logicObj= new Logic();
 	
-	private static String UNDO_NOTHING_FEEDBACK = "Error: There is no previous command to undo";
-	private static String REDO_NOTHING_FEEDBACK = "Error: There is no previous command to redo";
-	private static String ADD_INVALID_FEEDBACK = "Error: Please ensure the fields are correct";
-	private static String ADD_INVALID = "add ";
-	private static String UNRECOGNIZED_COMMAND = "hello";
-	private static String UNRECOGNIZED_COMMAND_STRING_EMPTY = "";
-	private static String UNRECOGNIZED_COMMAND_FEEDBACK = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
+	private static Logic logicObj = new Logic();
+	private static Storage storageObj;
+	
+	private static final String COMMAND_SET_LOCATION_DIRECTORY = "location C:\\Users\\Public\\SimplyAmzing";
+	private static final String FILENAME_TODO = "\\todo.txt";
+	private static final String FILENAME_DONE = "\\done.txt";
+	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
+	private static final String FILENAME_DONE_BACKUP = "\\doneBackup.txt";
+	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:\\Users\\Public\\SimplyAmzing";
+	
+	
+	private static final String UNDO_NOTHING_FEEDBACK = "Error: There is no previous command to undo";
+	private static final String REDO_NOTHING_FEEDBACK = "Error: There is no previous command to redo";
+	private static final String ADD_INVALID_FEEDBACK = "Error: Please ensure the fields are correct";
+	private static final String ADD_INVALID = "add ";
+	private static final String UNRECOGNIZED_COMMAND = "hello";
+	private static final String UNRECOGNIZED_COMMAND_STRING_EMPTY = "";
+	private static final String UNRECOGNIZED_COMMAND_FEEDBACK = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
+	
 	
 		
 	private static final String LOCATION_COMMAND_FAIL = "location just a placeholder";
@@ -224,7 +240,23 @@ public class LogicTest {
 			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data\n\n\nNote: You may also use the keywords \"path\" or \"address\""
 			+ " instead of \"location\"";
 	
-
+	
+	@BeforeClass
+	public static void setUpClass() throws Exception{
+		logicObj = new Logic();
+		storageObj = new Storage();
+		logicObj.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
+		
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		File todoBackup = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO_BACKUP);
+		File doneBackup = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE_BACKUP);
+		storageObj.getFileManager().cleanFile(todo);
+		storageObj.getFileManager().cleanFile(done);
+		storageObj.getFileManager().cleanFile(todoBackup);
+		storageObj.getFileManager().cleanFile(doneBackup);
+	}
+	
 	
 	@Test
 	public void test1ValidCommandTypes() throws Exception{
@@ -236,22 +268,6 @@ public class LogicTest {
 		
 	}
 	
-	@Test
-	/*
-	 * This test case has 2 partitions, namely valid and invalid. These refer to the validity of the command input
-	 * The correct partition encompasses all valid file paths while the incorrect encompasses all invalid file paths
-	 */
-	public void testSetLocation() throws Exception {
-		// valid partition
-		assertEquals(LOCATION_FEEDBACK_PASS, logicObj.executeCommand(LOCATION_COMMAND_PASS));
-
-		// invalid partition
-		assertEquals(LOCATION_EMPTY_STRING_FEEDBACK, logicObj.executeCommand(LOCATION_EMPTY_STRING));
-		assertEquals(LOCATION_FEEDBACK_FAIL, logicObj.executeCommand(LOCATION_COMMAND_FAIL));
-	
-	}
-	
-
 	
 	
 	@Test
@@ -300,24 +316,6 @@ public class LogicTest {
 		
 	}	
 	
-	/*
-	 * The following test case has 2 partitions, based on whether the search results can be found or not.
-	 * It also checks the corner case where the user does not give a keyword after the search command
-	 */
-	@Test
-	public void test5SearchCommand() throws Exception{
-		//results not found partition
-		assertEquals(SEARCH_NOT_FOUND_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
-		logicObj.executeCommand("edit 3 end 19:00 1 Jun 2016");
-		assertEquals(SEARCH_WRONG_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_WRONG_DATE));
-		logicObj.executeCommand(UNDO);
-		
-		// results found partition
-		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
-		assertEquals(SEARCH_EMPTY_STRING_FEEDBACK,logicObj.executeCommand(SEARCH_EMPTY_STRING));
-		assertEquals(SEARCH_VALID_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_DATE));
-	}
-	
 	
 	@Test 
 	public void test4EditCommand() throws Exception{
@@ -352,7 +350,25 @@ public class LogicTest {
 		assertEquals(EDIT_PRIORITY_LOW_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_LOW));
 		assertEquals(EDIT_PRIORITY_NONE_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_NONE));
 	
+	}
 	
+	
+	/*
+	 * The following test case has 2 partitions, based on whether the search results can be found or not.
+	 * It also checks the corner case where the user does not give a keyword after the search command
+	 */
+	@Test
+	public void test5SearchCommand() throws Exception{
+		//results not found partition
+		assertEquals(SEARCH_NOT_FOUND_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
+		logicObj.executeCommand("edit 3 end 19:00 1 Jun 2016");
+		assertEquals(SEARCH_WRONG_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_WRONG_DATE));
+		logicObj.executeCommand(UNDO);
+		
+		// results found partition
+		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
+		assertEquals(SEARCH_EMPTY_STRING_FEEDBACK,logicObj.executeCommand(SEARCH_EMPTY_STRING));
+		assertEquals(SEARCH_VALID_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_DATE));
 	}
 	
 	
@@ -387,7 +403,7 @@ public class LogicTest {
 	 * expected and the last one where a string is given instead of an integer
 	 */
 	
-	public void test71MarkCommand() throws Exception{
+	public void test7MarkCommand() throws Exception{
 		logicObj.executeCommand(VIEW_VALID);
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DONE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DONE_INVALID_INDEX_ZERO));
@@ -403,7 +419,7 @@ public class LogicTest {
 	
 	
 	@Test
-	public void test7UnmarkCommand() throws Exception{
+	public void test8UnmarkCommand() throws Exception{
 		logicObj.executeCommand(VIEW_VALID);
 		logicObj.executeCommand("done 1");
 		logicObj.executeCommand(VIEW_DONE);
@@ -440,5 +456,39 @@ public class LogicTest {
 	@Test
 	public void test9RedoCommand() throws Exception {
 		assertEquals(REDO_FEEDBACK, logicObj.executeCommand(REDO));
+		//clearList();
 	}
+	
+	
+	@Test
+	/*
+	 * This test case has 2 partitions, namely valid and invalid. These refer to the validity of the command input
+	 * The correct partition encompasses all valid file paths while the incorrect encompasses all invalid file paths
+	 */
+	public void testSetLocation() throws Exception {
+		// valid partition
+		assertEquals(LOCATION_FEEDBACK_PASS, logicObj.executeCommand(LOCATION_COMMAND_PASS));
+
+		// invalid partition
+		assertEquals(LOCATION_EMPTY_STRING_FEEDBACK, logicObj.executeCommand(LOCATION_EMPTY_STRING));
+		assertEquals(LOCATION_FEEDBACK_FAIL, logicObj.executeCommand(LOCATION_COMMAND_FAIL));
+	
+	}
+	
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		logicObj = new Logic();
+		storageObj = new Storage();
+		logicObj.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
+		
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		File todoBackup = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO_BACKUP);
+		File doneBackup = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE_BACKUP);
+		storageObj.getFileManager().cleanFile(todo);
+		storageObj.getFileManager().cleanFile(done);
+		storageObj.getFileManager().cleanFile(todoBackup);
+		storageObj.getFileManager().cleanFile(doneBackup);
+	}
+	
 }
