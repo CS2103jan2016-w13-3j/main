@@ -21,6 +21,9 @@ public class Storage {
 	private static final String FILENAME_TODO_BACKUP = File.separator + "todoBackup.txt";
 	private static final String FILENAME_DONE_BACKUP = File.separator + "doneBackup.txt";
 
+	private static final String LOGGER_NAME = "simplyamazing";
+	private static final String FILENAME_LOGGER = "logFile.txt";
+	
 	private static final String CHARACTER_SPACE = " ";
 	private static final String STRING_EMPTY = "";
 
@@ -32,6 +35,7 @@ public class Storage {
 
 	private static final int INDEX_START_FOR_ARRAY = 0;
 
+	private static final String MESSAGE_LOGGER_FILE_CREATION_FAILED = "Logger creation failed";
 	private static final String MESSAGE_LOCATION_SET = "Storage location of task data has been sucessfully set as %1$s.";
 	private static final String MESSAGE_NOT_DIRECTORY = "Error: Not a valid directory.";
 	private static final String MESSAGE_ADDED = "%1$s has been added.";
@@ -69,16 +73,9 @@ public class Storage {
 	private TaskList taskList;
 
 	public Storage() {
-		fileManager = new FileManager();
+		createLogger();
 		
-		try{
-			FileHandler fh = new FileHandler(DIRECTORY_SYSTEM+File.separator+"logFile.txt", true);
-			logger.addHandler(fh);
-			SimpleFormatter formatter = new SimpleFormatter();  
-			fh.setFormatter(formatter);
-		} catch (Exception e){
-			System.out.println("Logger creation failed");
-		}
+		fileManager = new FileManager();
 		
 		fileManager.createDirectory(DIRECTORY_SYSTEM);
 		logger.log(Level.CONFIG, MESSAGE_LOG_DIRECTORY_CREATED);
@@ -89,6 +86,18 @@ public class Storage {
 		taskList = new TaskList();
 	}
 
+	private void createLogger() {
+		logger = Logger.getLogger(LOGGER_NAME);
+		try {
+			FileHandler fh = new FileHandler(DIRECTORY_SYSTEM + File.separator + FILENAME_LOGGER, true);
+			logger.addHandler(fh);
+			SimpleFormatter formatter = new SimpleFormatter();  
+			fh.setFormatter(formatter);
+		} catch (Exception e){
+			System.out.println(MESSAGE_LOGGER_FILE_CREATION_FAILED);
+		}
+	}
+	
 	public FileManager getFileManager() {
 		return fileManager;
 	}
@@ -101,6 +110,14 @@ public class Storage {
 		return !fileManager.isEmptyFile(storage);
 	}
 
+	/*
+	 * This method sets the storage location of the task data.
+	 * It checks the given location is an absolute path.
+	 * If it is not, it converts it into an absolute path and checks if it is a valid directory (i.e. exists).
+	 * If it is invalid, return an error message.
+	 * Otherwise, write to the storage.txt file.
+	 * Pre-condition: location is a non-empty string
+	 */
 	public String setLocation(String location) throws Exception {
 		if(!fileManager.isAbsolutePath(location)) {
 			location = fileManager.getAbsolutePath(location);
@@ -130,12 +147,17 @@ public class Storage {
 
 	public String getLocation() throws Exception {
 		if(!isLocationSet()) {
-			fileManager.writeToFile(storage, DIRECTORY_SYSTEM);
+			setLocation(DIRECTORY_SYSTEM); // set to default location
 		} 
 		String location = fileManager.readFile(storage).get(INDEX_START_FOR_ARRAY);
 		return location;
 	}
 
+	/*
+	 * This method adds the given task to the to-do list.
+	 * Before adding, setup files and update the list if required and create backup file.
+	 * Pre-condition: task is not null
+	 */
 	public String addTask(Task task) throws Exception {
 		setupFiles();
 		if(!isEditing) {
@@ -197,6 +219,11 @@ public class Storage {
 		logger.log(Level.INFO, MESSAGE_LOG_TASK_LIST_UPDATED);
 	}
 
+	/*
+	 * This method edits the task by comparing the differences between the given task and edited task.
+	 * Before editing, setup files and update the list if required and create backup file.
+	 * Pre-condition: task and editedTask are not null
+	 */
 	public String editTask(Task task, Task editedTask) throws Exception {
 		isEditing = true;	
 		ArrayList<Task> tasks = new ArrayList<Task>();
@@ -208,16 +235,19 @@ public class Storage {
 		if (!task.getDescription().matches(editedTask.getDescription()) && !editedTask.getDescription().matches(CHARACTER_SPACE)) {
 			task.setDescription(editedTask.getDescription());
 		}
+		
 		if (editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0) { // start time set as none
 			task.setStartTime(Task.DEFAULT_DATE_VALUE);
 		} else if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 && editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
 			task.setStartTime(editedTask.getStartTime());
 		}
+		
 		if (editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0) { // end time set as none
 			task.setEndTime(Task.DEFAULT_DATE_VALUE);
 		} else if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 && editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
 			task.setEndTime(editedTask.getEndTime());
 		}
+		
 		if (task.getPriority() != editedTask.getPriority()) {
 			task.setPriority(editedTask.getPriority());
 		}
@@ -240,11 +270,19 @@ public class Storage {
 		}
 	}
 
+	/*
+	 * This method deletes the given task from either to-do list or completed task list.
+	 * Before deleting, setup files and update the list if required and create backup file.
+	 * Pre-condition: task is not null
+	 */
 	public String deleteTask(Task task) throws Exception {
 		setupFiles();
 
 		fileManager.createBackup(todo, todoBackup);
 		logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+		
+		fileManager.createBackup(done, doneBackup);
+		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
 
 		updateTaskData();
 
@@ -267,34 +305,46 @@ public class Storage {
 		return feedback;
 	}
 	
+	/*
+	 * This method deletes the given tasks from either to-do list or completed task list.
+	 * Before deleting, setup files and update the list if required and create backup file.
+	 * Pre-condition: tasks are not null
+	 */
 	public String deleteMultipleTasks(ArrayList<Task> tasks) throws Exception {
 		setupFiles();
 
 		fileManager.createBackup(todo, todoBackup);
 		logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_UPDATED);
+		
+		fileManager.createBackup(done, doneBackup);
+		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
 
 		updateTaskData();
+		
 		for (int i = 0; i < tasks.size(); i++) {
 			taskList.removeTaskFromList(tasks.get(i));
-	
-			int lineCountBeforeAdding = fileManager.getLineCount(todo);
-			fileManager.importListToFile(taskList.getTasks(), todo);
-			int lineCountAfterAdding = fileManager.getLineCount(todo);
-			assert(lineCountAfterAdding <= lineCountBeforeAdding);
-	
-			lineCountBeforeAdding = fileManager.getLineCount(done);
-			fileManager.importListToFile(taskList.getCompletedTasks(), done);
-			lineCountAfterAdding = fileManager.getLineCount(done);
-			assert(lineCountAfterAdding <= lineCountBeforeAdding);
-	
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
 	
 			String feedback = String.format(MESSAGE_DELETED, tasks.get(i).toFilteredString());
 			logger.log(Level.INFO, feedback);
 		}
+		int lineCountBeforeAdding = fileManager.getLineCount(todo);
+		fileManager.importListToFile(taskList.getTasks(), todo);
+		int lineCountAfterAdding = fileManager.getLineCount(todo);
+		assert(lineCountAfterAdding <= lineCountBeforeAdding);
+
+		lineCountBeforeAdding = fileManager.getLineCount(done);
+		fileManager.importListToFile(taskList.getCompletedTasks(), done);
+		lineCountAfterAdding = fileManager.getLineCount(done);
+		assert(lineCountAfterAdding <= lineCountBeforeAdding);
+
+		logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
 		return MESSAGE_DELETED_MULTIPLE;
 	}
 
+	/*
+	 * This method retrieves tasks according to the given task type.
+	 * Pre-condition: taskType is not null
+	 */
 	public ArrayList<Task> viewTasks(String taskType) throws Exception {
 
 		setupFiles();
@@ -319,6 +369,9 @@ public class Storage {
 		}
 	}
 
+	/*
+	 * This method retrieves all pending tasks.
+	 */
 	private ArrayList<Task> viewTasks() {
 		ArrayList<Task> tasks = taskList.getTasks();
 		ArrayList<Task> overdueTasks = viewOverdueTasks();
@@ -374,7 +427,10 @@ public class Storage {
 		}
 		return currentFloatingTasks;
 	}
-
+	
+	/*
+	 * This method retrieves all tasks with end time already passed.
+	 */
 	private ArrayList<Task> viewOverdueTasks() {
 		ArrayList<Task> tasks = taskList.getTasks();
 		ArrayList<Task> overdueTasks = new ArrayList<Task>();
@@ -393,6 +449,11 @@ public class Storage {
 		return taskList.getCompletedTasks();
 	}
 
+	/*
+	 * This method retrieves all tasks having the given keyword.
+	 * If there is more than one keyword, returns the result for the exact match (AND) followed by partial match (OR).
+	 * Pre-condition: keyword is not null
+	 */
 	public ArrayList<Task> searchTasks(String keyword) throws Exception {
 		keyword = keyword.toLowerCase();
 		ArrayList<Task> tasks = viewTasks(STRING_EMPTY);
@@ -416,6 +477,12 @@ public class Storage {
 		return filteredTasks;
 	}
 	
+	/*
+	 * This method retrieves all tasks that can be done on the given date.
+	 * When the user provides only the month and/or year, it will give the same result as searchByKeyword 
+	 * Time provided will be ignored.
+	 * Pre-condition: date is not null
+	 */
 	public ArrayList<Task> searchTasksByDate(Date date) throws Exception {
 		String[] datetimes = Task.convertDateToString(date).split(CHARACTER_SPACE);
 		String dateString = datetimes[1] + CHARACTER_SPACE + datetimes[2] + CHARACTER_SPACE + datetimes[3];
@@ -447,15 +514,16 @@ public class Storage {
 		return filteredTasks;
 	}
 
+	/*
+	 * This method moves the given task from to-do list to completed task list.
+	 * Pre-condition: task is not null
+	 */
 	public String markTaskDone(Task task) throws Exception {
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		tasks.add(task);
 		throwExceptionIfCompletedTask(tasks);
-
-		deleteTask(task);
 		
-		fileManager.createBackup(done, doneBackup);
-		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
+		deleteTask(task);
 		
 		task.setDone(true);
 		moveToDoneFile(task);
@@ -463,72 +531,6 @@ public class Storage {
 		String feedback = String.format(MESSAGE_MARKED_DONE, task.toFilteredString());
 		logger.log(Level.INFO, feedback);
 		return feedback;
-	}
-	
-	public String markTaskUndone(Task task) throws Exception {
-		ArrayList<Task> tasks = new ArrayList<Task>();
-		tasks.add(task);
-		throwExceptionIfNotCompletedTask(tasks);
-		
-		fileManager.createBackup(done, doneBackup);
-		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
-		
-		deleteTask(task);
-		
-		task.setDone(false);
-		moveToToDoFile(task);
-
-		String feedback = String.format(MESSAGE_MARKED_UNDONE, task.toFilteredString());
-		logger.log(Level.INFO, feedback);
-		return feedback;
-	}
-	
-	private void throwExceptionIfNotCompletedTask(ArrayList<Task> tasks) throws Exception {
-		for (int i = 0; i < tasks.size(); i++) {
-			if(taskList.getTasks().contains(tasks.get(i))) {
-				String exceptionMessage = String.format(MESSAGE_INCOMPLETE_TASK, tasks.get(i).toFilteredString());
-				logger.log(Level.WARNING, exceptionMessage);
-				throw new Exception(exceptionMessage);
-			}
-		}
-	}
-
-	public String markMultipleTasksDone(ArrayList<Task> tasks) throws Exception {
-		
-		throwExceptionIfCompletedTask(tasks);
-
-		deleteMultipleTasks(tasks);
-		
-		fileManager.createBackup(done, doneBackup);
-		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
-		
-		for (int i = 0; i < tasks.size(); i++) {
-			tasks.get(i).setDone(true);
-			moveToDoneFile(tasks.get(i));
-	
-			String feedback = String.format(MESSAGE_MARKED_DONE, tasks.get(i).toFilteredString());
-			logger.log(Level.INFO, feedback);
-		}
-		return MESSAGE_MARKED_DONE_MULTIPLE;
-	}
-	
-	public String markMultipleTasksUndone(ArrayList<Task> tasks) throws Exception {
-		
-		throwExceptionIfNotCompletedTask(tasks);
-		
-		fileManager.createBackup(done, doneBackup);
-		logger.log(Level.INFO, MESSAGE_LOG_COMPLETED_TASK_DATA_BACKUP_FILE_UPDATED);
-		
-		deleteMultipleTasks(tasks);
-		
-		for (int i = 0; i < tasks.size(); i++) {
-			tasks.get(i).setDone(false);
-			moveToToDoFile(tasks.get(i));
-	
-			String feedback = String.format(MESSAGE_MARKED_UNDONE, tasks.get(i).toFilteredString());
-			logger.log(Level.INFO, feedback);
-		}
-		return MESSAGE_MARKED_UNDONE_MULTIPLE;
 	}
 	
 	private void moveToDoneFile(Task task) throws Exception {
@@ -541,6 +543,25 @@ public class Storage {
 		logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
 	}
 	
+	/*
+	 * This method moves the given tasks from completed task list to to-do list.
+	 * Pre-condition: tasks are not null
+	 */
+	public String markTaskUndone(Task task) throws Exception {
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		tasks.add(task);
+		throwExceptionIfNotCompletedTask(tasks);
+		
+		deleteTask(task);
+		
+		task.setDone(false);
+		moveToToDoFile(task);
+
+		String feedback = String.format(MESSAGE_MARKED_UNDONE, task.toFilteredString());
+		logger.log(Level.INFO, feedback);
+		return feedback;
+	}
+	
 	private void moveToToDoFile(Task task) throws Exception {
 		taskList.addTaskToList(task, taskList.getTasks());
 
@@ -549,6 +570,56 @@ public class Storage {
 		int lineCountAfterAdding = fileManager.getLineCount(todo);
 		assert(lineCountAfterAdding == lineCountBeforeAdding + 1);
 		logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE);
+	}
+	
+	private void throwExceptionIfNotCompletedTask(ArrayList<Task> tasks) throws Exception {
+		for (int i = 0; i < tasks.size(); i++) {
+			if(taskList.getTasks().contains(tasks.get(i))) {
+				String exceptionMessage = String.format(MESSAGE_INCOMPLETE_TASK, tasks.get(i).toFilteredString());
+				logger.log(Level.WARNING, exceptionMessage);
+				throw new Exception(exceptionMessage);
+			}
+		}
+	}
+
+	/*
+	 * This method moves the given tasks from to-do list to completed task list.
+	 * Pre-condition: tasks are not null
+	 */
+	public String markMultipleTasksDone(ArrayList<Task> tasks) throws Exception {
+		
+		throwExceptionIfCompletedTask(tasks);
+
+		deleteMultipleTasks(tasks);
+		
+		for (int i = 0; i < tasks.size(); i++) {
+			tasks.get(i).setDone(true);
+			moveToDoneFile(tasks.get(i));
+	
+			String feedback = String.format(MESSAGE_MARKED_DONE, tasks.get(i).toFilteredString());
+			logger.log(Level.INFO, feedback);
+		}
+		return MESSAGE_MARKED_DONE_MULTIPLE;
+	}
+	
+	/*
+	 * This method moves the given tasks from completed task list to to-do list.
+	 * Pre-condition: tasks are not null
+	 */
+	public String markMultipleTasksUndone(ArrayList<Task> tasks) throws Exception {
+		
+		throwExceptionIfNotCompletedTask(tasks);
+		
+		deleteMultipleTasks(tasks);
+		
+		for (int i = 0; i < tasks.size(); i++) {
+			tasks.get(i).setDone(false);
+			moveToToDoFile(tasks.get(i));
+	
+			String feedback = String.format(MESSAGE_MARKED_UNDONE, tasks.get(i).toFilteredString());
+			logger.log(Level.INFO, feedback);
+		}
+		return MESSAGE_MARKED_UNDONE_MULTIPLE;
 	}
 
 	public String restore(String previousCommand) throws Exception {

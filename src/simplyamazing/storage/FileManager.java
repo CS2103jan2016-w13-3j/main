@@ -96,9 +96,7 @@ public class FileManager {
 	}
 	
 	public void createBackup(File file, File backupFile) throws Exception {
-		if (!isEmptyFile(file)) {
-			fileCopier.copy(file, backupFile);
-		}
+		fileCopier.copy(file, backupFile);
 	}
 	
 	public void restoreFromBackup(File file, File backupFile) throws Exception {
