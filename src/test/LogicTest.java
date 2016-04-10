@@ -151,11 +151,12 @@ public class LogicTest {
 	private static final String SEARCH_INVALID_KEYWORD = "search joke";
 	private static final String SEARCH_NOT_FOUND_FEEDBACK = "There are no tasks containing the given keyword";
 	private static final String SEARCH_WRONG_DATE = "search 25 Dec 2016";
+	private static final String SEARCH_WRONG_DATE_FEEDBACK = "1,hello world, , , ,incomplete\n";
 	private static final String SEARCH_VALID_DATE = "search 25 May 2016";
-	private static final String SEARCH_VALID_DATE_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hello world, , , ,incomplete\n";
+	private static final String SEARCH_VALID_DATE_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016,low,incomplete\n2,hello world, , , ,incomplete\n";
 	private static final String SEARCH_EMPTY_STRING = "search ";
-	private static final String SEARCH_EMPTY_STRING_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete"
-			+ "\n3,hello world, , , ,incomplete\n";
+	private static final String SEARCH_EMPTY_STRING_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016,low,incomplete\n"
+			+ "2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete\n3,hello world, , , ,incomplete\n";
 
 	private static final String UNDO = "undo";
 	private static final String UNDO_FEEDBACK = "\"unmark 2\" command has been successfully undone.";
@@ -284,33 +285,12 @@ public class LogicTest {
 		assertEquals(HELP_VALID_ADD_FEEDBACK, logicObj.executeCommand(HELP_VALID_ADD));
 		assertEquals(HELP_VALID_EXIT_FEEDBACK, logicObj.executeCommand(HELP_VALID_EXIT));
 	}
-
-	
-	/*
-	 * The following test case has 2 partitions, based on whether the search results can be found or not.
-	 * It also checks the corner case where the user does not give a keyword after the search command
-	 */
-	@Test
-	public void test3SearchCommand() throws Exception{
-		//results not found partition
-		assertEquals(SEARCH_NOT_FOUND_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
-		logicObj.executeCommand("edit 3 end 19:00 1 Jun 2016");
-		assertEquals(SEARCH_NOT_FOUND_FEEDBACK, logicObj.executeCommand(SEARCH_WRONG_DATE));
-		logicObj.executeCommand(UNDO);
-		
-		// results found partition
-		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
-		assertEquals(SEARCH_EMPTY_STRING_FEEDBACK,logicObj.executeCommand(SEARCH_EMPTY_STRING));
-		assertEquals(SEARCH_VALID_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_DATE));
-	}
-	
-	
 	
 	@Test
 	/*
 	 * The following test has 2 partitions, valid and invalid, based on the validity of the command
 	 */
-	public void test4ViewCommand() throws Exception{
+	public void test3ViewCommand() throws Exception{
 		// invalid partition
 		assertEquals(VIEW_INVALID_FEEDBACK, logicObj.executeCommand(VIEW_INVALID));
 		// valid partition
@@ -320,9 +300,27 @@ public class LogicTest {
 		
 	}	
 	
+	/*
+	 * The following test case has 2 partitions, based on whether the search results can be found or not.
+	 * It also checks the corner case where the user does not give a keyword after the search command
+	 */
+	@Test
+	public void test5SearchCommand() throws Exception{
+		//results not found partition
+		assertEquals(SEARCH_NOT_FOUND_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
+		logicObj.executeCommand("edit 3 end 19:00 1 Jun 2016");
+		assertEquals(SEARCH_WRONG_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_WRONG_DATE));
+		logicObj.executeCommand(UNDO);
+		
+		// results found partition
+		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
+		assertEquals(SEARCH_EMPTY_STRING_FEEDBACK,logicObj.executeCommand(SEARCH_EMPTY_STRING));
+		assertEquals(SEARCH_VALID_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_DATE));
+	}
+	
 	
 	@Test 
-	public void test5EditCommand() throws Exception{
+	public void test4EditCommand() throws Exception{
 		logicObj.executeCommand(VIEW_VALID);
 		
 		// test indexes first

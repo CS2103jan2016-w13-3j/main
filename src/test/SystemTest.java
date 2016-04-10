@@ -131,7 +131,7 @@ public class SystemTest {
 	private static final String FEEDBACK_DELETED = "%1$s has been successfully deleted.";
 	private static final String FEEDBACK_RESTORED = "\"%1$s\" command has been successfully undone.";
 	private static final Object FEEDBACK_EMPTY_LIST = "List is empty";
-	private static final Object FEEDBACK_NO_TASK_FOUND = "Error: There are no tasks containing the given keyword";
+	private static final Object FEEDBACK_NO_TASK_FOUND = "There are no tasks containing the given keyword";
 	private static final String FEEDBACK_INVALID_INDEX= "Error: The Index entered is invalid";
 	private static final String FEEDBACK_INDEX_IS_STRING = "Error: Index provided is not an Integer.";
 	private static final String FEEDBACK_MULTIPLE_INVALID = "Error: One of the given indexes is invalid";
