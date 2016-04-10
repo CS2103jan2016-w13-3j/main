@@ -210,9 +210,8 @@ public class ParserAdd {
 				System.out.println(endTimeIndex);
 				if(endTimeIndex < startTimeIndex){
 					System.out.println("This is not an event");
-					handler.setHasError(true);
-					handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
-					return false;
+					isFloatingTask = true;
+					return true;
 				}
 			}
 		}
