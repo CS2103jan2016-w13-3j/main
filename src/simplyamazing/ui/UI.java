@@ -5,8 +5,11 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.io.File;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -16,31 +19,39 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import simplyamazing.logic.Logic;
+import simplyamazing.storage.FileManager;
 
 public class UI {
+	private static final String DIRECTORY_SYSTEM = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "SimplyAmazing";
+	
 	private static final String MESSAGE_WELCOME = "Please enter \"help\" to learn about available commands and their formats";
-	private static final String MESSAGE_LOG_USER_COMMAND_EXECUTED = "user command is successfully executed.";
 	private static final String MESSAGE_EMPTY_LIST = "List is empty";
 	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
-	
+
 	private static final Color COLOR_DARK_GREEN = new Color(0, 128, 0);
 
 	private static final String CHARACTER_NEW_LINE = "\n";
 	public static final String FIELD_SEPARATOR = ",";
 	private static final String STRING_NULL = "";
 	private static final String STRING_ERROR = "Error";
+
+	private static final String MESSAGE_LOG_WELCOME = "Ready to use the system";
+	private static final String MESSAGE_LOG_COMPONENTS_INIITIALIZED = "UI components are initialized";
+	private static final String MESSAGE_LOG_COMPONENTS_ADDED = "UI components are added to the frame";
+	private static final String MESSAGE_LOG_USER_COMMAND_EXECUTED = "User command is successfully executed.";
 	
+
 	public static String feedback = null;
-	
-	private static Logger logger = Logger.getLogger("UI");
-	
+
+	private static Logger logger;
+
 	private JFrame frame;
 	private static JSeparator separator, separator_1;
 	private static JTextArea appLogo;
 	private JScrollPane scrollPane;
 	public static JTextField commandBar;	
 	public static JTextArea feedbackArea;
-	
+
 	private static Logic logic;
 	private static CommandBarController commandBarController;
 	public static TaskDataPanel taskDataPanel;
@@ -60,7 +71,7 @@ public class UI {
 			}
 		});
 	}
-	
+
 	private static String getErrorMessage(Exception e) {
 		return e.getMessage();
 	}
@@ -70,6 +81,16 @@ public class UI {
 	 * @throws Exception 
 	 */
 	public UI() {
+		logger = Logger.getLogger("simplyamazing");
+		new File(DIRECTORY_SYSTEM).mkdir(); // create system directory if not exist
+		try {
+			FileHandler fh = new FileHandler(DIRECTORY_SYSTEM + File.separator + "logFile.txt", true);
+			logger.addHandler(fh);
+			SimpleFormatter formatter = new SimpleFormatter();  
+			fh.setFormatter(formatter);
+		} catch (Exception e){
+			System.out.println("Logger creation failed");
+		}
 		initialize();
 		addUIComponentsToFrame();
 		frame.setVisible(true);
@@ -83,9 +104,11 @@ public class UI {
 				scrollPane.setVisible(false);
 			}
 			setFeedback(MESSAGE_WELCOME, Color.BLACK);
+			logger.log(Level.INFO, MESSAGE_LOG_WELCOME);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	/**
@@ -98,6 +121,7 @@ public class UI {
 		setupCommandBar();
 		setupScrollPane();
 		setupSeparators();
+		logger.log(Level.INFO, MESSAGE_LOG_COMPONENTS_INIITIALIZED);
 	}
 
 	private void setupScrollPane() {
@@ -113,6 +137,7 @@ public class UI {
 		frame.getContentPane().add(separator);
 		frame.getContentPane().add(feedbackArea);
 		frame.getContentPane().add(commandBar);
+		logger.log(Level.INFO, MESSAGE_LOG_COMPONENTS_ADDED);
 	}
 
 	private void setupFeedbackArea() {
@@ -125,7 +150,7 @@ public class UI {
 		instructionPanel = new InstructionPanel();
 		instructionPanel.getInstrctionPanel().setBounds(10, 57, 676, 539);
 	}
-	
+
 	private void setupTaskDataPanel(Object[][] taskData) {
 		taskDataPanel = new TaskDataPanel(taskData);
 	}
@@ -173,10 +198,10 @@ public class UI {
 		try {
 			feedback = logic.executeCommand(command);
 			logger.log(Level.INFO, MESSAGE_LOG_USER_COMMAND_EXECUTED);
-			
+
 			if (feedback.contains(CHARACTER_NEW_LINE)) {
 				String[] tasks = feedback.split(CHARACTER_NEW_LINE);
-				
+
 				if (tasks[0].split(FIELD_SEPARATOR).length == 6) {
 					String[][] taskData = new String[tasks.length][6];
 					for (int i = 0; i < tasks.length; i++) {
@@ -200,11 +225,13 @@ public class UI {
 				}
 				if (feedback.contains(STRING_ERROR)) {
 					setFeedback(feedback, Color.RED);
+					logger.log(Level.WARNING, feedback);
 				} else {
 					if (feedback.matches(MESSAGE_EMPTY_LIST) || feedback.matches(MESSAGE_NO_TASKS_FOUND)) {
 						scrollPane.setVisible(false);
 					}
 					setFeedback(feedback, COLOR_DARK_GREEN);
+					logger.log(Level.INFO, feedback);
 				}
 			} 
 		} catch (Exception e1) {
@@ -217,13 +244,12 @@ public class UI {
 
 	private static void setFeedback(String feedback, Color color) {
 		feedbackArea.setForeground(color);
-		logger.log(Level.WARNING, feedback);
 		feedbackArea.setText(feedback);
 	}
-	
+
 	private void updateTaskDataTable() throws Exception {
 		String[] tasks = getTaskData().split(CHARACTER_NEW_LINE);
-		
+
 		String[][] taskData = new String[tasks.length][6];
 		for (int i = 0; i < tasks.length; i++) {
 			taskData[i] = tasks[i].split(FIELD_SEPARATOR);

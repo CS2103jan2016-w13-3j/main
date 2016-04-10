@@ -186,22 +186,18 @@ public class Storage {
 	private void updateTaskData() throws Exception {
 		if(!fileManager.isEmptyFile(todo)) {
 			ArrayList<String> taskData = fileManager.readFile(todo);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_READABLE);
 			taskList.updateTaskList(taskData, taskList.getTasks());
 			assert(taskList.getTasks().size() > 0);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_LIST_UPDATED);
 		}
 		if(!fileManager.isEmptyFile(done)) {
 			ArrayList<String> completedTaskData = fileManager.readFile(done);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_DATA_READABLE);
 			taskList.updateTaskList(completedTaskData, taskList.getCompletedTasks());
 			assert(taskList.getCompletedTasks().size() > 0);
-			logger.log(Level.INFO, MESSAGE_LOG_TASK_LIST_UPDATED);
 		}
+		logger.log(Level.INFO, MESSAGE_LOG_TASK_LIST_UPDATED);
 	}
 
 	public String editTask(Task task, Task editedTask) throws Exception {
-
 		isEditing = true;	
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		tasks.add(task);
