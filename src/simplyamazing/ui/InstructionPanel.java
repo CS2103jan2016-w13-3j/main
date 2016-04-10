@@ -8,13 +8,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 public class InstructionPanel {
+	
+	private static final int FONT_SIZE_DEFAULT = 16;
+	private static final String FONT_DEFAULT = "Tahoma";
+	
 	private static final String STRING_NULL = "";
+	
 	private JTextPane instructionPanel;
 	
 	public InstructionPanel() {
 		instructionPanel = new JTextPane();
 		instructionPanel.setForeground(Color.BLACK);
-		instructionPanel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		instructionPanel.setFont(new Font(FONT_DEFAULT, Font.PLAIN, FONT_SIZE_DEFAULT));
 		instructionPanel.setEditable(false);
 	}
 	

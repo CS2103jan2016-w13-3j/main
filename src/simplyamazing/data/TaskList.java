@@ -37,6 +37,12 @@ public class TaskList {
 		assert(completedTasks.size() == 0);
 	}
 	
+	public void updateTaskList(ArrayList<String> lines, ArrayList<Task> taskList) throws Exception {
+		if (taskList.size() == SIZE_EMPTY) {
+			createTaskList(lines, taskList);
+		}
+	}
+	
 	/*
 	 * This method converts the content of the file to an array list of tasks.
 	 * The format is description,startTime,endTime,priority,status.
@@ -71,12 +77,6 @@ public class TaskList {
 				task.setDone(true);
 			}
 			addTaskToList(task, taskList);
-		}
-	}
-	
-	public void updateTaskList(ArrayList<String> lines, ArrayList<Task> taskList) throws Exception {
-		if (taskList.size() == SIZE_EMPTY) {
-			createTaskList(lines, taskList);
 		}
 	}
 	
