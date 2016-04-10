@@ -13,12 +13,12 @@ import simplyamazing.data.Task;
 import simplyamazing.storage.Storage;
 
 public class StorageTest {
-	private static final String DIRECTORY_SYSTEM = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "SimplyAmazing";
-	private static final String FILENAME_STORAGE = File.separator + "storage.txt";
-	private static final String FILENAME_TODO = File.separator + "todo.txt";
-	private static final String FILENAME_DONE = File.separator + "done.txt";
-	private static final String FILENAME_TODO_BACKUP = File.separator + "todoBackup.txt";
-	private static final String FILENAME_DONE_BACKUP = File.separator + "doneBackup.txt";
+	private static final String DIRECTORY_SYSTEM = "C:\\Users\\Public\\SimplyAmazing";
+	private static final String FILENAME_STORAGE = "\\storage.txt";
+	private static final String FILENAME_TODO = "\\todo.txt";
+	private static final String FILENAME_DONE = "\\done.txt";
+	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
+	private static final String FILENAME_DONE_BACKUP = "\\doneBackup.txt";
 	
 	private static final String PARAM_DESCRIPTION1 = "go gym";
 	private static final String PARAM_DESCRIPTION = "go swimming";
@@ -32,8 +32,8 @@ public class StorageTest {
 	private static final String PARAM_START_TIME1 = "13:00 20 May 2016";
 	private static final String PARAM_SET_LOCATION_NULL = null;
 	private static final String PARAM_SET_LOCATION_EMPTY = "";
-	private static final String PARAM_SET_LOCATION_NOT_DIRECTORY = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "Documents" + File.separator + "Invalid Directory";
-	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "Documents";
+	private static final String PARAM_SET_LOCATION_NOT_DIRECTORY = "C:\\Users\\Public\\Documents\\Invalid Directory";
+	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:\\Users\\Public\\Documents";
 	private static final String PARAM_VIEW_TASKS_NULL = null;
 	private static final String PARAM_VIEW_TASKS_EMPTY = "";
 	private static final String PARAM_VIEW_TASKS_EVENTS = "events";

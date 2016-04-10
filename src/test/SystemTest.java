@@ -1,24 +1,22 @@
 //@@author A0126289W
 package test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.Date;
 
 import org.junit.Test;
 
-import simplyamazing.data.Task;
 import simplyamazing.logic.Logic;
 import simplyamazing.parser.Parser;
 import simplyamazing.storage.Storage;
 
 public class SystemTest {
 
-	private static final String DIRECTORY_SYSTEM = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "SimplyAmazing";
-	private static final String FILENAME_STORAGE = File.separator + "storage.txt";
-	private static final String FILENAME_TODO = File.separator + "todo.txt";
-	private static final String FILENAME_DONE = File.separator + "done.txt";
+	private static final String DIRECTORY_SYSTEM = "C:\\Users\\Public\\SimplyAmazing";
+	private static final String FILENAME_STORAGE = "\\storage.txt";
+	private static final String FILENAME_TODO = "\\todo.txt";
+	private static final String FILENAME_DONE = "\\done.txt";
 	
 	private static final String CHARACTER_SPACE = " ";
 	

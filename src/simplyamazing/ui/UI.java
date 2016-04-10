@@ -57,9 +57,9 @@ public class UI {
 	private static final int NUM_TASK_FIELDS = 6;
 
 	private static final String LOGGER_NAME = "simplyamazing";
-	private static final String FILENAME_LOGGER = "logFile.txt";
+	private static final String FILENAME_LOGGER = "\\logFile.txt";
 
-	private static final String DIRECTORY_SYSTEM = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "SimplyAmazing";
+	private static final String DIRECTORY_SYSTEM = "C:\\Users\\Public\\SimplyAmazing";
 	
 	private static final String TEXT_APP_LOGO = "Welcome to SimplyAmazing!";
 	private static final String TEXT_TIP = "Type your command here.";
@@ -145,7 +145,7 @@ public class UI {
 		logger = Logger.getLogger(LOGGER_NAME);
 		new File(DIRECTORY_SYSTEM).mkdir(); // create system directory if not exist
 		try {
-			FileHandler fh = new FileHandler(DIRECTORY_SYSTEM + File.separator + FILENAME_LOGGER, true);
+			FileHandler fh = new FileHandler(DIRECTORY_SYSTEM + FILENAME_LOGGER, true);
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();  
 			fh.setFormatter(formatter);

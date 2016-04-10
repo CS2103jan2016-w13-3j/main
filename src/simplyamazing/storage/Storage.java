@@ -13,16 +13,16 @@ import simplyamazing.data.Task;
 import simplyamazing.data.TaskList;
 
 public class Storage {
-	private static final String DIRECTORY_SYSTEM = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "SimplyAmazing";
-	private static final String FILENAME_STORAGE = File.separator + "storage.txt";
-	private static final String FILENAME_TODO = File.separator + "todo.txt";
-	private static final String FILENAME_DONE = File.separator + "done.txt";
-	private static final String FILENAME_TEMP = File.separator + "temp.txt";
-	private static final String FILENAME_TODO_BACKUP = File.separator + "todoBackup.txt";
-	private static final String FILENAME_DONE_BACKUP = File.separator + "doneBackup.txt";
-
+	private static final String DIRECTORY_SYSTEM = "C:\\Users\\Public\\SimplyAmazing";
+	private static final String FILENAME_STORAGE = "\\storage.txt";
+	private static final String FILENAME_TODO = "\\todo.txt";
+	private static final String FILENAME_DONE = "\\done.txt";
+	private static final String FILENAME_TEMP = "\\temp.txt";
+	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
+	private static final String FILENAME_DONE_BACKUP = "\\doneBackup.txt";
+	private static final String FILENAME_LOGGER = "\\logFile.txt";
+	
 	private static final String LOGGER_NAME = "simplyamazing";
-	private static final String FILENAME_LOGGER = "logFile.txt";
 	
 	private static final String CHARACTER_SPACE = " ";
 	private static final String STRING_EMPTY = "";
@@ -89,7 +89,7 @@ public class Storage {
 	private void createLogger() {
 		logger = Logger.getLogger(LOGGER_NAME);
 		try {
-			FileHandler fh = new FileHandler(DIRECTORY_SYSTEM + File.separator + FILENAME_LOGGER, true);
+			FileHandler fh = new FileHandler(DIRECTORY_SYSTEM + FILENAME_LOGGER, true);
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();  
 			fh.setFormatter(formatter);
