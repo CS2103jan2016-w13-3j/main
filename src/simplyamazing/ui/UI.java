@@ -46,11 +46,11 @@ public class UI {
 	private static Logger logger;
 
 	private JFrame frame;
-	private static JSeparator separator, separator_1;
-	private static JTextArea appLogo;
+	private JSeparator separator, separator_1;
+	private JTextArea appLogo;
 	private JScrollPane scrollPane;
-	public static JTextField commandBar;	
-	public static JTextArea feedbackArea;
+	public JTextField commandBar;	
+	public JTextArea feedbackArea;
 
 	private static Logic logic;
 	private static CommandBarController commandBarController;
@@ -242,7 +242,7 @@ public class UI {
 		}
 	}
 
-	private static void setFeedback(String feedback, Color color) {
+	private void setFeedback(String feedback, Color color) {
 		feedbackArea.setForeground(color);
 		feedbackArea.setText(feedback);
 	}

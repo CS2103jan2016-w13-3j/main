@@ -245,7 +245,7 @@ public class StorageTest {
 		storage.addTask(new Task(PARAM_DESCRIPTION1)); // floating task
 		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME)); // deadline
 		storage.addTask(new Task(PARAM_DESCRIPTION1, PARAM_START_TIME, PARAM_END_TIME)); // event
-		storage.addTask(new Task(PARAM_DESCRIPTION1, Task.convertDateToString(new Date(), Task.TIME_FORMAT), Task.convertDateToString(new Date(), Task.TIME_FORMAT))); // overdue
+		storage.addTask(new Task(PARAM_DESCRIPTION1, Task.convertDateToString(new Date()), Task.convertDateToString(new Date()))); // overdue
 		assertEquals(4, storage.getFileManager().getLineCount(todo));
 		assertEquals(4, storage.getTaskList().getTasks().size());
 		

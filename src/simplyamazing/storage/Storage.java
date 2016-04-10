@@ -417,7 +417,7 @@ public class Storage {
 	}
 	
 	public ArrayList<Task> searchTasksByDate(Date date) throws Exception {
-		String[] datetimes = Task.convertDateToString(date, Task.TIME_FORMAT).split(CHARACTER_SPACE);
+		String[] datetimes = Task.convertDateToString(date).split(CHARACTER_SPACE);
 		String dateString = datetimes[1] + CHARACTER_SPACE + datetimes[2] + CHARACTER_SPACE + datetimes[3];
 		ArrayList<Task> tasks = viewTasks(STRING_EMPTY);
 		assert(tasks != null);

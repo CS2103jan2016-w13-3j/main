@@ -52,11 +52,11 @@ public class TaskTest {
 		taskCompare.setStartTime("15:29 28 Apr 2016");
 		assertEquals(1,task.compareTo(taskCompare));
 		assertEquals("go home,15:30 28 Apr 2016, , ,incomplete", task.toString());
-		assertEquals("15:30 28 Apr 2016",Task.convertDateToString(task.getStartTime(), Task.TIME_FORMAT));
+		assertEquals("15:30 28 Apr 2016",Task.convertDateToString(task.getStartTime()));
 		task.setStartTime("19:00 31 MAy 2016"); 
 		Date startTime = task.getStartTime();
 		task.setStartTime(startTime);
-		assertEquals("19:00 31 May 2016",Task.convertDateToString(task.getStartTime(), Task.TIME_FORMAT));
+		assertEquals("19:00 31 May 2016",Task.convertDateToString(task.getStartTime()));
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class TaskTest {
 		task.setEndTime("20:30 31 may 2016"); 
 		Date endTime = task.getEndTime();
 		task.setEndTime(endTime);
-		assertEquals("20:30 31 May 2016",Task.convertDateToString(task.getEndTime(), Task.TIME_FORMAT));
+		assertEquals("20:30 31 May 2016",Task.convertDateToString(task.getEndTime()));
         
 		
 		

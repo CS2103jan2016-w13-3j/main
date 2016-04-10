@@ -10,7 +10,6 @@ public class TaskList {
 
 	private static final String CHARACTER_SPACE = " ";
 	
-	private static final int NUM_FIELDS_STORED = 5;
 	private static final int SIZE_EMPTY = 0;
 	
 	private ArrayList<Task> tasks, completedTasks;
@@ -38,10 +37,16 @@ public class TaskList {
 		assert(completedTasks.size() == 0);
 	}
 	
+	/*
+	 * This method converts the content of the file to an array list of tasks.
+	 * The format is description,startTime,endTime,priority,status.
+	 * If any of the fields is default value, it will be indicated by a space.
+	 * Status is "done" for tasks marked as completed, "overdue" when its end time was already passed, and the rest regarded as "incomplete".
+	 */
 	public void createTaskList(ArrayList<String> lines, ArrayList<Task> taskList) throws Exception {
 		for (int i = 0; i < lines.size(); i++) {
 			String[] fields = lines.get(i).split(Task.FIELD_SEPARATOR);
-			assert(fields.length == NUM_FIELDS_STORED);
+			assert(fields.length == Task.NUM_FIELDS_STORED);
 			
 			String description = fields[Task.ARRAY_POSITION_FOR_DESCRIPTION];
 			String startTimeString = fields[Task.ARRAY_POSITION_FOR_START_TIME];
@@ -75,6 +80,10 @@ public class TaskList {
 		}
 	}
 	
+	/*
+	 * This method adds the given task to the given task list.
+	 * After adding, it ensures tasks are sorted in order.
+	 */
 	public void addTaskToList(Task task, ArrayList<Task> taskList) throws Exception {
 		int taskListSizeBeforeAdding = taskList.size();
 		taskList.add(task);
@@ -83,6 +92,10 @@ public class TaskList {
 		Collections.sort(taskList);
 	}
 	
+	/*
+	 * This method removes the given task from either to-do list or completed task list. 
+	 * After removing, it ensures tasks are sorted in order.
+	 */
 	public void removeTaskFromList(Task task) throws Exception {
 		int taskListSizeBeforeRemoving = 0, taskListSizeAfterRemoving = 0;
 		
