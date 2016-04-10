@@ -55,6 +55,7 @@ public class ParserTest {
 	private static final String ADD_COMMAND_FLOATING_VALID_CAP_FIRSTCHAR = "Add go home";
 	private static final String ADD_COMMAND_FLOATING_VALID_CAP_SECONDCHAR = "aDd go home";
 	private static final String ADD_COMMAND_FLOATING_VALID_CAP_THIRDCHAR = "adD go home";
+	private static final String ADD_COMMAND_FLOATING_VALID_COMPLEX = "add watch nba to 18:00 29 Apr 2016 by me from 19:00 29 Apr 2016"; 
 	private static final String ADD_COMMAND_VALID_FEEDBACK = "";
 	private static final String ADD_COMMAND_DEADLINE_VALID = "add finish homework by 22:00 20 Apr 2017";
 	private static final String ADD_COMMAND_DEADLINE_VALID_NATTY = "add buy pens by next Monday 9pm";
@@ -64,7 +65,6 @@ public class ParserTest {
 	private static final String ADD_COMMAND_EVENT_VALID_SPECIAL_STRING_2 = "add *camping from 11am tomorrow to 3pm tomorrow";
 	private static final String ADD_COMMAND_EVENT_VALID_STDSTART_NATTYEND = "add watch movies from 20:00 30 APr 2016 to 2016-04-30 9pm";
 	private static final String ADD_COMMAND_EVENT_VALID_STDEND_NATTYSTART = "add pary from next Tuesday 6pm to 21:00 25 Apr 2016";
-	private static final String ADD_COMMAND_EVENT_COMPLEX_INVALID = "add watch nba to 18:00 29 Apr 2016 by me from 19:00 29 Apr 2016"; 
 	private static final String ADD_COMMAND_WITH_ONLY_STARTTIME_INVALID = "add walk from 14:00 10 May 2017";
 	private static final String ADD_COMMAND_STARTTIME_BEFORE_CURRENTTIME ="add test from 13:00 12 Mar 2016 to 14:00 11 Apr 2016";
 	private static final String ADD_COMMAND_DEADLINE_NO_DESCRIPTION = "add by 23:00 01 May 2016";
@@ -230,6 +230,7 @@ public class ParserTest {
 		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID_CAP_FIRSTCHAR).getFeedBack());
 		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID_CAP_SECONDCHAR).getFeedBack());
 		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID_CAP_THIRDCHAR).getFeedBack());
+		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID_COMPLEX).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_WITH_ONLY_STARTTIME_INVALID).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FEEDBACK,
 				parser.getHandler(ADD_COMMAND_STARTIME_BIGGER_THAN_ENDTIME).getFeedBack());
@@ -247,7 +248,6 @@ public class ParserTest {
 		assertEquals(ADD_COMMAND_ERROR_TIME_FORMAT_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINES_WRONG_ENDTIME).getFeedBack());
 		assertEquals(ADD_COMMAND_ERROR_TIME_FORMAT_INVALID_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINES_INVALID_STANDARD_END).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_NONE).getFeedBack());
-		assertEquals(ADD_COMMAND_INVALID_FIELDS_NOT_CORRECT_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_COMPLEX_INVALID).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_NATTY_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINES_INVALID_STANDARD_END_DATE).getFeedBack());
 		assertEquals(ADD_COMMAND_INVALID_NATTY_FEEDBACK, parser.getHandler(ADD_COMMAND_DEADLINES_INVALID_STANDARD_END_MONTH).getFeedBack());
 	}
