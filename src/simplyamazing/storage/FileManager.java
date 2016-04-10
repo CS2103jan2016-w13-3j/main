@@ -52,6 +52,10 @@ public class FileManager {
 	public boolean isAbsolutePath(String location) {
 		return fileVerifier.isAbsolutePath(location);
 	}
+	
+	public boolean isValidDirectory(String location) {
+		return fileVerifier.isFileExisting(new File(location));
+	}
 
 	public String getAbsolutePath(String location) {
 		absolutePath = System.getProperty(DIRECTORY_CURRENT_USER)+ File.separator + location;

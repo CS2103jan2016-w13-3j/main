@@ -33,7 +33,7 @@ public class StorageTest {
 	private static final String PARAM_START_TIME1 = "13:00 20 May 2016";
 	private static final String PARAM_SET_LOCATION_NULL = null;
 	private static final String PARAM_SET_LOCATION_EMPTY = "";
-	private static final String PARAM_SET_LOCATION_NOT_DIRECTORY = "C:\\Users\\Public\\Documents\\SimplyAmazing";
+	private static final String PARAM_SET_LOCATION_NOT_DIRECTORY = "C:\\Users\\Public\\Documents\\Invalid Directory";
 	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:\\Users\\Public\\Documents";
 	private static final String PARAM_VIEW_TASKS_NULL = null;
 	private static final String PARAM_VIEW_TASKS_EMPTY = "";
@@ -57,9 +57,9 @@ public class StorageTest {
 	private static final String FEEDBACK_COMPLETED_TASK = "%1$s is a completed task.";
 	private static final String FEEDBACK_MARKED_DONE = "%1$s has been marked as done.";
 	private static final String FEEDBACK_INCOMPLETE_TASK = "%1$s is an incomplete task.";
-	private static final String FEEDBACK_MARKED_UNDONE = "%1$s has been marked as undone.";
+	private static final String FEEDBACK_MARKED_UNDONE = "%1$s has been marked as incomplete.";
 	private static final String FEEDBACK_MARKED_DONE_MULTIPLE = "Provided tasks have been marked as done.";
-	private static final String FEEDBACK_MARKED_UNDONE_MULTIPLE = "Provided tasks have been marked as undone.";
+	private static final String FEEDBACK_MARKED_UNDONE_MULTIPLE = "Provided tasks have been marked as incomplete.";
 	private static final String FEEDBACK_DELETED_MULTIPLE = "Provided tasks have been successfully deleted.";
 	private static final String FEEDBACK_DELETED = "%1$s has been successfully deleted.";
 	private static final String FEEDBACK_RESTORED = "\"%1$s\" command has been successfully undone.";

@@ -92,9 +92,12 @@ public class Storage {
 
 	public String setLocation(String location) throws Exception {
 		if(!fileManager.isAbsolutePath(location)) {
-			logger.log(Level.WARNING, MESSAGE_NOT_DIRECTORY);
 			location = fileManager.getAbsolutePath(location);
-		} 
+			if (!fileManager.isValidDirectory(location)) {
+				logger.log(Level.WARNING, MESSAGE_NOT_DIRECTORY);
+				throw new Exception(MESSAGE_NOT_DIRECTORY);
+			}
+		}
 		
 		if (!fileManager.isFileExisting(storage)) {
 			fileManager.createNewFile(storage);
