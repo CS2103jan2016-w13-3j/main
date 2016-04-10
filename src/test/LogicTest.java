@@ -483,8 +483,13 @@ public class LogicTest {
 		
 		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
-		File todoBackup = ne
-tFileManager().cleanFile(doneBackup);
+		File todoBackup = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO_BACKUP);
+		File doneBackup = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE_BACKUP);
+		
+		storageObj.getFileManager().cleanFile(todo);
+		storageObj.getFileManager().cleanFile(done);
+		storageObj.getFileManager().cleanFile(todoBackup);
+		storageObj.getFileManager().cleanFile(doneBackup);
 	}
 	
 }
