@@ -1,8 +1,10 @@
 //@@author A0112659A
 package simplyamazing.parser;
 
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.regex.Pattern;
 
 /*enum CommandType {
@@ -20,9 +22,7 @@ import java.util.regex.Pattern;
 	EXIT("exit","quit","logout");
 }*/
 public class Parser {
-	private static Logger logger = Logger.getLogger("Parser");
-	
-	
+	private static Logger logger;
 	private static final String COMMAND_ADD = "add";
 	private static final String COMMAND_ADD_ALT = "+";
 	private static final String COMMAND_DELETE = "delete";
@@ -67,9 +67,17 @@ public class Parser {
 	private String removeFirstWord = STRING_EMPTY;
 
 	public Parser() {
-		
+		logger = Logger.getLogger("Parser");
+		try{
+			FileHandler fh = new FileHandler("C:\\Users\\Public\\SimplyAmzing\\logFile.log");
+			logger.addHandler(fh);
+			SimpleFormatter formatter = new SimpleFormatter();  
+			fh.setFormatter(formatter);
+		} catch (Exception e){
+			System.out.println("fail to set up the file handler");
+		};
 	}
-
+	
 	public static String removeFirstWord(String userCommand) {
 		final String replace = Pattern.quote(getFirstWord(userCommand));
 		return userCommand.replaceFirst(replace, STRING_EMPTY).trim();
@@ -124,6 +132,7 @@ public class Parser {
 	
 	
 	private Handler parserFirstWord(Handler handler, String firstWord,String removeFirstWord) throws Exception{
+		logger.log(Level.INFO,"start to process the First word");
 		switch(firstWord.toLowerCase()){
 		 case COMMAND_ADD: case COMMAND_ADD_ALT:
 			 handler.setCommandType(COMMAND_ADD);
@@ -171,7 +180,7 @@ public class Parser {
 			 handler.setCommandType(COMMAND_EXIT);
 		     break;
 		 default:
-			 logger.log(Level.WARNING, "invalid command");
+			 logger.log(Level.WARNING, "the entered command type is invalid");
 			 handler.setHasError(true);
 			 handler.setFeedBack(COMMAND_INVALID);
 		}
@@ -179,12 +188,12 @@ public class Parser {
 	}
 	
 	public Handler getHandler(String input) throws Exception{
-		//logger.log(Level.INFO, "before starting on getHandler");
+		logger.log(Level.INFO, "before starting on getHandler");
 		Handler handler = new Handler();
 		firstWord = getFirstWord(input);
 		removeFirstWord = removeFirstWord(input);
 		handler = parserFirstWord(handler,firstWord,removeFirstWord);
-		//logger.log(Level.INFO, "about to return to storage");
+		logger.log(Level.INFO, "ready to return the handler");
 		return handler;
 	}
 }
