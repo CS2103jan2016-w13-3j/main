@@ -15,11 +15,11 @@ public class CommandBarController {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.isActionKey()) {
-					if (e.getKeyCode() == KeyEvent.VK_UP) {
+					if (e.getKeyCode() == KeyEvent.VK_UP) { // "Up" key used to get previous command
 						commandBar.setText(ui.getPreviousUserCommand());
 					}
 				} else {
-					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (e.getKeyCode() == KeyEvent.VK_ENTER) { // "Enter" key used to execute command
 						ui.executeUserCommand();
 					} 
 				}
