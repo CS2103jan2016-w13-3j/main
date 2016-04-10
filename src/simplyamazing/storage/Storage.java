@@ -4,14 +4,16 @@ package simplyamazing.storage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import simplyamazing.data.Task;
 import simplyamazing.data.TaskList;
 
 public class Storage {
-	private static final String DIRECTORY_SYSTEM = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "SimplyAmzing";
+	private static final String DIRECTORY_SYSTEM = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "SimplyAmazing";
 	private static final String FILENAME_STORAGE = File.separator + "storage.txt";
 	private static final String FILENAME_TODO = File.separator + "todo.txt";
 	private static final String FILENAME_DONE = File.separator + "done.txt";
@@ -57,7 +59,7 @@ public class Storage {
 	private static final String MESSAGE_LOG_TASK_DATA_READABLE = "Content is readable from task data file.";
 	private static final String MESSAGE_LOG_TASK_DATA_WRITTEN_TO_FILE = "Task list is successfully imported into the task data file.";
 	
-	private static Logger logger = Logger.getLogger("Storage");
+	private static Logger logger  = Logger.getLogger("Storage");
 
 	private static boolean isEditing = false;
 
@@ -68,13 +70,22 @@ public class Storage {
 
 	public Storage() {
 		fileManager = new FileManager();
-
+		
+		try{
+			FileHandler fh = new FileHandler(DIRECTORY_SYSTEM+File.separator+"logFile.log");
+			logger.addHandler(fh);
+			SimpleFormatter formatter = new SimpleFormatter();  
+			fh.setFormatter(formatter);
+		} catch (Exception e){
+			System.out.println("Logger creation failed");
+		}
+		
 		fileManager.createDirectory(DIRECTORY_SYSTEM);
 		logger.log(Level.CONFIG, MESSAGE_LOG_DIRECTORY_CREATED);
-
+		
 		storage = fileManager.createFile((DIRECTORY_SYSTEM+FILENAME_STORAGE));
 		logger.log(Level.CONFIG, MESSAGE_LOG_STORAGE_FILE_CREATED);
-
+		
 		taskList = new TaskList();
 	}
 

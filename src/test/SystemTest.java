@@ -15,10 +15,10 @@ import simplyamazing.storage.Storage;
 
 public class SystemTest {
 
-	private static final String DIRECTORY_SYSTEM = "C:\\Users\\Public\\SimplyAmzing";
-	private static final String FILENAME_STORAGE = "\\storage.txt";
-	private static final String FILENAME_TODO = "\\todo.txt";
-	private static final String FILENAME_DONE = "\\done.txt";
+	private static final String DIRECTORY_SYSTEM = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "SimplyAmazing";
+	private static final String FILENAME_STORAGE = File.separator + "storage.txt";
+	private static final String FILENAME_TODO = File.separator + "todo.txt";
+	private static final String FILENAME_DONE = File.separator + "done.txt";
 	
 	private static final String CHARACTER_SPACE = " ";
 	

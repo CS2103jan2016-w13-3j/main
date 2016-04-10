@@ -8,7 +8,6 @@ import simplyamazing.data.Task;
 
 public class FileManager {
 	private static final String DIRECTORY_CURRENT_USER = "user.home";
-	private static final String DIRECTORY_APP = "\\SimplyAmzing";
 	private static String absolutePath = null;
 	
 	FileBuilder fileBuilder;
