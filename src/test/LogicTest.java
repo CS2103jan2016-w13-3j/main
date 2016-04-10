@@ -16,7 +16,7 @@ import simplyamazing.storage.Storage;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LogicTest {
 	
-	private static Logic logicObj = new Logic();
+	private static Logic logicObj;
 	private static Storage storageObj;
 	
 	private static final String COMMAND_SET_LOCATION_DIRECTORY = "location C:\\Users\\Public\\SimplyAmzing";
@@ -38,9 +38,9 @@ public class LogicTest {
 	
 		
 	private static final String LOCATION_COMMAND_FAIL = "location just a placeholder";
-	private static final String LOCATION_COMMAND_PASS = "location C:\\Users\\Ishpal\\Desktop\\Task Data";
+	private static final String LOCATION_COMMAND_PASS = "location C:\\Users\\Public\\SimplyAmzing";
 	private static final String LOCATION_FEEDBACK_FAIL = "Error: Not a valid directory";
-	private static final String LOCATION_FEEDBACK_PASS = "Storage location of task data has been sucessfully set as C:\\Users\\Ishpal\\Desktop\\Task Data.";
+	private static final String LOCATION_FEEDBACK_PASS = "Storage location of task data has been sucessfully set as C:\\Users\\Public\\SimplyAmzing.";
 	private static final String LOCATION_EMPTY_STRING = "location ";
 	private static final String LOCATION_EMPTY_STRING_FEEDBACK = "Error: Location provided is invalid";
 	
