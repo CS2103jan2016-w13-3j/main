@@ -2,12 +2,14 @@
 package simplyamazing.storage;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileVerifier {
 	
 	private static final int SIZE_EMPTY = 0;
 	
-	public boolean isDirectory(String location) {
+	public boolean isAbsolutePath(String location) {
 		return new File(location).isDirectory();
 	}
 	

@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import simplyamazing.data.Task;
 
 public class FileManager {
+	private static final String DIRECTORY_CURRENT_USER = "user.home";
+	private static final String DIRECTORY_APP = "\\SimplyAmzing";
+	private static String absolutePath = null;
 	
 	FileBuilder fileBuilder;
 	FileVerifier fileVerifier;
@@ -46,8 +49,13 @@ public class FileManager {
 		return file;
 	}
 	
-	public boolean isDirectory(String location) {
-		return fileVerifier.isDirectory(location);
+	public boolean isAbsolutePath(String location) {
+		return fileVerifier.isAbsolutePath(location);
+	}
+
+	public String getAbsolutePath(String location) {
+		absolutePath = System.getProperty(DIRECTORY_CURRENT_USER)+ File.separator + location;
+		return absolutePath;
 	}
 	
 	public boolean isEmptyFile(File file) {
