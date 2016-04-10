@@ -4,7 +4,6 @@ package simplyamazing.ui;
 import java.awt.Color;
 import java.awt.Font;
 
-import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 public class InstructionPanel {
