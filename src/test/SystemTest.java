@@ -84,6 +84,22 @@ public class SystemTest {
 	private static final String COMMAND_HELP_EXIT = COMMAND_HELP + CHARACTER_SPACE + COMMAND_EXIT;
 	private static final String COMMAND_HELP_REDO = COMMAND_HELP + CHARACTER_SPACE + COMMAND_REDO;
 	private static final String COMMAND_HELP_UNDONE = COMMAND_HELP + CHARACTER_SPACE + COMMAND_UNDONE;
+	private static final String COMMAND_DELETE_NEGATIVE_INDEX = COMMAND_DELETE + CHARACTER_SPACE + "-1";
+	private static final String COMMAND_DELETE_ZERO_INDEX = COMMAND_DELETE + CHARACTER_SPACE + "0";
+	private static final String COMMAND_DELETE_LARGER_INDEX = COMMAND_DELETE + CHARACTER_SPACE + "4";
+	private static final String COMMAND_DELETE_STRING = COMMAND_DELETE + CHARACTER_SPACE + COMMAND_INVALID;
+	private static final String COMMAND_DELETE_MULTIPLE_INVALID = COMMAND_DELETE + CHARACTER_SPACE + "1 2 4";
+	private static final String COMMAND_DELETE_SINGLE = COMMAND_DELETE + CHARACTER_SPACE + "1";
+	private static final String COMMAND_DELETE_MULTIPLE = COMMAND_DELETE + CHARACTER_SPACE + "1 2";
+	
+	private static final String COMMAND_DONE_NEGATIVE_INDEX = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "-1";
+	private static final String COMMAND_DONE_ZERO_INDEX = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "0";
+	private static final String COMMAND_DONE_LARGER_INDEX = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "4";
+	private static final String COMMAND_DONE_STRING = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + COMMAND_INVALID;
+	private static final String COMMAND_DONE_MULTIPLE_INVALID = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "1 2 4";
+	private static final String COMMAND_DONE_SINGLE = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "1";
+	private static final String COMMAND_DONE_MULTIPLE = COMMAND_MARK_AS_DONE + CHARACTER_SPACE + "1 2";
+	
 	
 	
 	
@@ -104,7 +120,7 @@ public class SystemTest {
 	
 	private static final String FEEDBACK_LOCATION_SET = "Storage location of task data has been sucessfully set as %1$s.";
 	private static final String FEEDBACK_LOCATION_INVALID = "Error: Location provided is invalid";
-	private static final String FEEDBACK_LOCATION_NOT_DIRECTORY = "Error: Not a valid directory.";
+	private static final String FEEDBACK_LOCATION_NOT_DIRECTORY = "Error: Not a valid directory";
 	private static final String FEEDBACK_ADDED = "%1$s has been added.";
 	private static final String FEEDBACK_ADD_TASK_FIELDS_NOT_CORRECT = "Error: Please ensure the fields are correct";
 	private static final String FEEDBACK_ADD_TASK_TIME_FORMAT_INVALID ="Error: Please ensure the time format is valid. Please use the \"help\"command to view the format";
@@ -116,6 +132,11 @@ public class SystemTest {
 	private static final String FEEDBACK_RESTORED = "\"%1$s\" command has been successfully undone.";
 	private static final Object FEEDBACK_EMPTY_LIST = "List is empty";
 	private static final Object FEEDBACK_NO_TASK_FOUND = "Error: There are no tasks containing the given keyword";
+	private static final String FEEDBACK_INVALID_INDEX= "Error: The Index entered is invalid";
+	private static final String FEEDBACK_INDEX_IS_STRING = "Error: Index provided is not an Integer.";
+	private static final String FEEDBACK_MULTIPLE_INVALID = "Error: One of the given indexes is invalid";
+	private static final String FEEDBACK_MULTIPLE_DELETE_VALID = "Provided tasks have been successfully deleted.";
+	private static final String FEEDBACK_MULTIPLE_DONE_VALID = "Provided tasks have been marked as done.";
 	
 	
 	//@@author A0125136N
@@ -435,6 +456,108 @@ public class SystemTest {
 		assertEquals(false, parser.getHandler(COMMAND_HELP_REDO).getHasError());
 		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_REDO).getCommandType());
 		assertEquals(FEEDBACK_HELP_REDO, logic.executeCommand(COMMAND_HELP_REDO));
+	}
+	
+	
+	@Test
+	public void testDeleteMethod() throws Exception {
+		Logic logic = new Logic();
+		Parser parser = new Parser();
+		Storage storage = new Storage();
 		
+		logic.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
+		
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		
+		logic.executeCommand(COMMAND_ADD_FLOATING_TASK);
+		logic.executeCommand(COMMAND_ADD_DEADLINE);
+		logic.executeCommand(COMMAND_ADD_EVENT);
+		
+		// test for invalid indexes
+		assertEquals(false, parser.getHandler(COMMAND_DELETE_NEGATIVE_INDEX).getHasError());
+		assertEquals(COMMAND_DELETE, parser.getHandler(COMMAND_DELETE_NEGATIVE_INDEX).getCommandType());
+		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_DELETE_NEGATIVE_INDEX));
+		
+		assertEquals(false, parser.getHandler(COMMAND_DELETE_ZERO_INDEX).getHasError());
+		assertEquals(COMMAND_DELETE, parser.getHandler(COMMAND_DELETE_ZERO_INDEX).getCommandType());
+		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_DELETE_ZERO_INDEX));
+		
+		assertEquals(false, parser.getHandler(COMMAND_DELETE_LARGER_INDEX).getHasError());
+		assertEquals(COMMAND_DELETE, parser.getHandler(COMMAND_DELETE_LARGER_INDEX).getCommandType());
+		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_DELETE_LARGER_INDEX));
+		
+		assertEquals(true, parser.getHandler(COMMAND_DELETE_STRING).getHasError());
+		assertEquals(COMMAND_DELETE, parser.getHandler(COMMAND_DELETE_STRING).getCommandType());
+		assertEquals(FEEDBACK_INDEX_IS_STRING, logic.executeCommand(COMMAND_DELETE_STRING));
+		
+		assertEquals(false, parser.getHandler(COMMAND_DELETE_MULTIPLE_INVALID).getHasError());
+		assertEquals(COMMAND_DELETE, parser.getHandler(COMMAND_DELETE_MULTIPLE_INVALID).getCommandType());
+		assertEquals(FEEDBACK_MULTIPLE_INVALID, logic.executeCommand(COMMAND_DELETE_MULTIPLE_INVALID));
+		
+		// valid deletion
+		assertEquals(3, storage.getFileManager().getLineCount(todo));
+		logic.executeCommand(COMMAND_VIEW_TASKS_EMPTY);
+		assertEquals(false, parser.getHandler(COMMAND_DELETE_SINGLE).getHasError());
+		assertEquals(COMMAND_DELETE, parser.getHandler(COMMAND_DELETE_SINGLE).getCommandType());
+		assertEquals(String.format(FEEDBACK_DELETED, parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toFilteredString()), logic.executeCommand(COMMAND_DELETE_SINGLE));
+		
+		assertEquals(false, parser.getHandler(COMMAND_DELETE_MULTIPLE).getHasError());
+		assertEquals(COMMAND_DELETE, parser.getHandler(COMMAND_DELETE_MULTIPLE).getCommandType());
+		assertEquals(FEEDBACK_MULTIPLE_DELETE_VALID, logic.executeCommand(COMMAND_DELETE_MULTIPLE));
+	}
+	
+	@Test
+	public void testDoneMethod() throws Exception {
+		Logic logic = new Logic();
+		Parser parser = new Parser();
+		Storage storage = new Storage();
+		
+		logic.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
+		
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		
+		logic.executeCommand(COMMAND_ADD_FLOATING_TASK);
+		logic.executeCommand(COMMAND_ADD_DEADLINE);
+		logic.executeCommand(COMMAND_ADD_EVENT);
+		
+		// test for invalid indexes
+		assertEquals(false, parser.getHandler(COMMAND_DONE_NEGATIVE_INDEX).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_NEGATIVE_INDEX).getCommandType());
+		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_DONE_NEGATIVE_INDEX));
+		
+		assertEquals(false, parser.getHandler(COMMAND_DONE_ZERO_INDEX).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_ZERO_INDEX).getCommandType());
+		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_DONE_ZERO_INDEX));
+		
+		assertEquals(false, parser.getHandler(COMMAND_DONE_LARGER_INDEX).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_LARGER_INDEX).getCommandType());
+		assertEquals(FEEDBACK_INVALID_INDEX, logic.executeCommand(COMMAND_DONE_LARGER_INDEX));
+		
+		assertEquals(true, parser.getHandler(COMMAND_DONE_STRING).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_STRING).getCommandType());
+		assertEquals(FEEDBACK_INDEX_IS_STRING, logic.executeCommand(COMMAND_DONE_STRING));
+		
+		assertEquals(false, parser.getHandler(COMMAND_DONE_MULTIPLE_INVALID).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_MULTIPLE_INVALID).getCommandType());
+		assertEquals(FEEDBACK_MULTIPLE_INVALID, logic.executeCommand(COMMAND_DONE_MULTIPLE_INVALID));
+		
+		// valid done
+		assertEquals(3, storage.getFileManager().getLineCount(todo));
+		
+		logic.executeCommand(COMMAND_VIEW_TASKS_EMPTY);
+		assertEquals(false, parser.getHandler(COMMAND_DONE_SINGLE).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_SINGLE).getCommandType());
+		assertEquals(String.format(FEEDBACK_MARKED_DONE, parser.getHandler(COMMAND_ADD_DEADLINE).getTask().toFilteredString()), logic.executeCommand(COMMAND_DONE_SINGLE));
+		
+		logic.executeCommand(COMMAND_VIEW_TASKS_EMPTY);
+		assertEquals(false, parser.getHandler(COMMAND_DONE_MULTIPLE).getHasError());
+		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_MULTIPLE).getCommandType());
+		assertEquals(FEEDBACK_MULTIPLE_DONE_VALID, logic.executeCommand(COMMAND_DONE_MULTIPLE));
 	}
 }
