@@ -30,20 +30,21 @@ public class UI {
 	private static final String STRING_NULL = "";
 	private static final String STRING_ERROR = "Error";
 	
+	public static String feedback = null;
+	
 	private static Logger logger = Logger.getLogger("UI");
 	
 	private JFrame frame;
 	private static JSeparator separator, separator_1;
 	private static JTextArea appLogo;
 	private JScrollPane scrollPane;
-	private static JTextField commandBar;	
-	private static JTextArea feedbackArea;
-	
+	public static JTextField commandBar;	
+	public static JTextArea feedbackArea;
 	
 	private static Logic logic;
 	private static CommandBarController commandBarController;
-	private static TaskDataPanel taskDataPanel;
-	private static InstructionPanel instructionPanel;
+	public static TaskDataPanel taskDataPanel;
+	public static InstructionPanel instructionPanel;
 
 	/**
 	 * Launch the application.
@@ -53,16 +54,6 @@ public class UI {
 			public void run() {
 				try {
 					UI window = new UI();
-					window.frame.setVisible(true);
-					commandBar.requestFocusInWindow();
-					logic = new Logic();
-					String taskDataString = window.getTaskData();
-					if (taskDataString.contains(CHARACTER_NEW_LINE)) {
-						window.updateTaskDataTable();
-					} else {
-						window.scrollPane.setVisible(false);
-					}
-					setFeedback(MESSAGE_WELCOME, Color.BLACK);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -81,6 +72,20 @@ public class UI {
 	public UI() {
 		initialize();
 		addUIComponentsToFrame();
+		frame.setVisible(true);
+		commandBar.requestFocusInWindow();
+		logic = new Logic();
+		try {
+			String taskDataString = getTaskData();
+			if (taskDataString.contains(CHARACTER_NEW_LINE)) {
+				updateTaskDataTable();
+			} else {
+				scrollPane.setVisible(false);
+			}
+			setFeedback(MESSAGE_WELCOME, Color.BLACK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -162,7 +167,6 @@ public class UI {
 	}
 
 	public void executeUserCommand() {
-		String feedback = null;
 		String command = commandBar.getText();
 		commandBarController.clearCommand(commandBar);
 		feedbackArea.setText(STRING_NULL);
