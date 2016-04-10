@@ -7,8 +7,10 @@ import java.util.Collections;
 import simplyamazing.data.Task;
 
 public class TaskList {
-	
+
 	private static final String CHARACTER_SPACE = " ";
+	
+	private static final int NUM_FIELDS_STORED = 5;
 	private static final int SIZE_EMPTY = 0;
 	
 	private ArrayList<Task> tasks, completedTasks;
@@ -28,18 +30,18 @@ public class TaskList {
 
 	public void resetTaskList() {
 		tasks = new ArrayList<Task>();
-		assert(tasks.size()==0);
+		assert(tasks.size() == 0);
 	}
 
 	public void resetCompletedTaskList() {
 		completedTasks = new ArrayList<Task>();
-		assert(completedTasks.size()==0);
+		assert(completedTasks.size() == 0);
 	}
 	
 	public void createTaskList(ArrayList<String> lines, ArrayList<Task> taskList) throws Exception {
 		for (int i = 0; i < lines.size(); i++) {
 			String[] fields = lines.get(i).split(Task.FIELD_SEPARATOR);
-			assert(fields.length == 5);
+			assert(fields.length == NUM_FIELDS_STORED);
 			
 			String description = fields[Task.ARRAY_POSITION_FOR_DESCRIPTION];
 			String startTimeString = fields[Task.ARRAY_POSITION_FOR_START_TIME];
