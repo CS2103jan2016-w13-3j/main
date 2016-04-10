@@ -122,42 +122,48 @@ public class SystemTest {
 	
 	
 	private static final String FEEDBACK_HELP_INTEGER = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
-	private static final String FEEDBACK_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";
-	private static final String FEEDBACK_HELP_REDO = "";
-	private static final String FEEDBACK_HELP_UNDONE = "";
-	private static final String FEEDBACK_HELP_DONE = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n";
+	private static final String FEEDBACK_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";;
+	private static final String FEEDBACK_HELP_REDO = "Redo the most recent command\nCommand: redo\n";
+	private static final String FEEDBACK_HELP_UNMARK = "Unmarks a completed task\nCommand: undone <task index>\n\nExample:\nundone 2\n\n\n"
+			+ "Note: You may also use the keyword \"unmark\" instead of \"undone\"";
+	private static final String FEEDBACK_HELP_DONE = "Marks task as completed\nCommand: done <task index>\n\nExample:\ndone 2\n\n\n"
+			+ "Note: You may also use the keywords \"mark\", \"complete\" or \"finish\" instead of \"done\"";
 	
-	private static final String FEEDBACK_HELP_DELETE = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1";
+	private static final String FEEDBACK_HELP_DELETE = "Delete task from list\nCommand: delete <task index>\n\nExample:\ndelete 1\n\n\n"
+			+ "Note: You may also use the keywords \"-\", \"del\", \"remove\" or \"cancel\" instead of \"delete\"";
 	
-	private static final String FEEDBACK_HELP_SEARCH = "Search for tasks containing the given keyword\nCommand: search <keyword>\n\nExample:\nsearch meeting\n";
+	private static final String FEEDBACK_HELP_SEARCH = "Search for tasks containing the given keyword or date \nCommand: search <keyword> or search<date>\n\nExample:\nsearch meeting\n\n\n"
+			+ "Note: You may also use the keyword \"find\" instead of \"search\"";
 	
-	private static final String FEEDBACK_HELP_EXIT ="Exit SimplyAmazing\nCommand: exit\n";
+	private static final String FEEDBACK_HELP_EXIT = "Exits SimplyAmazing\nCommand: exit\n\n\nNote: You may also use \"logout\" or \"quit\" instead of \"exit\"";
 	
 	
 	private static final String FEEDBACK_HELP_ALL = "Key in the following to view specific command formats:\n"
-			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help done\n6. help search\n"
-			+ "7. help location\n8. help undo\n9. help exit\n";
+			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help search \n6. help mark\n"
+			+ "7. help unmark\n8. help undo\n9. help redo\n10. help location \n11. help exit\n";
 	
 	
 	private static final String FEEDBACK_HELP_VIEW = "1.Display all tasks\n Command: view\n\n2.Display tasks with deadlines\n"
 			+ "Command: view deadlines\n\n3.Display all events\nCommand: view events\n\n4.Display tasks without deadlines\nCommand: view tasks\n\n"
-			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n";
+			+ "5.Display completed tasks\nCommand: view done\n\n6.Display overdue tasks\nCommand: view overdue\n\n\n"
+			+ "Note: You may also use the keywords \"display\", \"show\" or \"list\" instead of \"view\"";
 	
-	
-	private static final String FEEDBACK_HELP_EDIT = "Edit content in a task\nCommand: edit <task index> <task header> <updated content>\n\n"
+	private static final String FEEDBACK_HELP_EDIT =  "Edit content in a task\nCommand: edit <task index> <task header> <updated content>\n\n"
 			+ "Example:\n1. edit 4 description send marketing report\n\n2. edit 3 start 22:00 26 may 2016, end 22:40 26 may 2016\n\n"
-			+ "3. edit 1 priority high";
+			+ "3. edit 1 priority high\n\n\nNote: You may also use the keywords \"change\" or \"update\" instead of \"edit\"";
 	
 	
 	private static final String FEEDBACK_HELP_ADD =  "1.Add a task to the list\nCommand: add <task description>\n\nExample: add Prepare presentation\n\n\n"
 			+ "2.Add an event to the list\ncommand: add <task description> from <start time hh:mm> <start date dd MMM yyyy> to\n<end time hh:mm> <end date dd MMM yyyy>\n\n"
 			+ "Example: add Company annual dinner from 19:00 29 Dec 2016 to 22:00 29 dec 2016\n\n\n"
 			+ "3.Add a deadline to the list\ncommand: add <task description> by <end time hh:mm> <end date dd MMM yyyy>\n\n"
-			+ "Example: add Submit marketing report by 17:00 20 Dec 2016\n";
+			+ "Example: add Submit marketing report by 17:00 20 Dec 2016\n\n\n"
+			+ "Note: You may use the keyword \"+\" instead of \"add\"";
 	
 	
 	private static final String FEEDBACK_HELP_LOCATION = "Sets the storage location or folder for application data\n"
-			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data";
+			+ "Command: location <path>\n" + "\nExample:\nlocation C:\\Users\\Jim\\Desktop\\Task Data\n\n\nNote: You may also use the keywords \"path\" or \"address\""
+			+ " instead of \"location\"";
 	
 	
 	
@@ -424,7 +430,7 @@ public class SystemTest {
 		
 		assertEquals(false, parser.getHandler(COMMAND_HELP_UNDONE).getHasError());
 		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_UNDONE).getCommandType());
-		assertEquals(FEEDBACK_HELP_UNDONE, logic.executeCommand(COMMAND_HELP_UNDONE));
+		assertEquals(FEEDBACK_HELP_UNMARK, logic.executeCommand(COMMAND_HELP_UNDONE));
 		
 		assertEquals(false, parser.getHandler(COMMAND_HELP_REDO).getHasError());
 		assertEquals(COMMAND_HELP, parser.getHandler(COMMAND_HELP_REDO).getCommandType());
