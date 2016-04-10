@@ -211,6 +211,7 @@ public class StorageTest {
 		editedTask.setStartTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 		editedTask.setEndTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 		assertEquals(String.format(FEEDBACK_UPDATED, new Task(PARAM_DESCRIPTION1).toFilteredString()), storage.editTask(task, editedTask));
+		storage.getFileManager().cleanFile(todo);
 	}
 	
 	/*
@@ -265,7 +266,9 @@ public class StorageTest {
 		assertEquals(1, storage.viewTasks(PARAM_VIEW_TASKS_OVERDUE).size());
 		
 		// This is for the ‘done’ partition 
-		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_DONE).size());		
+		assertEquals(0, storage.viewTasks(PARAM_VIEW_TASKS_DONE).size());	
+		
+		storage.getFileManager().cleanFile(todo);
 	}
 	
 	/*
@@ -309,6 +312,8 @@ public class StorageTest {
 		// These are for the ‘not null’ partition 
 		assertEquals(1, storage.searchTasks(PARAM_SEARCH_TASKS_KEYWORD).size());
 		assertEquals(2, storage.searchTasks(PARAM_SEARCH_TASKS_MORE_KEYWORD).size());
+		
+		storage.getFileManager().cleanFile(todo);
 	}
 	
 	/*
@@ -353,6 +358,8 @@ public class StorageTest {
 		assertEquals(4, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME1).getEndTime()).size());
 		assertEquals(3, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME2).getEndTime()).size());
 		assertEquals(2, storage.searchTasksByDate(new Task(PARAM_DESCRIPTION1, PARAM_END_TIME3).getEndTime()).size());
+	
+		storage.getFileManager().cleanFile(todo);
 	}
 	
 	/*
@@ -391,6 +398,8 @@ public class StorageTest {
 		
 		// This is for the ‘already done’ partition 
 		assertEquals(String.format(FEEDBACK_COMPLETED_TASK, task.toFilteredString()), storage.markTaskDone(task));
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
 	}
 	
 	@Test
@@ -416,6 +425,8 @@ public class StorageTest {
 		storage.addTask(task);
 		assertEquals(String.format(FEEDBACK_MARKED_DONE, task.toFilteredString()), storage.markTaskDone(task));	
 		assertEquals(2, storage.getFileManager().getLineCount(done));
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
 	}
 	
 	/*
@@ -454,6 +465,9 @@ public class StorageTest {
 		assertEquals(0, storage.getTaskList().getCompletedTasks().size());
 		assertEquals(0, storage.getFileManager().getLineCount(done));
 		assertEquals(String.format(FEEDBACK_INCOMPLETE_TASK, task.toFilteredString()), storage.markTaskUndone(task));
+		
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
 	}
 	
 	@Test
@@ -473,6 +487,9 @@ public class StorageTest {
 		assertEquals(1, storage.getFileManager().getLineCount(done));
 		assertEquals(String.format(FEEDBACK_MARKED_UNDONE, task.toFilteredString()), storage.markTaskUndone(task));	
 		assertEquals(0, storage.getFileManager().getLineCount(done));
+		
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
 	}
 	
 	/*
@@ -517,6 +534,9 @@ public class StorageTest {
 		assertEquals(0, storage.getFileManager().getLineCount(done));
 		assertEquals(String.format(FEEDBACK_MARKED_DONE_MULTIPLE), storage.markMultipleTasksDone(tasks));	
 		assertEquals(3, storage.getFileManager().getLineCount(done));
+		
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
 	}
 	
 	/*
@@ -566,6 +586,9 @@ public class StorageTest {
 		assertEquals(3, storage.getFileManager().getLineCount(todo));
 		assertEquals(0, storage.getTaskList().getCompletedTasks().size());
 		assertEquals(0, storage.getFileManager().getLineCount(done));
+	
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
 	}
 	
 	/*
@@ -606,6 +629,9 @@ public class StorageTest {
 		assertEquals(1, storage.getTaskList().getTasks().size());
 		assertEquals(String.format(FEEDBACK_DELETED, task.toFilteredString()), storage.deleteTask(task));
 		assertEquals(0, storage.getTaskList().getCompletedTasks().size());
+	
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
 	}
 	
 	/*
@@ -649,6 +675,9 @@ public class StorageTest {
 		assertEquals(String.format(FEEDBACK_DELETED_MULTIPLE), storage.deleteMultipleTasks(tasks));	
 		assertEquals(1, storage.getTaskList().getTasks().size());
 		assertEquals(1, storage.getFileManager().getLineCount(todo));
+	
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
 	}
 	
 	/*
@@ -657,7 +686,7 @@ public class StorageTest {
 	 * previousCommand: [null] [not null] 
 	 * Boundary values: Empty String, a String of some length
 	 */	
-	@Test(expected = Exception.class) 
+	@Test
 	public void testRestoreMethodForException() throws Exception {
 		Storage storage = new Storage();
 		storage.setLocation(PARAM_SET_LOCATION_DIRECTORY);
@@ -665,18 +694,11 @@ public class StorageTest {
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
 		storage.getFileManager().cleanFile(todo);
 		storage.getFileManager().cleanFile(done);
-		try {
-			/* This is for the ‘null’ partition */
-			storage.restore(PARAM_RESTORE_NULL);
+		/* This is for the ‘null’ partition */
+		storage.restore(PARAM_RESTORE_NULL);
 			
-			/* This is a boundary case for the ‘not null’ partition */
-			storage.restore(PARAM_RESTORE_EMPTY);
-		} catch (AssertionError ae) {
-			throw new Exception();
-		}
-		
-		/* This is for the ‘not a valid directory’ partition */
-		storage.setLocation(PARAM_SET_LOCATION_NOT_DIRECTORY);
+		/* This is a boundary case for the ‘not null’ partition */
+		storage.restore(PARAM_RESTORE_EMPTY);
 	}
 	
 	@Test
@@ -689,6 +711,7 @@ public class StorageTest {
 		storage.getFileManager().cleanFile(done);
 		Task task = new Task(PARAM_DESCRIPTION);
 		
+		/* This is for the 'not null' partition */
 		assertEquals(0, storage.getTaskList().getTasks().size());
 		assertEquals(0, storage.getFileManager().getLineCount(todo));
 		storage.addTask(task);
@@ -702,5 +725,8 @@ public class StorageTest {
 		assertEquals(String.format(FEEDBACK_RESTORED, PARAM_RESTORE_COMMAND), storage.restore(PARAM_RESTORE_COMMAND));
 		assertEquals(1, storage.getTaskList().getTasks().size());
 		assertEquals(1, storage.getFileManager().getLineCount(todo));
+		
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
 	}
 }
