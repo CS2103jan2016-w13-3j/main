@@ -137,7 +137,8 @@ public class SystemTest {
 	private static final String FEEDBACK_MULTIPLE_INVALID = "Error: One of the given indexes is invalid";
 	private static final String FEEDBACK_MULTIPLE_DELETE_VALID = "Provided tasks have been successfully deleted.";
 	private static final String FEEDBACK_MULTIPLE_DONE_VALID = "Provided tasks have been marked as done.";
-	
+	private static final String FEEDBACK_NOTHING_TO_UNDO = "Error: There is no previous command to undo";
+	private static final String FEEDBACK_NOTHING_TO_REDO = "Error: There is no previous command to redo";
 	
 	//@@author A0125136N
 	
@@ -559,5 +560,54 @@ public class SystemTest {
 		assertEquals(false, parser.getHandler(COMMAND_DONE_MULTIPLE).getHasError());
 		assertEquals(COMMAND_MARK_AS_DONE, parser.getHandler(COMMAND_DONE_MULTIPLE).getCommandType());
 		assertEquals(FEEDBACK_MULTIPLE_DONE_VALID, logic.executeCommand(COMMAND_DONE_MULTIPLE));
+	}
+	
+	@Test
+	public void testUndoMethod() throws Exception {
+		Logic logic = new Logic();
+		Parser parser = new Parser();
+		Storage storage = new Storage();
+		
+		logic.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
+		
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		
+		assertEquals(false, parser.getHandler(COMMAND_UNDO).getHasError());
+		assertEquals(COMMAND_UNDO, parser.getHandler(COMMAND_UNDO).getCommandType());
+		assertEquals(FEEDBACK_NOTHING_TO_UNDO, logic.executeCommand(COMMAND_UNDO));
+		
+		logic.executeCommand(COMMAND_ADD_EVENT);
+		
+		assertEquals(false, parser.getHandler(COMMAND_UNDO).getHasError());
+		assertEquals(COMMAND_UNDO, parser.getHandler(COMMAND_UNDO).getCommandType());
+		assertEquals(String.format(FEEDBACK_RESTORED, COMMAND_ADD_EVENT), logic.executeCommand(COMMAND_UNDO));
+	}
+	
+	@Test
+	public void testRedoMethod() throws Exception {
+		Logic logic = new Logic();
+		Parser parser = new Parser();
+		Storage storage = new Storage();
+		
+		logic.executeCommand(COMMAND_SET_LOCATION_DIRECTORY);
+		
+		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
+		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
+		storage.getFileManager().cleanFile(todo);
+		storage.getFileManager().cleanFile(done);
+		
+		assertEquals(false, parser.getHandler(COMMAND_REDO).getHasError());
+		assertEquals(COMMAND_REDO, parser.getHandler(COMMAND_REDO).getCommandType());
+		assertEquals(FEEDBACK_NOTHING_TO_REDO, logic.executeCommand(COMMAND_REDO));
+		
+		logic.executeCommand(COMMAND_ADD_EVENT);
+		logic.executeCommand(COMMAND_UNDO);
+		
+		assertEquals(false, parser.getHandler(COMMAND_REDO).getHasError());
+		assertEquals(COMMAND_REDO, parser.getHandler(COMMAND_REDO).getCommandType());
+		assertEquals(String.format(FEEDBACK_RESTORED, COMMAND_ADD_EVENT), logic.executeCommand(COMMAND_REDO));
 	}
 }
