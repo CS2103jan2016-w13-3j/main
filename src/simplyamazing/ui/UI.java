@@ -82,8 +82,6 @@ public class UI {
 	
 	public static String feedback = null;
 
-	private static Logger logger;
-
 	private JFrame frame;
 	private JSeparator separator, separator_1;
 	private JTextArea appLogo;
@@ -95,8 +93,9 @@ public class UI {
 	private static CommandBarController commandBarController;
 	public static TaskDataPanel taskDataPanel;
 	public static InstructionPanel instructionPanel;
+	private static Logger logger;
 
-	/**
+	/*
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
@@ -115,9 +114,8 @@ public class UI {
 		return e.getMessage();
 	}
 
-	/**
-	 * Create the application.
-	 * @throws Exception 
+	/*
+	 * Create the application. 
 	 */
 	public UI() {
 		createLogger();

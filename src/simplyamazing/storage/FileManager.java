@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import simplyamazing.data.Task;
 
 public class FileManager {
+	
 	private static final String DIRECTORY_CURRENT_USER = "user.home";
 	private static String absolutePath = null;
 	
-	FileBuilder fileBuilder;
-	FileVerifier fileVerifier;
-	FileCopier fileCopier;
-	ReadManager readManager;
-	WriteManager writeManager;
+	private static FileBuilder fileBuilder;
+	private static FileVerifier fileVerifier;
+	private static FileCopier fileCopier;
+	private static ReadManager readManager;
+	private static WriteManager writeManager;
 	
 	public FileManager() {
 		fileBuilder = new FileBuilder();
@@ -29,7 +30,7 @@ public class FileManager {
 	}
 	
 	public void createNewFile(File file) throws Exception {
-		if(fileVerifier.isFileExisting(file)) {
+		if (fileVerifier.isFileExisting(file)) {
 			file.delete();
 		}
 		fileBuilder.createNewFile(file);
@@ -95,7 +96,7 @@ public class FileManager {
 	}
 	
 	public void createBackup(File file, File backupFile) throws Exception {
-		if(!isEmptyFile(file)) {
+		if (!isEmptyFile(file)) {
 			fileCopier.copy(file, backupFile);
 		}
 	}

@@ -4,6 +4,7 @@ package simplyamazing.storage;
 import java.io.File;
 
 public class FileBuilder {
+	
 	public void createDirectory(String directoryName) {
 		new File(directoryName).mkdirs();
 	}
