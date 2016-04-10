@@ -19,12 +19,12 @@ public class LogicTest {
 	private static Logic logicObj;
 	private static Storage storageObj;
 	
-	private static final String COMMAND_SET_LOCATION_DIRECTORY = "location C:\\Users\\Public\\SimplyAmzing";
+	private static final String COMMAND_SET_LOCATION_DIRECTORY = "location C:\\Users\\Public\\SimplyAmazing";
 	private static final String FILENAME_TODO = "\\todo.txt";
 	private static final String FILENAME_DONE = "\\done.txt";
 	private static final String FILENAME_TODO_BACKUP = "\\todoBackup.txt";
 	private static final String FILENAME_DONE_BACKUP = "\\doneBackup.txt";
-	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:\\Users\\Public\\SimplyAmzing";
+	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:\\Users\\Public\\SimplyAmazing";
 	
 	
 	private static final String UNDO_NOTHING_FEEDBACK = "Error: There is no previous command to undo";
@@ -38,7 +38,7 @@ public class LogicTest {
 	
 		
 	private static final String LOCATION_COMMAND_FAIL = "location just a placeholder";
-	private static final String LOCATION_COMMAND_PASS = "location C:\\Users\\Public\\SimplyAmzing";
+	private static final String LOCATION_COMMAND_PASS = "location C:\\Users\\Public\\SimplyAmazing";
 	private static final String LOCATION_FEEDBACK_FAIL = "Error: Not a valid directory";
 	private static final String LOCATION_FEEDBACK_PASS = "Storage location of task data has been sucessfully set as C:\\Users\\Public\\SimplyAmzing.";
 	private static final String LOCATION_EMPTY_STRING = "location ";
@@ -483,12 +483,8 @@ public class LogicTest {
 		
 		File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);
 		File done = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE);
-		File todoBackup = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO_BACKUP);
-		File doneBackup = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_DONE_BACKUP);
-		storageObj.getFileManager().cleanFile(todo);
-		storageObj.getFileManager().cleanFile(done);
-		storageObj.getFileManager().cleanFile(todoBackup);
-		storageObj.getFileManager().cleanFile(doneBackup);
+		File todoBackup = ne
+tFileManager().cleanFile(doneBackup);
 	}
 	
 }
