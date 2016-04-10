@@ -30,10 +30,6 @@ public class Handler {
 		this.indexes = new ArrayList<Integer>();
 	}
 
-	public void setTask(Task task) {
-		this.task = task;
-	}
-
 	public void setCommandType(String commandType) {
 		this.commandType = commandType;
 	}

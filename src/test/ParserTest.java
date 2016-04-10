@@ -216,7 +216,6 @@ public class ParserTest {
 	 * commands.
 	 */
 	public void testAddCommand() throws Exception {
-		
 		assertEquals(ADD_COMMAND_TYPE_VALID, parser.getHandler(ADD_COMMAND_FLOATING_VALID).getCommandType());
 		assertEquals(ADD_COMMAND_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_FLOATING_VALID).getFeedBack());
 		assertEquals(ADD_COMMAND_EVENT_VALID_FEEDBACK, parser.getHandler(ADD_COMMAND_EVENT_VALID).getFeedBack());
