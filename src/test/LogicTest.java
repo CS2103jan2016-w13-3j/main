@@ -165,21 +165,21 @@ public class LogicTest {
 	private static final String SEARCH_VALID_FEEDBACK = "1,hello world, , , ,incomplete\n";
 	private static final String SEARCH_INVALID_KEYWORD = "search joke";
 	private static final String SEARCH_NOT_FOUND_FEEDBACK = "There are no tasks containing the given keyword";
-	private static final String SEARCH_WRONG_DATE = "search 25 Dec 2016";
-	private static final String SEARCH_WRONG_DATE_FEEDBACK = "1,hello world, , , ,incomplete\n";
+	private static final String SEARCH_WRONG_DATE = "search 19:00 25 Dec 2016";
 	private static final String SEARCH_VALID_DATE = "search 25 May 2016";
-	private static final String SEARCH_VALID_DATE_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016,low,incomplete\n2,hello world, , , ,incomplete\n";
+	private static final String SEARCH_VALID_DATE_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hello world, , , ,incomplete\n";
 	private static final String SEARCH_EMPTY_STRING = "search ";
-	private static final String SEARCH_EMPTY_STRING_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016,low,incomplete\n"
+	private static final String SEARCH_EMPTY_STRING_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n"
 			+ "2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete\n3,hello world, , , ,incomplete\n";
-
+	private static final String SEARCH_INVALID_DATE = "search 15:00 29 feb 2017";
+	private static final String SEARCH_INVALID_DATE_FEEDBACK = "Error: Please ensure the time format is valid. "
+			+ "Please use the \"help\"command to view the format";
+	
 	private static final String UNDO = "undo";
 	private static final String UNDO_FEEDBACK = "\"unmark 2\" command has been successfully undone.";
 	
-	
 	private static final String REDO = "redo";
 	private static final String REDO_FEEDBACK = "\"unmark 2\" command has been successfully undone.";
-	
 	
 	private static final String HELP_INVALID = "help 1";
 	private static final String HELP_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
@@ -189,7 +189,6 @@ public class LogicTest {
 			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help search \n6. help mark\n"
 			+ "7. help unmark\n8. help undo\n9. help redo\n10. help location \n11. help exit\n";
 
-	
 	private static final String HELP_VALID_UNDO = "help undo";
 	private static final String HELP_VALID_UNDO_FEEDBACK = "Undo the most recent command\nCommand: undo\n";
 	
@@ -252,6 +251,8 @@ public class LogicTest {
 			+ "Note: You may also use the keywords \"path\" or \"address\" instead of \"location\"";
 	
 	
+	
+	private static final String editTask3 ="edit 3 end 19:00 1 Jun 2016";
 	@BeforeClass
 	public static void setUpClass() throws Exception{
 		logicObj = new Logic();
@@ -313,6 +314,7 @@ public class LogicTest {
 		assertEquals(HELP_VALID_EXIT_FEEDBACK, logicObj.executeCommand(HELP_VALID_EXIT));
 	}
 	
+	
 	@Test
 	/*
 	 * The following test has 2 partitions, valid and invalid, based on the validity of the command
@@ -371,15 +373,19 @@ public class LogicTest {
 	@Test
 	public void test5SearchCommand() throws Exception{
 		//results not found partition
+		
 		assertEquals(SEARCH_NOT_FOUND_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
-		logicObj.executeCommand("edit 3 end 19:00 1 Jun 2016");
-		assertEquals(SEARCH_WRONG_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_WRONG_DATE));
+		logicObj.executeCommand("view");
+		logicObj.executeCommand( "edit 3 end 19:00 1 Jun 2016");
+		assertEquals(SEARCH_NOT_FOUND_FEEDBACK, logicObj.executeCommand(SEARCH_WRONG_DATE));
 		logicObj.executeCommand(UNDO);
+		assertEquals(SEARCH_INVALID_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_INVALID_DATE));
 		
 		// results found partition
 		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
 		assertEquals(SEARCH_EMPTY_STRING_FEEDBACK,logicObj.executeCommand(SEARCH_EMPTY_STRING));
 		assertEquals(SEARCH_VALID_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_DATE));
+		
 	}
 	
 	
@@ -407,6 +413,7 @@ public class LogicTest {
 
 	}
 
+	
 	@Test
 	/*
 	 * The following test case contains 2 equivalent partitions, a valid and an invalid one. Within the invalid
@@ -461,6 +468,7 @@ public class LogicTest {
 		
 	}
 	
+	
 	@Test
 	public void test9RedoCommand() throws Exception {
 		assertEquals(REDO_FEEDBACK, logicObj.executeCommand(REDO));
@@ -479,8 +487,8 @@ public class LogicTest {
 		// invalid partition
 		assertEquals(LOCATION_EMPTY_STRING_FEEDBACK, logicObj.executeCommand(LOCATION_EMPTY_STRING));
 		assertEquals(LOCATION_FEEDBACK_FAIL, logicObj.executeCommand(LOCATION_COMMAND_FAIL));
-	
 	}
+	
 	
 	@AfterClass
 	public static void tearDownClass() throws Exception {
