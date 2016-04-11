@@ -4,7 +4,7 @@ package simplyamazing.parser;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ParserDoneOrUndone {
+public class ParserDone {
 	private final String COMMAND_INVALID = "Error: Index provided is not an Integer.";
 	private final String SPACE = " ";
 	private int size;
@@ -14,7 +14,7 @@ public class ParserDoneOrUndone {
 	 * to mark multiple tasks as done. Different input tasks are separated by
 	 * the space.
 	 */
-	public Handler parserDoneOrUndoneCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
+	public Handler parserDoneCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
 
 		String[] indexes = taskInfo.split(SPACE);
 		size = indexes.length;
