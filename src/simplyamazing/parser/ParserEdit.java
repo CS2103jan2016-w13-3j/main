@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.joestelmach.natty.*;
@@ -24,11 +25,12 @@ public class ParserEdit {
 	private static Date startingDate = null;
 	private static Date endingDate = null;
 	private static int year;
-	public Handler parseEditCommand(Handler handler, String taskIndex, String taskInfoWithoutIndex, Logger logger) throws Exception {
-		//com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
-		if (isInteger(taskIndex)) {
+	public Handler parseEditCommand(Handler handler, String taskIndex, String taskInfoWithoutIndex, Logger logger) throws Exception {		
+		logger.log(Level.INFO, "start to check the Index of the Edit command");
+		if (isInteger(taskIndex,logger)) {
 			handler.setIndex(taskIndex);
 		} else {
+			logger.log(Level.WARNING, "the index of the command is invalid");
 			handler.setHasError(true);
 			handler.setFeedBack(ERROR_MESSAGE_INVALID_INDEX);
 			return handler;
@@ -49,27 +51,30 @@ public class ParserEdit {
 				if(value.toLowerCase().equals("none")){
 					handler.getTask().setStartTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 				} else {
-					boolean isStartFormatCorrect = followStandardFormat(value);
-					handler = editStartTime(sdf,isStartFormatCorrect,handler,value);
+					boolean isStartFormatCorrect = followStandardFormat(value,logger);
+					handler = editStartTime(sdf,isStartFormatCorrect,handler,value,logger);
 				}
 				break;
 			case "end" :
 				if(value.toLowerCase().equals("none")){
 					handler.getTask().setEndTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 				} else {
-					boolean isEndFormatCorrect = followStandardFormat(value);
-					handler = editEndTime(sdf,isEndFormatCorrect,handler,value);
+					boolean isEndFormatCorrect = followStandardFormat(value,logger);
+					handler = editEndTime(sdf,isEndFormatCorrect,handler,value,logger);
 				}
 				break;
 			case "priority" :
+				logger.log(Level.INFO,"start to parse the priority");
 				try{
 					handler.getTask().setPriority(value);
 				}catch(Exception e){
+					logger.log(Level.WARNING, "the priority level entered is invalid");
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_PRIORITY_LEVEL);
 				}
 				break;
 			default :
+				logger.log(Level.WARNING,"the field of command is invalid");
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_INVALID_FIELD);
 			}
@@ -105,8 +110,8 @@ public class ParserEdit {
 
 		} else if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // end time is modified
 			if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && !endingDate.after(todayDate)) {
-					handler.setHasError(true);
-					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
+				handler.setHasError(true);
+				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 			}
 		}  
 		/*if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && startingDate.after(endingDate)) {
@@ -118,21 +123,23 @@ public class ParserEdit {
 			}*/
 		return handler;
 	}
-    private Handler editStartTime(SimpleDateFormat sdf,boolean isStartFormatCorrect,Handler handler,String value){
-    	com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
-    	if(isStartFormatCorrect == true){
-			System.out.println("startTime use our format");
+	private Handler editStartTime(SimpleDateFormat sdf,boolean isStartFormatCorrect,Handler handler,String value,Logger logger){
+		com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
+		if(isStartFormatCorrect == true){
+			logger.log(Level.INFO,"startTime use our format");
 			try{
 				startingDate = (Date)sdf.parse(value);
 			}catch (ParseException e) {
+				logger.log(Level.WARNING,"startTime is invalid in our time format");
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 			}
 		}else{ 
-			System.out.println("startTime use Natty");
+			logger.log(Level.INFO,"startTime use Natty");
 			List<DateGroup> dateGroup3 = dateParser.parse(value);
 
 			if(dateGroup3.isEmpty()){
+				logger.log(Level.WARNING,"startTime is invalid in the Natty format");
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 				return handler;
@@ -140,24 +147,26 @@ public class ParserEdit {
 			List<Date> date3 = dateGroup3.get(0).getDates();
 			startingDate = date3.get(0);
 		}
-    	handler.getTask().setStartTime(startingDate);
-    	return handler;
-    }
-    private Handler editEndTime(SimpleDateFormat sdf,boolean isEndFormatCorrect,Handler handler,String value){
-    	com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
-    	if(isEndFormatCorrect == true){
-			System.out.println("endTime use our format");
+		handler.getTask().setStartTime(startingDate);
+		return handler;
+	}
+	private Handler editEndTime(SimpleDateFormat sdf,boolean isEndFormatCorrect,Handler handler,String value,Logger logger){
+		com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
+		if(isEndFormatCorrect == true){
+			logger.log(Level.INFO,"endTime use our format");
 			try{
 				endingDate = (Date)sdf.parse(value);
 			}catch (ParseException e) {
+				logger.log(Level.WARNING,"endTime is invalid in our time format");
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 			}
 		}else{
-			System.out.println("endTime use Natty");
+			logger.log(Level.INFO,"endTime use Natty");
 			List<DateGroup> dateGroup4 = dateParser.parse(value);
 
 			if(dateGroup4.isEmpty()){
+				logger.log(Level.WARNING,"endTime is invalid in the Natty format");
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 				return handler;
@@ -165,19 +174,21 @@ public class ParserEdit {
 			List<Date> date4 = dateGroup4.get(0).getDates();
 			endingDate = date4.get(0);
 		}
-    	handler.getTask().setEndTime(endingDate);
-    	return handler;
-    }
-	public static boolean isInteger(String taskInfo) {
+		handler.getTask().setEndTime(endingDate);
+		return handler;
+	}
+	public static boolean isInteger(String taskInfo, Logger logger) {
+		logger.log(Level.INFO,"start to analyze the index");
 		try {
 			Integer.parseInt(taskInfo);
 		} catch (NumberFormatException e) {
+			logger.log(Level.WARNING, "the index is not an Integer");
 			return false;
 		}
 		// only got here if we didn't return false
 		return true;
 	}
-	public boolean followStandardFormat(String dateTimeString){
+	public boolean followStandardFormat(String dateTimeString,Logger logger){
 		String[] dateTimeArr = dateTimeString.trim().split(" ");
 
 		if (dateTimeArr.length != 4) {
@@ -188,9 +199,11 @@ public class ParserEdit {
 			if ((time.contains(":") && (time.length() == 4 || time.length()== 5))) {
 
 				int date;
+				logger.log(Level.INFO, "start to process the date");
 				try{
 					date = Integer.parseInt(dateTimeArr[1], 10);
 				} catch (NumberFormatException e){
+					logger.log(Level.WARNING, "the format for the date is invalid");
 					return false;
 				}	
 				// reach here means that it time given follows format and date given is an int
@@ -202,13 +215,14 @@ public class ParserEdit {
 					// month given follows the required format
 					return false;
 				} else {
+					logger.log(Level.INFO, "start to process the year");
 					try {
 						year = Integer.parseInt(dateTimeArr[3], 10);
 					} catch (NumberFormatException e) {
+						logger.log(Level.WARNING, "the format for the year is invalid");
 						return false; 	// year not in int format
 					}
 				}
-
 			} else {
 				return false;
 			}
