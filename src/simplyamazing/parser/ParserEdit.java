@@ -241,7 +241,7 @@ public class ParserEdit {
 						year = Integer.parseInt(dateTimeArr[3], 10);
 					} catch (NumberFormatException e) {
 						logger.log(Level.WARNING, "the format for the year is invalid");
-						return false; // year not in int format
+						return false;
 					}
 				}
 			} else {
