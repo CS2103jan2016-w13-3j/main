@@ -292,9 +292,11 @@ public class LogicTest {
 	 */
 	@Test
 	public void test2AddCommand() throws Exception{
+		// valid partition
 		assertEquals(ADD_TASK_PASS_FEEDBACK, logicObj.executeCommand(ADD_TASK_PASS));
 		assertEquals(ADD_DEADLINE_PASS_FEEDBACK, logicObj.executeCommand(ADD_DEADLINE_PASS));
 		assertEquals(ADD_EVENT_PASS_FEEDBACK, logicObj.executeCommand(ADD_EVENT_PASS));		
+		// invalid partition
 		assertEquals(ADD_ERROR_MESSAGE, logicObj.executeCommand(ADD_TASK_WITH_STARTIME_ONLY));
 		assertEquals(ADD_TASK_ENDTIME_BEFORE_STARTIME_FEEDBACK, logicObj.executeCommand(ADD_TASK_ENDTIME_BEFORE_STARTIME));
 		assertEquals(ADD_BEFORE_CURRENT_FEEDBACK, logicObj.executeCommand(ADD_END_BEFORE_CURRENT));
@@ -361,14 +363,12 @@ public class LogicTest {
 	@Test
 	public void test5SearchCommand() throws Exception{
 		//results not found partition
-		
 		assertEquals(SEARCH_NOT_FOUND_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
 		logicObj.executeCommand(VIEW_VALID);
 		logicObj.executeCommand( "edit 3 end 19:00 1 Jun 2016");
 		assertEquals(SEARCH_NOT_FOUND_FEEDBACK, logicObj.executeCommand(SEARCH_WRONG_DATE));
 		logicObj.executeCommand(UNDO);
 		assertEquals(SEARCH_INVALID_DATE_FEEDBACK, logicObj.executeCommand(SEARCH_INVALID_DATE));
-		
 		// results found partition
 		assertEquals(SEARCH_VALID_FEEDBACK, logicObj.executeCommand(SEARCH_VALID_KEYWORD));
 		assertEquals(SEARCH_EMPTY_STRING_FEEDBACK,logicObj.executeCommand(SEARCH_EMPTY_STRING));
@@ -378,16 +378,20 @@ public class LogicTest {
 	
 	
 	/*
-	 * The following test case contains 3 equivalent partitions, a negative partition where the value is below what is expected,
-	 * a positive partition, where the value is larger than expected and the final partition where the value is within what is
-	 * expected
+	 * The following test case contains 2 equivalent partitions, a valid and an invalid one. Within the invalid
+	 * partition there are 3 boundary cases, a negative boundary where the index is below what is expected,
+	 * a positive boundary, where the index is larger than expected and the third boundary where a string is given a
+	 * the index.
 	 */
 	@Test
 	public void test6DeleteCommand() throws Exception{
 		// invalid partition
 		logicObj.executeCommand(VIEW_VALID);
+		// string as index case
 		assertEquals(DELETE_STRING_FEEDBACK, logicObj.executeCommand(DELETE_STRING));
+		// larger boundary case
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_LARGER));
+		// negative boundary case
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_NEGATIVE));
 		assertEquals(DELETE_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_INDEX_ZERO));
 		assertEquals(DELETE_INVALID_MULTIPLE_FEEDBACK, logicObj.executeCommand(DELETE_INVALID_MULTIPLE));
@@ -411,9 +415,12 @@ public class LogicTest {
 	public void test7MarkCommand() throws Exception{
 		// invalid partition
 		logicObj.executeCommand(VIEW_VALID);
+		// negative boundary case
 		assertEquals(MARK_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(MARK_INVALID_INDEX_NEGATIVE));
 		assertEquals(MARK_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(MARK_INVALID_INDEX_ZERO));
+		// larger boundary case
 		assertEquals(MARK_INVALID_INDEX_FEEDBACK, logicObj.executeCommand(MARK_INVALID_INDEX_LARGER));
+		// string as index case
 		assertEquals(MARK_INVALID_COMMAND_FEEDBACK, logicObj.executeCommand(MARK_INVALID_INDEX_STRING));
 		logicObj.executeCommand(VIEW_VALID);
 		assertEquals(MARK_INVALID_INDEX_MULTIPLE_FEEDBACK, logicObj.executeCommand(MARK_INVALID_INDEX_MULTIPLE));
