@@ -32,17 +32,17 @@ public class LogicTest {
 	private static final String ADD_INVALID = "add ";
 	private static final String UNRECOGNIZED_COMMAND = "hello";
 	private static final String UNRECOGNIZED_COMMAND_STRING_EMPTY = "";
-	private static final String UNRECOGNIZED_COMMAND_FEEDBACK = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
-	
+	private static final String UNRECOGNIZED_COMMAND_FEEDBACK = "Error: Invalid command entered. Please enter \"help\""
+			+ " to view all commands and their format";
 	
 		
+	private static final String LOCATION_EMPTY_STRING = "location ";
+	private static final String LOCATION_EMPTY_STRING_FEEDBACK = "Error: Location provided is invalid";
 	private static final String LOCATION_COMMAND_FAIL = "location just a placeholder";
 	private static final String LOCATION_COMMAND_PASS = "location C:\\Users\\Public\\SimplyAmazing";
 	private static final String LOCATION_FEEDBACK_FAIL = "Error: Not a valid directory";
-	private static final String LOCATION_FEEDBACK_PASS = "Storage location of task data has been sucessfully set as C:\\Users\\Public\\SimplyAmazing.";
-	private static final String LOCATION_EMPTY_STRING = "location ";
-	private static final String LOCATION_EMPTY_STRING_FEEDBACK = "Error: Location provided is invalid";
-	
+	private static final String LOCATION_FEEDBACK_PASS = "Storage location of task data has been sucessfully set as"
+			+ " C:\\Users\\Public\\SimplyAmazing.";
 	
 	
 	private static final String ADD_TASK_PASS = "add hello world";
@@ -60,20 +60,18 @@ public class LogicTest {
 	private static final String ADD_BEFORE_CURRENT_FEEDBACK = "Error: Time provided must be after the current time";
 	
 	
-	
 	private static final String VIEW_INVALID = "view nothing";
-	private static final String VIEW_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help view\" command to see all the valid keywords" ;
 	private static final String VIEW_EMPTY_LIST = "List is empty";
 	private static final String VIEW_DONE = "view done";
 	private static final String VIEW_OVERDUE = "view overdue";
 	private static final String VIEW_VALID = "view";
-	private static final String VIEW_VALID_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete\n"
+	private static final String VIEW_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help view\" command"
+			+ " to see all the valid keywords" ;
+	private static final String VIEW_VALID_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n"
+			+ "2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete\n"
 			+ "3,hello world, , , ,incomplete\n";
 	
 	
-	
-	private static final String DELETE_VALID_INDEX = "delete 2";
-	private static final String DELETE_VALID_INDEX_FEEDBACK = "Task [hackathon in SOC from 09:30 26 May 2016 to 10:00 27 May 2016] has been successfully deleted.";
 	private static final String DELETE_INVALID_INDEX_LARGER = "delete 5";
 	private static final String DELETE_INVALID_INDEX_FEEDBACK = "Error: The Index entered is invalid";
 	private static final String DELETE_INVALID_INDEX_ZERO = "delete 0";
@@ -84,8 +82,9 @@ public class LogicTest {
 	private static final String DELETE_VALID_MULTIPLE_FEEDBACK = "Provided tasks have been successfully deleted.";
 	private static final String DELETE_INVALID_MULTIPLE = "delete 1 2 5";
 	private static final String DELETE_INVALID_MULTIPLE_FEEDBACK = "Error: One of the given indexes is invalid";
-	
-	
+	private static final String DELETE_VALID_INDEX = "delete 2";
+	private static final String DELETE_VALID_INDEX_FEEDBACK = "Task [hackathon in SOC from 09:30 26 May 2016 to 10:00 27 May 2016]"
+			+ " has been successfully deleted.";
 	
 	
 	private static final String EDIT_INDEX_INVALID_FEEDBACK = "Error: The Index entered is invalid";
@@ -95,7 +94,8 @@ public class LogicTest {
 	private static final String EDIT_INDEX_STRING = "edit abc priority high";
 	private static final String EDIT_INDEX_STRING_FEEDBACK = "Error: Index provided is not an Integer.";
 	private static final String EDIT_INVALID_FIELD = "edit 1 anyfield anyvalue";
-	private static final String EDIT_INVALID_FIELD_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
+	private static final String EDIT_INVALID_FIELD_FEEDBACK = "Error: Please input a valid field. Use the \"help edit\""
+			+ " command to see all the valid fields";
 	
 	private static final String EDIT_TIME_BEFORE_CURRENT_FEEDBACK = "Error: Time provided must be after the current time";
 	private static final String EDIT_START_BEFORE_CURRENT = "edit 1 start 22:00 2 apr 2016";
@@ -120,18 +120,19 @@ public class LogicTest {
 	private static final String EDIT_VALID = "edit 3 description hello world";
 	private static final String EDIT_VALID_FEEDBACK = "Task [hello world] has been successfully updated.";
 	
-	private static final String EDIT_PRIORITY_HIGH = "Task [cs2103 peer review by 23:59 25 May 2016 with high priority] has been successfully updated."; 
-	private static final String EDIT_PRIORITY_HIGH_FEEDBACK = "edit 1 priority high"; 
+	private static final String EDIT_PRIORITY_INVALID = "edit 1 priority nothing"; 
+	private static final String EDIT_PRIORITY_INVALID_FEEDBACK = "Error: Priority level can be only high, medium, low or none.";
+	private static final String EDIT_PRIORITY_HIGH = "edit 1 priority high"; 
 	private static final String EDIT_PRIORITY_MEDIUM =  "edit 1 priority medium";
-	private static final String EDIT_PRIORITY_MEDIUM_FEEDBACK = "Task [cs2103 peer review by 23:59 25 May 2016 with medium priority] has been successfully updated.";
 	private static final String EDIT_PRIORITY_LOW = "edit 1 priority low"; 
-	private static final String EDIT_PRIORITY_LOW_FEEDBACK = "Task [cs2103 peer review by 23:59 25 May 2016 with low priority] has been successfully updated.";
 	private static final String EDIT_PRIORITY_NONE = "edit 1 priority none";
 	private static final String EDIT_PRIORITY_NONE_FEEDBACK = "Task [cs2103 peer review by 23:59 25 May 2016] has been successfully updated.";
-	private static final String EDIT_PRIORITY_INVALID = "edit 1 priority nothing"; 
-	private static final String EDIT_PRIORITY_INVALID_FEEDBACK = "Error: Priority level can be only high, medium, low or none."; 
-
-	
+	private static final String EDIT_PRIORITY_HIGH_FEEDBACK = "Task [cs2103 peer review by 23:59 25 May 2016 with high priority] "
+			+ "has been successfully updated.";
+	private static final String EDIT_PRIORITY_LOW_FEEDBACK = "Task [cs2103 peer review by 23:59 25 May 2016 with low priority]"
+			+ " has been successfully updated.";
+	private static final String EDIT_PRIORITY_MEDIUM_FEEDBACK = "Task [cs2103 peer review by 23:59 25 May 2016 with medium priority]"
+			+ " has been successfully updated.";
 	
 	private static final String MARK_INVALID_INDEX_NEGATIVE = "done -1";
 	private static final String MARK_INVALID_INDEX_ZERO = "done 0";
@@ -167,7 +168,8 @@ public class LogicTest {
 	private static final String SEARCH_NOT_FOUND_FEEDBACK = "There are no tasks containing the given keyword";
 	private static final String SEARCH_WRONG_DATE = "search 19:00 25 Dec 2016";
 	private static final String SEARCH_VALID_DATE = "search 25 May 2016";
-	private static final String SEARCH_VALID_DATE_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n2,hello world, , , ,incomplete\n";
+	private static final String SEARCH_VALID_DATE_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n"
+			+ "2,hello world, , , ,incomplete\n";
 	private static final String SEARCH_EMPTY_STRING = "search ";
 	private static final String SEARCH_EMPTY_STRING_FEEDBACK = "1,cs2103 peer review, ,23:59 25 May 2016, ,incomplete\n"
 			+ "2,hackathon in SOC,09:30 26 May 2016,10:00 27 May 2016, ,incomplete\n3,hello world, , , ,incomplete\n";
@@ -175,14 +177,18 @@ public class LogicTest {
 	private static final String SEARCH_INVALID_DATE_FEEDBACK = "Error: Please ensure the time format is valid. "
 			+ "Please use the \"help\"command to view the format";
 	
+	
 	private static final String UNDO = "undo";
 	private static final String UNDO_FEEDBACK = "\"unmark 2\" command has been successfully undone.";
+	
 	
 	private static final String REDO = "redo";
 	private static final String REDO_FEEDBACK = "\"unmark 2\" command has been successfully undone.";
 	
+	
 	private static final String HELP_INVALID = "help 1";
-	private static final String HELP_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
+	private static final String HELP_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help\""
+			+ " command to view all valid keywords";
 	
 	private static final String HELP_VALID = "help";
 	private static final String HELP_VALID_FEEDBACK = "Key in the following to view specific command formats:\n"
@@ -280,11 +286,11 @@ public class LogicTest {
 	}
 	
 	
-	
-	@Test
+
 	/*
 	 * The following test has 2 equivalent partitions, valid and invalid commands.
 	 */
+	@Test
 	public void test2AddCommand() throws Exception{
 		assertEquals(ADD_TASK_PASS_FEEDBACK, logicObj.executeCommand(ADD_TASK_PASS));
 		assertEquals(ADD_DEADLINE_PASS_FEEDBACK, logicObj.executeCommand(ADD_DEADLINE_PASS));
@@ -296,28 +302,11 @@ public class LogicTest {
 	}
 	
 	
-	@Test
-	public void test31HelpCommand() throws Exception{
-		assertEquals(HELP_VALID_FEEDBACK, logicObj.executeCommand(HELP_VALID));
-		assertEquals(HELP_INVALID_FEEDBACK, logicObj.executeCommand(HELP_INVALID));
-		assertEquals(HELP_VALID_UNDO_FEEDBACK, logicObj.executeCommand(HELP_VALID_UNDO));
-		assertEquals(HELP_VALID_MARK_FEEDBACK, logicObj.executeCommand(HELP_VALID_MARK));
-		assertEquals(HELP_VALID_DELETE_FEEDBACK, logicObj.executeCommand(HELP_VALID_DELETE));
-		assertEquals(HELP_VALID_VIEW_FEEDBACK, logicObj.executeCommand(HELP_VALID_VIEW));
-		assertEquals(HELP_VALID_EDIT_FEEDBACK, logicObj.executeCommand(HELP_VALID_EDIT));
-		assertEquals(HELP_VALID_SEARCH_FEEDBACK, logicObj.executeCommand(HELP_VALID_SEARCH));
-		assertEquals(HELP_VALID_LOCATION_FEEDBACK, logicObj.executeCommand(HELP_VALID_LOCATION));
-		assertEquals(HELP_VALID_UNMARK_FEEDBACK, logicObj.executeCommand(HELP_VALID_UNMARK));
-		assertEquals(HELP_VALID_REDO_FEEDBACK, logicObj.executeCommand(HELP_VALID_REDO));
-		assertEquals(HELP_VALID_ADD_FEEDBACK, logicObj.executeCommand(HELP_VALID_ADD));
-		assertEquals(HELP_VALID_EXIT_FEEDBACK, logicObj.executeCommand(HELP_VALID_EXIT));
-	}
-	
-	
-	@Test
+
 	/*
 	 * The following test has 2 partitions, valid and invalid, based on the validity of the command
 	 */
+	@Test
 	public void test3ViewCommand() throws Exception{
 		// invalid partition
 		assertEquals(VIEW_INVALID_FEEDBACK, logicObj.executeCommand(VIEW_INVALID));
@@ -357,7 +346,7 @@ public class LogicTest {
 		assertEquals(EDIT_PRIORITY_INVALID_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_INVALID));
 		
 		assertEquals(EDIT_VALID_FEEDBACK, logicObj.executeCommand(EDIT_VALID));
-		assertEquals(EDIT_PRIORITY_HIGH,logicObj.executeCommand(EDIT_PRIORITY_HIGH_FEEDBACK));
+		assertEquals(EDIT_PRIORITY_HIGH_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_HIGH));
 		assertEquals(EDIT_PRIORITY_MEDIUM_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_MEDIUM));
 		assertEquals(EDIT_PRIORITY_LOW_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_LOW));
 		assertEquals(EDIT_PRIORITY_NONE_FEEDBACK,logicObj.executeCommand(EDIT_PRIORITY_NONE));
@@ -374,7 +363,7 @@ public class LogicTest {
 		//results not found partition
 		
 		assertEquals(SEARCH_NOT_FOUND_FEEDBACK,logicObj.executeCommand(SEARCH_INVALID_KEYWORD));
-		logicObj.executeCommand("view");
+		logicObj.executeCommand(VIEW_VALID);
 		logicObj.executeCommand( "edit 3 end 19:00 1 Jun 2016");
 		assertEquals(SEARCH_NOT_FOUND_FEEDBACK, logicObj.executeCommand(SEARCH_WRONG_DATE));
 		logicObj.executeCommand(UNDO);
@@ -394,7 +383,6 @@ public class LogicTest {
 	 * expected
 	 */
 	@Test
-	
 	public void test6DeleteCommand() throws Exception{
 		// invalid partition
 		logicObj.executeCommand(VIEW_VALID);
@@ -420,7 +408,6 @@ public class LogicTest {
 	 * a positive boundary, where the index is larger than expected and the third boundary where a string is given a
 	 * the index.
 	 */
-	
 	public void test7MarkCommand() throws Exception{
 		// invalid partition
 		logicObj.executeCommand(VIEW_VALID);
@@ -471,6 +458,24 @@ public class LogicTest {
 	@Test
 	public void test9RedoCommand() throws Exception {
 		assertEquals(REDO_FEEDBACK, logicObj.executeCommand(REDO));
+	}
+	
+	
+	@Test
+	public void testHelpCommand() throws Exception{
+		assertEquals(HELP_VALID_FEEDBACK, logicObj.executeCommand(HELP_VALID));
+		assertEquals(HELP_INVALID_FEEDBACK, logicObj.executeCommand(HELP_INVALID));
+		assertEquals(HELP_VALID_UNDO_FEEDBACK, logicObj.executeCommand(HELP_VALID_UNDO));
+		assertEquals(HELP_VALID_MARK_FEEDBACK, logicObj.executeCommand(HELP_VALID_MARK));
+		assertEquals(HELP_VALID_DELETE_FEEDBACK, logicObj.executeCommand(HELP_VALID_DELETE));
+		assertEquals(HELP_VALID_VIEW_FEEDBACK, logicObj.executeCommand(HELP_VALID_VIEW));
+		assertEquals(HELP_VALID_EDIT_FEEDBACK, logicObj.executeCommand(HELP_VALID_EDIT));
+		assertEquals(HELP_VALID_SEARCH_FEEDBACK, logicObj.executeCommand(HELP_VALID_SEARCH));
+		assertEquals(HELP_VALID_LOCATION_FEEDBACK, logicObj.executeCommand(HELP_VALID_LOCATION));
+		assertEquals(HELP_VALID_UNMARK_FEEDBACK, logicObj.executeCommand(HELP_VALID_UNMARK));
+		assertEquals(HELP_VALID_REDO_FEEDBACK, logicObj.executeCommand(HELP_VALID_REDO));
+		assertEquals(HELP_VALID_ADD_FEEDBACK, logicObj.executeCommand(HELP_VALID_ADD));
+		assertEquals(HELP_VALID_EXIT_FEEDBACK, logicObj.executeCommand(HELP_VALID_EXIT));
 	}
 	
 	

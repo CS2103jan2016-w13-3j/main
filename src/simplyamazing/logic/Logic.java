@@ -33,7 +33,7 @@ public class Logic {
 	private static Handler commandHandler;
 	
 	private static final String STRING_EMPTY = "";
-	
+	private static final String FILE_PATH = "C:\\Users\\Public\\SimplyAmazing\\logFile.txt";
 	private static final int EXIT_WITHOUT_ERROR = 0;
 	private static final int EMPTY_LIST_SIZE = 0;
 	private static final int ONE_ELEMENT_IN_LIST = 1;
@@ -128,10 +128,10 @@ public class Logic {
 		previousCommandString = STRING_EMPTY;
 		logger = Logger.getLogger("simplyamazing");
 		try {
-			FileHandler fh = new FileHandler("C:\\Users\\Public\\SimplyAmazing\\logFile.txt", true);
-			logger.addHandler(fh);
+			FileHandler fileHandler = new FileHandler(FILE_PATH, true);
+			logger.addHandler(fileHandler);
 			SimpleFormatter formatter = new SimpleFormatter();  
-			fh.setFormatter(formatter);
+			fileHandler.setFormatter(formatter);
 		} catch (Exception e) {
 			System.out.println("Error while setting up filehandler");
 		}
@@ -290,7 +290,6 @@ public class Logic {
 				return storageObj.deleteTask(taskToDelete);
 				
 			} else {
-				
 				return deleteMultiple(listToDelete);
 			}
 		}
