@@ -12,8 +12,8 @@ public class Handler {
 	private String feedback;
 	private boolean hasError;
 	private boolean hasEndDate;
-	private  ArrayList<Integer> indexes; 
-   
+	private ArrayList<Integer> indexes;
+
 	private static final String INDEX_DEFAULT_VALUE = null;
 	private static final String EMPTY_STRING = "";
 	private static final boolean HASERROR_DEFAULT_VALUE = false;
@@ -49,7 +49,7 @@ public class Handler {
 	public void setHasError(boolean hasError) {
 		this.hasError = hasError;
 	}
-	
+
 	public void setHasEndDate(boolean hasEndDate) {
 		this.hasEndDate = hasEndDate;
 	}
@@ -77,6 +77,7 @@ public class Handler {
 	public boolean getHasError() {
 		return hasError;
 	}
+
 	public boolean getHasEndDate() {
 		return hasEndDate;
 	}

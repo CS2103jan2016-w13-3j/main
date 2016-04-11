@@ -13,11 +13,11 @@ public class ParserDoneOrUndone {
 
 		String[] indexes = taskInfo.split(SPACE);
 		size = indexes.length;
-		logger.log(Level.INFO,"start to analyze the command");
-		for (int i = 0; i < size;i++){
-			if (isInteger(indexes[i], logger)){
+		logger.log(Level.INFO, "start to analyze the command");
+		for (int i = 0; i < size; i++) {
+			if (isInteger(indexes[i], logger)) {
 				handler.setIndex(indexes[i]);
-			}else{
+			} else {
 				logger.log(Level.WARNING, "the index is invalid");
 				handler.setHasError(true);
 				handler.setFeedBack(COMMAND_INVALID);
@@ -28,7 +28,7 @@ public class ParserDoneOrUndone {
 	}
 
 	private boolean isInteger(String taskInfo, Logger logger) {
-		logger.log(Level.INFO,"start to analyze the index");
+		logger.log(Level.INFO, "start to analyze the index");
 		try {
 			Integer.parseInt(taskInfo);
 		} catch (NumberFormatException e) {

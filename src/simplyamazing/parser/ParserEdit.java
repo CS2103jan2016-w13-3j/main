@@ -52,10 +52,10 @@ public class ParserEdit {
 			String value = Parser.removeFirstWord(fieldValuePairs[i]);
 
 			switch (field.toLowerCase()) {
-			case "description":
+			case "description" :
 				handler.getTask().setDescription(value);
 				break;
-			case "start":
+			case "start" :
 				if (value.toLowerCase().equals("none")) {
 					handler.getTask().setStartTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 				} else {
@@ -63,7 +63,7 @@ public class ParserEdit {
 					handler = editStartTime(sdf, isStartFormatCorrect, handler, value, logger);
 				}
 				break;
-			case "end":
+			case "end" :
 				if (value.toLowerCase().equals("none")) {
 					handler.getTask().setEndTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 				} else {
@@ -71,7 +71,7 @@ public class ParserEdit {
 					handler = editEndTime(sdf, isEndFormatCorrect, handler, value, logger);
 				}
 				break;
-			case "priority":
+			case "priority" :
 				logger.log(Level.INFO, "start to parse the priority");
 				try {
 					handler.getTask().setPriority(value);
@@ -81,7 +81,7 @@ public class ParserEdit {
 					handler.setFeedBack(ERROR_MESSAGE_PRIORITY_LEVEL);
 				}
 				break;
-			default:
+			default :
 				logger.log(Level.WARNING, "the field of command is invalid");
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_INVALID_FIELD);

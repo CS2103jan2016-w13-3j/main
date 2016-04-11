@@ -123,73 +123,73 @@ public class Parser {
 	private Handler parserFirstWord(Handler handler, String firstWord, String removeFirstWord) throws Exception {
 		logger.log(Level.INFO, "start to process the First word");
 		switch (firstWord.toLowerCase()) {
-		case COMMAND_ADD:
-		case COMMAND_ADD_ALT:
+		case COMMAND_ADD :
+		case COMMAND_ADD_ALT :
 			handler.setCommandType(COMMAND_ADD);
 			handler = parserAddCommand(handler, removeFirstWord);
 			break;
-		case COMMAND_DELETE:
-		case COMMAND_DELETE_ALT:
-		case COMMAND_DELETE_ALT_2:
-		case COMMAND_DELETE_ALT_3:
-		case COMMAND_DELETE_ALT_4:
+		case COMMAND_DELETE :
+		case COMMAND_DELETE_ALT :
+		case COMMAND_DELETE_ALT_2 :
+		case COMMAND_DELETE_ALT_3 :
+		case COMMAND_DELETE_ALT_4 :
 			handler.setCommandType(COMMAND_DELETE);
 			handler = parserDeleteCommand(handler, removeFirstWord);
 			break;
-		case COMMAND_EDIT:
-		case COMMAND_EDIT_ALT:
-		case COMMAND_EDIT_ALT_2:
+		case COMMAND_EDIT :
+		case COMMAND_EDIT_ALT :
+		case COMMAND_EDIT_ALT_2 :
 			handler.setCommandType(COMMAND_EDIT);
 			handler = parserEditCommand(handler, removeFirstWord);
 			break;
-		case COMMAND_VIEW:
-		case COMMAND_VIEW_ALT:
-		case COMMAND_VIEW_ALT_2:
-		case COMMAND_VIEW_ALT_3:
+		case COMMAND_VIEW :
+		case COMMAND_VIEW_ALT :
+		case COMMAND_VIEW_ALT_2 :
+		case COMMAND_VIEW_ALT_3 :
 			handler.setCommandType(COMMAND_VIEW);
 			handler = parserViewCommand(handler, removeFirstWord);
 			break;
-		case COMMAND_SEARCH:
-		case COMMAND_SEARCH_ALT:
-		case COMMAND_SEARCH_ALT_2:
+		case COMMAND_SEARCH :
+		case COMMAND_SEARCH_ALT :
+		case COMMAND_SEARCH_ALT_2 :
 			handler.setCommandType(COMMAND_SEARCH);
 			handler = parserSearchCommand(handler, removeFirstWord);
 			break;
-		case COMMAND_HELP:
-		case COMMAND_HELP_ALT:
+		case COMMAND_HELP :
+		case COMMAND_HELP_ALT :
 			handler.setCommandType(COMMAND_HELP);
 			handler = parserHelpCommand(handler, removeFirstWord);
 			break;
-		case COMMAND_UNDO:
+		case COMMAND_UNDO :
 			handler.setCommandType(COMMAND_UNDO);
 			break;
-		case COMMAND_REDO:
+		case COMMAND_REDO :
 			handler.setCommandType(COMMAND_REDO);
 			break;
-		case COMMAND_SET_LOCATION:
-		case COMMAND_SET_LOCATION_ALT:
-		case COMMAND_SET_LOCATION_ALT_2:
+		case COMMAND_SET_LOCATION :
+		case COMMAND_SET_LOCATION_ALT :
+		case COMMAND_SET_LOCATION_ALT_2 :
 			handler.setCommandType(COMMAND_SET_LOCATION);
 			handler = parserLocationCommand(handler, removeFirstWord);
 			break;
-		case COMMAND_MARK_AS_DONE:
-		case COMMAND_MARK_AS_DONE_ALT:
-		case COMMAND_MARK_AS_DONE_ALT_2:
-		case COMMAND_MARK_AS_DONE_ALT_3:
+		case COMMAND_MARK_AS_DONE :
+		case COMMAND_MARK_AS_DONE_ALT :
+		case COMMAND_MARK_AS_DONE_ALT_2 :
+		case COMMAND_MARK_AS_DONE_ALT_3 :
 			handler.setCommandType(COMMAND_MARK_AS_DONE);
 			handler = parserDoneOrUndoneCommand(handler, removeFirstWord);
 			break;
-		case COMMAND_UNMARK:
-		case COMMAND_UNMARK_ALT:
+		case COMMAND_UNMARK :
+		case COMMAND_UNMARK_ALT :
 			handler.setCommandType(COMMAND_UNMARK);
 			handler = parserDoneOrUndoneCommand(handler, removeFirstWord);
 			break;
-		case COMMAND_EXIT:
-		case COMMAND_EXIT_ALT:
-		case COMMAND_EXIT_ALT_2:
+		case COMMAND_EXIT :
+		case COMMAND_EXIT_ALT :
+		case COMMAND_EXIT_ALT_2 :
 			handler.setCommandType(COMMAND_EXIT);
 			break;
-		default:
+		default :
 			logger.log(Level.WARNING, "the entered command type is invalid");
 			handler.setHasError(true);
 			handler.setFeedBack(COMMAND_INVALID);
