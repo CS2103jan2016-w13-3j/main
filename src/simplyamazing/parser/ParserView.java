@@ -1,6 +1,7 @@
 //@@author A0112659A
 package simplyamazing.parser;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ParserView {
@@ -13,6 +14,7 @@ public class ParserView {
 	private final String COMMAND_INVALID = "Error: Please input a valid keyword. Use the \"help view\" command to see all the valid keywords";
 
 	public Handler parserViewCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
+		logger.log(Level.INFO,"start to parse the search command");
 		switch (taskInfo.toLowerCase()) {
 		case STRING_EVENT:
 			handler.setKeyWord(STRING_EVENT);
@@ -33,6 +35,7 @@ public class ParserView {
 			handler.setKeyWord(STRING_DONE);
 			break;
 		default:
+			logger.log(Level.WARNING, "the entered command is invalid");
 			handler.setHasError(true);
 			handler.setFeedBack(COMMAND_INVALID);
 		}
