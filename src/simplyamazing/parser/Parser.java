@@ -103,7 +103,7 @@ public class Parser {
 	}
 	private Handler parserDeleteCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserDelete parserDelete = new ParserDelete();
-		assert parserDelete != null;					// assert
+		assert parserDelete != null;				// assert
 		return parserDelete.parserDeleteCommand(handler,removeFirstWord,logger);
 	}
 	private Handler parserViewCommand(Handler handler, String removeFirstWord) throws Exception {
@@ -118,7 +118,6 @@ public class Parser {
 	}
 	private Handler parserDoneOrUndoneCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserDoneOrUndone parserDoneOrUndone = new ParserDoneOrUndone();
-		assert parserDoneOrUndone != null;
 		return parserDoneOrUndone.parserDoneOrUndoneCommand(handler,removeFirstWord,logger);
 	}
 	private Handler parserHelpCommand(Handler handler, String removeFirstWord) throws Exception {
