@@ -94,7 +94,7 @@ public class ParserEdit {
 		assert todayDate != null;
 
 		if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0
-				&& endingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { 
+				&& endingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
 			if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) != 0
 					&& endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) != 0) {
 				if (!startingDate.after(todayDate) || !endingDate.after(todayDate)) {
@@ -105,23 +105,32 @@ public class ParserEdit {
 					handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
 				}
 			} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) == 0
-					&& endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) != 0) { 
+					&& endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) != 0) {
 				if (!endingDate.after(todayDate)) {
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 				}
 			} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) != 0
-					&& endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) == 0) { // end time is modified
+					&& endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) == 0) { // end
+																						// time
+																						// is
+																						// modified
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_NO_END_TIME);
 			}
-		} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // start time is modified
+		} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // start
+																			// time
+																			// is
+																			// modified
 			if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) != 0 && !startingDate.after(todayDate)) {
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 			}
 
-		} else if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // end time is modified																			
+		} else if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // end
+																			// time
+																			// is
+																			// modified
 			if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) != 0 && !endingDate.after(todayDate)) {
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
