@@ -59,8 +59,6 @@ public class ParserAdd {
 		
 		logger.log(Level.INFO, "start to analyze the type of the task we add");
 		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) {
-			System.out.println("Found "+KEYWORD_SCHEDULE_FROM+", "+KEYWORD_SCHEDULE_TO);
-
 			if (taskInfo.contains(SPECIAL_STRING)) {
 				int specialStrIndex = taskInfo.lastIndexOf(SPECIAL_STRING);		
 				System.out.println(taskInfo.substring(specialStrIndex+1, specialStrIndex+5));
@@ -96,8 +94,8 @@ public class ParserAdd {
 					handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 					return false;
 				} else if (!startTime.equals(EMPTY_STRING) && !endTime.equals(EMPTY_STRING)) {
-					boolean isStartFormatCorrect = followStandardFormat(startTime);
-					boolean isEndFormatCorrect = followStandardFormat(endTime);
+					boolean isStartFormatCorrect = followStandardFormat(startTime,logger);
+					boolean isEndFormatCorrect = followStandardFormat(endTime,logger);
 
 					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
 					sdf.setLenient(false);
@@ -171,16 +169,19 @@ public class ParserAdd {
 
 					Date todayDate = null;
 					todayDate = (Date)sdf.parse(sdf.format(new Date()));
-                    
+					logger.log(Level.INFO,"start to compare the startingDate and endingDate");
 					if (startingDate.after(endingDate)||startingDate.compareTo(endingDate) == 0) {
+						logger.log(Level.WARNING,"startingDate is greater than or equal to the endingDate");
 						handler.setHasError(true);
 						handler.setFeedBack(ERROR_MESSAGE_START_AFTER_END);
 						return false;
 					} else if (!startingDate.after(todayDate) || !endingDate.after(todayDate)) {
+						logger.log(Level.WARNING,"startingDate or endingDate is before the Today's date");
 						handler.setHasError(true);
 						handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 						return false;
 					} else {
+						logger.log(Level.INFO,"this is an event task");
 						isEvent = true;
 						return true;
 					}
@@ -191,34 +192,35 @@ public class ParserAdd {
 				System.out.println(startTimeIndex);
 				System.out.println(endTimeIndex);
 				if(endTimeIndex < startTimeIndex){
-					System.out.println("This is not an event");
+					logger.log(Level.INFO,"This is not an event but floating task");
 					isFloatingTask = true;
 					return true;
 				}
 			}
 		}
 		if (taskInfo.contains(KEYWORD_DEADLINE)) {
-			System.out.println("Found "+KEYWORD_DEADLINE+", "+STRING_TIME_FORMATTER);
-			System.out.println("This is a deadline task");
+			logger.log(Level.INFO, "start to process the deadline tasks");
 			endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
 			endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex));
 			description = taskInfo.substring(0, endTimeIndex).trim();
 
 			if (description.equals(EMPTY_STRING) || endTime.equals(EMPTY_STRING)) {
+				logger.log(Level.WARNING,"the fields entered are not correct");
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_FIELDS_NOT_CORRECT);
 				return false;
 			} else if (!endTime.equals(EMPTY_STRING)) {
-				boolean isEndFormatCorrect = followStandardFormat(endTime);
+				boolean isEndFormatCorrect = followStandardFormat(endTime,logger);
 
 				SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
 				sdf.setLenient(false);
 
 				if(isEndFormatCorrect == false){
-					System.out.println("Endtime use Natty");
+					logger.log(Level.INFO,"Endtime use Natty");
 					List<DateGroup> dateGroup3 = dateParser.parse(endTime);
 
 					if(dateGroup3.isEmpty()){
+						logger.log(Level.WARNING,"Endtime is invalid in the Natty format");
 						handler.setHasError(true);
 						handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 						return false;
@@ -226,10 +228,12 @@ public class ParserAdd {
 					List<Date> date3 = dateGroup3.get(0).getDates();
 					endingDate = date3.get(0);
 				}else if (isEndFormatCorrect == true){
-					System.out.println("Endtime use our format");
+					logger.log(Level.INFO,"Endtime use our time format");
 					try{
+						logger.log(Level.INFO,"start to parse the endTime in our time format");
 						endingDate = (Date)sdf.parse(endTime);
 					}catch (ParseException e) {
+						logger.log(Level.WARNING,"Endtime is invalid in our time format");
 						handler.setHasError(true);
 						handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 						return false;
@@ -278,7 +282,7 @@ public class ParserAdd {
 
 
 
-	public boolean followStandardFormat(String dateTimeString){
+	public boolean followStandardFormat(String dateTimeString, Logger logger){
 		String[] dateTimeArr = dateTimeString.trim().split(" ");
 
 		if (dateTimeArr.length != 4) {
@@ -290,8 +294,10 @@ public class ParserAdd {
 
 				int date;
 				try{
+					logger.log(Level.INFO, "start to process the date");
 					 date = Integer.parseInt(dateTimeArr[1], 10);
 				} catch (NumberFormatException e){
+					logger.log(Level.WARNING, "the format for the date is invalid");
 					return false;
 				}	
 				// reach here means that it time given follows format and date given is an int
@@ -304,9 +310,11 @@ public class ParserAdd {
 					return false;
 				} else {
 					try {
+						logger.log(Level.INFO, "start to process the year");
 						year = Integer.parseInt(dateTimeArr[3], 10);
 					} catch (NumberFormatException e) {
-						return false; 	// year not in int format
+						logger.log(Level.WARNING, "the format for the year is invalid");
+						return false;
 					}
 				}			
 			} else {
