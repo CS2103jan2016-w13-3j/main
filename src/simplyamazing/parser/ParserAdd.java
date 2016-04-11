@@ -113,7 +113,6 @@ public class ParserAdd {
 					boolean isEndFormatCorrect = followStandardFormat(endTime,logger);
 
 					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
-					assert sdf != null;
 					sdf.setLenient(false);
 					if(isStartFormatCorrect == false && isEndFormatCorrect == false){
 						logger.log(Level.INFO,"Endtime and Startime both use Natty format");					
@@ -243,7 +242,6 @@ public class ParserAdd {
 					}
 					List<Date> date3 = dateGroup3.get(0).getDates();
 					endingDate = date3.get(0);
-					assert endingDate != null;
 				}else if (isEndFormatCorrect == true){
 					logger.log(Level.INFO,"Endtime use our time format");
 					try{

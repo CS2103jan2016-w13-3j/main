@@ -7,20 +7,6 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.regex.Pattern;
 
-/*enum CommandType {
-	ADD ("add", "+"),
-	DELETE ("delete", "-", "del", "remove", "cancel"),
-	VIEW ("view","display", "show", "list"),
-	EDIT ("edit", "change", "update"),
-	SEARCH ("search", "find"),
-	UNDO ("undo"),
-	DONE ("mark", "complete", "finish", "done"),
-	UNDONE ("undone","unmark")
-	REDO ("redo")
-	HELP ("help", "?"),
-	LOCATION("location", "path", "address"),
-	EXIT("exit","quit","logout");
-}*/
 public class Parser {
 	private static Logger logger;
 	private static final String COMMAND_ADD = "add";
@@ -68,12 +54,13 @@ public class Parser {
 
 	public Parser() {
 		logger = Logger.getLogger("simplyamazing");
-		try{
+		
+		try {
 			FileHandler fh = new FileHandler("C:\\Users\\Public\\SimplyAmazing\\logFile.txt", true);
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();  
 			fh.setFormatter(formatter);
-		} catch (Exception e){
+		} catch (Exception e) {
 			logger.log(Level.WARNING, "the address fro file handler is invalid");
 			System.out.println("fail to set up the file handler");
 		};
@@ -94,8 +81,7 @@ public class Parser {
 	    
 	}	
 	private Handler parserEditCommand(Handler handler, String taskInfo) throws Exception {
-		ParserEdit parserEdit = new ParserEdit();
-		assert parserEdit !=  null;			
+		ParserEdit parserEdit = new ParserEdit();		
 		taskIndex =  getFirstWord(taskInfo);
 		taskInfoWithoutIndex = removeFirstWord(taskInfo);
 		

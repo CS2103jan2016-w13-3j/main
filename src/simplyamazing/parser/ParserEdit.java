@@ -25,6 +25,13 @@ public class ParserEdit {
 	private static Date startingDate = null;
 	private static Date endingDate = null;
 	private static int year;
+	
+	/*
+	 * This method is used to parse/analyze a edit command 
+	 * There are three types of commands: event, deadline and floating task
+	 * There are four fields for the edit command: description, start, end and priority
+	 * We also allow 
+	 */
 	public Handler parseEditCommand(Handler handler, String taskIndex, String taskInfoWithoutIndex, Logger logger) throws Exception {		
 		logger.log(Level.INFO, "start to check the Index of the Edit command");
 		if (isInteger(taskIndex,logger)) {
@@ -116,13 +123,6 @@ public class ParserEdit {
 				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 			}
 		}  
-		/*if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && startingDate.after(endingDate)) {
-				handler.setHasError(true);
-				handler.setFeedBack(MESSAGE_INVALID_FORMAT);
-			} else if ((startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && startingDate.before(todayDate)) || (endingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && endingDate.before(todayDate))) {
-				handler.setHasError(true);
-				handler.setFeedBack(MESSAGE_INVALID_FORMAT);
-			}*/
 		return handler;
 	}
 	private Handler editStartTime(SimpleDateFormat sdf,boolean isStartFormatCorrect,Handler handler,String value,Logger logger){
