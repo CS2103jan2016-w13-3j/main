@@ -34,6 +34,8 @@ public class Logic {
 	
 	private static final String STRING_EMPTY = "";
 	private static final String FILE_PATH = "C:\\Users\\Public\\SimplyAmazing\\logFile.txt";
+	private static final String DOUBLE_QUOTATION = "\"";
+	
 	private static final int EXIT_WITHOUT_ERROR = 0;
 	private static final int EMPTY_LIST_SIZE = 0;
 	private static final int ONE_ELEMENT_IN_LIST = 1;
@@ -52,11 +54,15 @@ public class Logic {
 	private static final String ERROR_START_SAME_AS_END = "Error: New start time cannot be the same as the end time";
 	private static final String ERROR_END_BEFORE_START = "Error: New end time cannot be before the start time";
 	private static final String ERROR_END_SAME_AS_START = "Error: New end time cannot be the same as the start time";
+	private static final String ERROR_DOUBLE_UNDO = "Error: Unable to undo an undo command. Use the redo command instead";
+	private static final String ERROR_DOUBLE_REDO = "Error: Unable to redo a redo command. Use the undo command instead";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\""
 			+ " to view all commands and their format";
 
 	// The following are messages which will be displayed to the user
 	private static final String MESSAGE_EMPTY_LIST = "List is empty";
+	private static final String MESSAGE_UNDO_SUCCESSFUL = " command has been successfully undone.";
+	private static final String MESSAGE_REDO_SUCCESSFUL = " command has been successfully executed again.";
 	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
 	private static final String MESSAGE_HELP_REDO = "Redo the most recent command\nCommand: redo\n";
 	private static final String MESSAGE_HELP_UNDO = "Undo the most recent command\nCommand: undo\n";
@@ -186,7 +192,6 @@ public class Logic {
 		String commandWord = commandHandler.getCommandType();
 		CommandType commandType = getCommandType(commandWord);
 		String feedback = STRING_EMPTY;
-		previousCommandString = userCommand;
 
 		switch (commandType) {
 		case ADD_TASK :
@@ -428,10 +433,17 @@ public class Logic {
 		if (isPreviousCommandValid == false) {				
 			logger.log(Level.WARNING, "nothing to undo");
 			return ERROR_PREVIOUS_COMMAND_INVALID;
-
-		} else {			
-			logger.log(Level.INFO, "there is a previous command, undoing now");
-			return storageObj.restore(lastModifyCommand);
+ 
+		} else {	
+			if (previousCommandString.equals("undo")) {
+				logger.log(Level.WARNING, "double undo");
+				return ERROR_DOUBLE_UNDO;
+			} else {
+				logger.log(Level.INFO, "there is a previous command and it is not undo, undoing now");
+				storageObj.restore(lastModifyCommand);
+				String feedback = DOUBLE_QUOTATION + lastModifyCommand + DOUBLE_QUOTATION + MESSAGE_UNDO_SUCCESSFUL;
+				return feedback;
+			}
 		}
 	}
 	
@@ -446,9 +458,17 @@ public class Logic {
 			logger.log(Level.WARNING, "no previous command to redo");
 			return ERROR_PREVIOUS_COMMAND_INVALID_REDO;
 
-		} else {			
-			logger.log(Level.INFO, "previous command is valid, redoing now");
-			return storageObj.restore(lastModifyCommand);
+		} else {
+			if (previousCommandString.equals("redo")) {
+				logger.log(Level.WARNING, "double redo");
+				return ERROR_DOUBLE_REDO;
+			} else {
+				logger.log(Level.INFO, "previous command is valid, redoing now");
+				logger.log(Level.INFO, "there is a previous command and it is not redo, undoing now");
+				storageObj.restore(lastModifyCommand);
+				String feedback = DOUBLE_QUOTATION + lastModifyCommand + DOUBLE_QUOTATION + MESSAGE_REDO_SUCCESSFUL;
+				return feedback;
+			}
 		}
 	}	
 		

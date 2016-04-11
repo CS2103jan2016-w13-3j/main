@@ -13,7 +13,7 @@ import simplyamazing.logic.Logic;
 import simplyamazing.storage.Storage;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class LogicTest {
+public class LogicTest { 
 	
 	private static Logic logicObj;
 	private static Storage storageObj;
@@ -180,11 +180,11 @@ public class LogicTest {
 	
 	private static final String UNDO = "undo";
 	private static final String UNDO_FEEDBACK = "\"unmark 2\" command has been successfully undone.";
-	
+	private static final String UNDO_DOUBLE_FEEDBACK = "Error: Unable to undo an undo command. Use the redo command instead";
 	
 	private static final String REDO = "redo";
-	private static final String REDO_FEEDBACK = "\"unmark 2\" command has been successfully undone.";
-	
+	private static final String REDO_FEEDBACK = "\"unmark 2\" command has been successfully executed again.";
+	private static final String REDO_DOUBLE_FEEDBACK= "Error: Unable to redo a redo command. Use the undo command instead";
 	
 	private static final String HELP_INVALID = "help 1";
 	private static final String HELP_INVALID_FEEDBACK = "Error: Please input a valid keyword. Use the \"help\""
@@ -458,6 +458,7 @@ public class LogicTest {
 	@Test
 	public void test91UndoCommand() throws Exception {
 		assertEquals(UNDO_FEEDBACK, logicObj.executeCommand(UNDO));
+		assertEquals(UNDO_DOUBLE_FEEDBACK,logicObj.executeCommand(UNDO));
 		
 	}
 	
@@ -465,6 +466,7 @@ public class LogicTest {
 	@Test
 	public void test9RedoCommand() throws Exception {
 		assertEquals(REDO_FEEDBACK, logicObj.executeCommand(REDO));
+		assertEquals(REDO_DOUBLE_FEEDBACK,logicObj.executeCommand(REDO));
 	}
 	
 	

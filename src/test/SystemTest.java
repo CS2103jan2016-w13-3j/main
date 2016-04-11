@@ -11,7 +11,7 @@ import simplyamazing.logic.Logic;
 import simplyamazing.parser.Parser;
 import simplyamazing.storage.Storage;
 
-public class SystemTest {
+public class SystemTest { 
 
 	private static final String INDEX_THREE = "3";
 	private static final String INDEX_TWO = "2";
@@ -140,7 +140,8 @@ public class SystemTest {
 	
 	private static final String FEEDBACK_MARKED_DONE = "%1$s has been marked as done.";
 	private static final String FEEDBACK_DELETED = "%1$s has been successfully deleted.";
-	private static final String FEEDBACK_RESTORED = "\"%1$s\" command has been successfully undone.";
+	private static final String FEEDBACK_UNDO = "\"%1$s\" command has been successfully undone.";
+	private static final String FEEDBACK_REDO = "\"%1$s\" command has been successfully executed again.";
 	private static final Object FEEDBACK_EMPTY_LIST = "List is empty";
 	private static final Object FEEDBACK_NO_TASK_FOUND = "There are no tasks containing the given keyword";
 	private static final String FEEDBACK_INVALID_INDEX= "Error: The Index entered is invalid";
@@ -630,7 +631,7 @@ public class SystemTest {
 		
 		assertEquals(false, parser.getHandler(COMMAND_UNDO).getHasError());
 		assertEquals(COMMAND_UNDO, parser.getHandler(COMMAND_UNDO).getCommandType());
-		assertEquals(String.format(FEEDBACK_RESTORED, COMMAND_ADD_EVENT), logic.executeCommand(COMMAND_UNDO));
+		assertEquals(String.format(FEEDBACK_UNDO, COMMAND_ADD_EVENT), logic.executeCommand(COMMAND_UNDO));
 	}
 	
 	@Test
@@ -655,6 +656,6 @@ public class SystemTest {
 		
 		assertEquals(false, parser.getHandler(COMMAND_REDO).getHasError());
 		assertEquals(COMMAND_REDO, parser.getHandler(COMMAND_REDO).getCommandType());
-		assertEquals(String.format(FEEDBACK_RESTORED, COMMAND_ADD_EVENT), logic.executeCommand(COMMAND_REDO));
+		assertEquals(String.format(FEEDBACK_REDO, COMMAND_ADD_EVENT), logic.executeCommand(COMMAND_REDO));
 	}
 }
