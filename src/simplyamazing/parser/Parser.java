@@ -110,9 +110,9 @@ public class Parser {
 		return parseLocation.parseLocationCmd(handler, removeFirstWord, logger);
 	}
 
-	private Handler parserDoneOrUndoneCommand(Handler handler, String removeFirstWord) throws Exception {
-		ParserDoneOrUndone parserDoneOrUndone = new ParserDoneOrUndone();
-		return parserDoneOrUndone.parserDoneOrUndoneCommand(handler, removeFirstWord, logger);
+	private Handler parserDoneCommand(Handler handler, String removeFirstWord) throws Exception {
+		ParserDone parserDone = new ParserDone();
+		return parserDone.parserDoneCommand(handler, removeFirstWord, logger);
 	}
 
 	private Handler parserHelpCommand(Handler handler, String removeFirstWord) throws Exception {
@@ -188,12 +188,12 @@ public class Parser {
 		case COMMAND_MARK_AS_DONE_ALT_2 :
 		case COMMAND_MARK_AS_DONE_ALT_3 :
 			handler.setCommandType(COMMAND_MARK_AS_DONE);
-			handler = parserDoneOrUndoneCommand(handler, removeFirstWord);
+			handler = parserDoneCommand(handler, removeFirstWord);
 			break;
 		case COMMAND_UNMARK :
 		case COMMAND_UNMARK_ALT :
 			handler.setCommandType(COMMAND_UNMARK);
-			handler = parserDoneOrUndoneCommand(handler, removeFirstWord);
+			handler = parserDoneCommand(handler, removeFirstWord);
 			break;
 		case COMMAND_EXIT :
 		case COMMAND_EXIT_ALT :
