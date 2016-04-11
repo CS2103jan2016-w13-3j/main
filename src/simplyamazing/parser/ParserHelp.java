@@ -19,7 +19,12 @@ public class ParserHelp {
 	private final String STRING_EMPTY = "";
 
 	private final String COMMAND_INVALID = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
-
+    
+	/*
+	 * This method is used to parse/analyze a help command. There are twelve fields for
+	 * the help command: , add, delete, view, undo, redo, mark, unmark, edit, location, 
+	 * exit, search.
+	 */
 	public Handler parserHelpCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
 		logger.log(Level.INFO, "start to parse the help command");
 		switch (taskInfo.toLowerCase()) {

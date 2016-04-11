@@ -66,11 +66,17 @@ public class Parser {
 		;
 	}
 
+	/*
+	 * This method is used to remove the first word of the command
+	 */
 	public static String removeFirstWord(String userCommand) {
 		final String replace = Pattern.quote(getFirstWord(userCommand));
 		return userCommand.replaceFirst(replace, STRING_EMPTY).trim();
 	}
 
+	/*
+	 * This method is used to get the first word of the command
+	 */
 	public static String getFirstWord(String userCommand) {
 		return userCommand.trim().split(CHARACTER_SPACE)[0];
 	}
@@ -119,6 +125,12 @@ public class Parser {
 		return parserSearch.parserSearchCommand(handler, removeFirstWord, logger);
 	}
 
+	/*
+	 * This method is used to parse/analyze the first word of a command. There
+	 * are twelve for the commands:add, delete, view, undo, redo, mark, unmark,
+	 * edit, location, exit, search. We also allow the users to enter the
+	 * flexible commands for each type.
+	 */
 	private Handler parserFirstWord(Handler handler, String firstWord, String removeFirstWord) throws Exception {
 		logger.log(Level.INFO, "start to process the First word");
 		switch (firstWord.toLowerCase()) {
