@@ -13,6 +13,7 @@ public class ReadManager {
 		FileInputStream fileInputStream = new FileInputStream(file);
 		InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
 		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+		
 		String line = null;
 		ArrayList<String> lines = new ArrayList<String>();
 		
