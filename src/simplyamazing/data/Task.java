@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Task implements Comparable<Task>{
+public class Task implements Comparable<Task> {
 	
 	private static final String KEYWORD_PRIORITY = " priority";
 	private static final String KEYWORD_DEADLINE = " by ";
@@ -25,6 +25,7 @@ public class Task implements Comparable<Task>{
 	public static final Date DEFAULT_DATE_VALUE_FOR_NULL = new Date(1);
 
 	public static final String TIME_FORMAT = "HH:mm dd MMM yyyy";
+	
 	public static final String FIELD_SEPARATOR = ",";
 	
 	private static final String CHARACTER_SPACE = " ";
@@ -58,7 +59,8 @@ public class Task implements Comparable<Task>{
 	public static final int INDEX_MONTH = 2;
 	public static final int INDEX_YEAR = 3;
 	
-	private static final String MESSAGE_INVALID_PRIORITY_LEVEL = "Priority level can be only high, medium, low or none.";
+	private static final String MESSAGE_INVALID_PRIORITY_LEVEL = "Priority level can be only high, medium, low "
+			+ "or none.";
 	
 	private String description;
 	private Date startTime, endTime;
@@ -118,9 +120,11 @@ public class Task implements Comparable<Task>{
         timeString = formatter.format(date);
         String[] fields = timeString.split(CHARACTER_SPACE);
         assert(fields.length > 0);
-        String monthFirstWord = fields[INDEX_MONTH].toLowerCase().substring(INDEX_FIRST,INDEX_SECOND).toUpperCase();
+        String monthFirstWord = fields[INDEX_MONTH].toLowerCase().substring(INDEX_FIRST, INDEX_SECOND)
+        		.toUpperCase();
         String monthFormatted = monthFirstWord + fields[INDEX_MONTH].substring(INDEX_SECOND,INDEX_FOURTH);
-        timeString = fields[INDEX_TIME] + CHARACTER_SPACE + fields[INDEX_DAY] + CHARACTER_SPACE + monthFormatted + CHARACTER_SPACE + fields[INDEX_YEAR];
+        timeString = fields[INDEX_TIME] + CHARACTER_SPACE + fields[INDEX_DAY] + CHARACTER_SPACE 
+        		+ monthFormatted + CHARACTER_SPACE + fields[INDEX_YEAR];
         return timeString;
     }
 	
@@ -226,7 +230,9 @@ public class Task implements Comparable<Task>{
 				} 
 				return this.startTime.compareTo(task.getStartTime());	
 			} else { // Different end time
-				if (this.endTime.compareTo(DEFAULT_DATE_VALUE) == 0 || task.getEndTime().compareTo(DEFAULT_DATE_VALUE) == 0) { // One floating task and other event/deadline
+				if (this.endTime.compareTo(DEFAULT_DATE_VALUE) == 0 
+						|| task.getEndTime().compareTo(DEFAULT_DATE_VALUE) == 0) { 
+					// One floating task and other event/deadline
 					return task.getTaskType() - this.taskType;
 				}
 				return this.endTime.compareTo(task.getEndTime());		
@@ -239,7 +245,8 @@ public class Task implements Comparable<Task>{
 	 * This method is to be used by Storage component to write to the file.
 	 * The format is description,startTime,endTime,priority,status.
 	 * If any of the fields is default value, it will be indicated by a space.
-	 * Status is "done" for tasks marked as completed, "overdue" when its end time was already passed, and the rest regarded as "incomplete".
+	 * Status is "done" for tasks marked as completed, "overdue" when its end time was already passed, 
+	 * and the rest regarded as "incomplete".
 	 */
 	@Override
 	public String toString() {
@@ -248,14 +255,16 @@ public class Task implements Comparable<Task>{
 		String priorityLevel = CHARACTER_SPACE;
 		String status = STRING_STATUS_INCOMPLETE;
 		
-		if (this.startTime != DEFAULT_DATE_VALUE) {
+		if (this.startTime.compareTo(DEFAULT_DATE_VALUE) != 0) {
 			startTimeString = convertDateToString(this.startTime);
 			assert(!startTimeString.matches(CHARACTER_SPACE));
 		}
-		if (this.endTime != DEFAULT_DATE_VALUE) {
+		
+		if (this.endTime.compareTo(DEFAULT_DATE_VALUE) != 0) {
 			endTimeString = convertDateToString(this.endTime);
 			assert(!endTimeString.matches(CHARACTER_SPACE));
 		}
+		
 		switch (this.priority) {
 		case DEFAULT_PRIORITY_LEVEL_HIGH : 
 			priorityLevel = STRING_HIGH_PRIORITY;
@@ -270,6 +279,7 @@ public class Task implements Comparable<Task>{
 			priorityLevel = CHARACTER_SPACE;
 			break;
 		}
+		
 		Date now = new Date();
 		Date endTime = this.getEndTime();
 		if (endTime.before(now) && endTime != Task.DEFAULT_DATE_VALUE) {
@@ -280,7 +290,9 @@ public class Task implements Comparable<Task>{
 			status = STRING_STATUS_DONE;
 			assert (!status.matches(STRING_STATUS_INCOMPLETE));
 		}
-		return this.description.trim() + FIELD_SEPARATOR + startTimeString + FIELD_SEPARATOR + endTimeString + FIELD_SEPARATOR + priorityLevel + FIELD_SEPARATOR + status;
+		
+		return this.description.trim() + FIELD_SEPARATOR + startTimeString + FIELD_SEPARATOR 
+				+ endTimeString + FIELD_SEPARATOR + priorityLevel + FIELD_SEPARATOR + status;
 	}
 	
 	/*
@@ -302,7 +314,8 @@ public class Task implements Comparable<Task>{
 					filteredString += KEYWORD_END_TIME;
 				}
 			} else {
-				if (!fields[ARRAY_POSITION_FOR_END_TIME].matches(CHARACTER_SPACE) && i == ARRAY_POSITION_FOR_END_TIME) {
+				if (!fields[ARRAY_POSITION_FOR_END_TIME].matches(CHARACTER_SPACE) 
+						&& i == ARRAY_POSITION_FOR_END_TIME) {
 					filteredString += KEYWORD_DEADLINE;
 				} 
 			}

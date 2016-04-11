@@ -268,12 +268,13 @@ public class UI {
 				if (feedback.contains(STRING_ERROR)) {
 					setFeedback(feedback, Color.RED);
 					logger.log(Level.WARNING, feedback);
-				} else if (feedback.matches(MESSAGE_EMPTY_LIST) || feedback.matches(MESSAGE_NO_TASKS_FOUND)) {
+				} else  {
+					if (feedback.matches(MESSAGE_EMPTY_LIST) || feedback.matches(MESSAGE_NO_TASKS_FOUND)) {
 						scrollPane.setVisible(false); // Hide table if no task
+					}	
+					setFeedback(feedback, COLOR_DARK_GREEN);
+					logger.log(Level.INFO, feedback);
 				}
-				
-				setFeedback(feedback, COLOR_DARK_GREEN);
-				logger.log(Level.INFO, feedback);
 			} 
 		} catch (Exception e1) {
 			feedback = getErrorMessage(e1);
