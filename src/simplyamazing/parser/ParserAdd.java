@@ -31,7 +31,12 @@ public class ParserAdd {
 	private static int year;
 	private boolean checkValue = false, isEvent = false, isDeadline = false, isFloatingTask = false;
 
-
+	/*
+	 * This method is used to parse/analyze a Add command 
+	 * There are three types of commands: event, deadline and floating task
+	 * We allow the users to type the command in our standard format and flexible format
+	 * we also allow the users to key in the duplications of keywords: from, to, by
+	 */
 	public Handler parseAddCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
 		logger.log(Level.INFO, "going to start parse the Add Command");
 		checkValue = isAddingValid(handler,taskInfo,logger);
@@ -46,7 +51,7 @@ public class ParserAdd {
 				handler.getTask().setDescription(description);
 				handler.getTask().setEndTime(endingDate);
 			} 
-			if (isFloatingTask) {
+			if (isFloatingTask) {// For floating tasks
 				handler.getTask().setDescription(taskInfo.trim());
 			}
 		} else {
@@ -55,6 +60,13 @@ public class ParserAdd {
 		return handler;
 	}
 
+	/*
+	 * This method is used to check the adding is valid or not
+	 * we will check the input contains special string or not like"*"
+	 * This means the users key in the duplication of key words or not
+	 * we will check the date and time format the user entered is belong to our time format or
+	 * the Natty's format
+	 */
 	public boolean isAddingValid(Handler handler,String taskInfo, Logger logger) throws Exception {
 		com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
 		
@@ -274,7 +286,11 @@ public class ParserAdd {
 	}
 
 
-
+	/*
+	 * This method is used to check the input date which follows our time format or not
+	 * There are four parts to check: time, date, month and year
+	 * We use it differentiate the input from our time format and the Natty's format
+	 */
 	public boolean followStandardFormat(String dateTimeString, Logger logger){
 		String[] dateTimeArr = dateTimeString.trim().split(" ");
 
@@ -293,8 +309,6 @@ public class ParserAdd {
 					logger.log(Level.WARNING, "the format for the date is invalid");
 					return false;
 				}	
-				// reach here means that it time given follows format and date given is an int
-
 				String givenMonth = dateTimeArr[2].toLowerCase();
 				if ( !(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
 						|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
