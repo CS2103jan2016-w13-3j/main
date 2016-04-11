@@ -13,6 +13,7 @@ import simplyamazing.data.Task;
 import simplyamazing.storage.Storage;
 
 public class StorageTest {
+	
 	private static final String DIRECTORY_SYSTEM = "C:\\Users\\Public\\SimplyAmazing";
 	private static final String FILENAME_STORAGE = "\\storage.txt";
 	private static final String FILENAME_TODO = "\\todo.txt";

@@ -2,10 +2,7 @@
 package simplyamazing.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-
-import simplyamazing.data.Task;
 
 public class TaskList {
 
@@ -30,12 +27,10 @@ public class TaskList {
 
 	public void resetTaskList() {
 		tasks = new ArrayList<Task>();
-		assert (tasks.size() == 0);
 	}
 
 	public void resetCompletedTaskList() {
 		completedTasks = new ArrayList<Task>();
-		assert (completedTasks.size() == 0);
 	}
 
 	public void updateTaskList(ArrayList<String> lines, ArrayList<Task> taskList) throws Exception {

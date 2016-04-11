@@ -32,6 +32,9 @@ public class UITest {
 			+ "hackathon in SOC from 09:30 26 May 2017 to 10:00 27 May 2017";
 	private static final String COMMAND_ADD_DEADLINE = COMMAND_ADD + CHARACTER_SPACE 
 			+ "cs2103 peer review by 23:59 25 May 2017";
+	private static final String COMMAND_EDIT_PRIORITY = "edit 1 priority high";
+	private static final String COMMAND_DELETE_DEADLINE = "delete 1";
+	
 	
 	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:\\Users\\Public\\Documents";
 	
@@ -43,6 +46,7 @@ public class UITest {
 	private static final String FEEDBACK_HELP_ALL = "Key in the following to view specific command formats:\n"
 			+ "1. help add\n2. help delete\n3. help edit\n4. help view\n5. help search \n6. help mark\n"
 			+ "7. help unmark\n8. help undo\n9. help redo\n10. help location \n11. help exit\n";
+	private static final String FEEDBACK_DELETE_DEADLINE = "\"delete 1\" command has been successfully undone.";
 	
 	@BeforeClass
 	public static void setup() throws Exception {
@@ -119,6 +123,9 @@ public class UITest {
         
         ui.commandBar.setText(COMMAND_ADD_DEADLINE);
         ui.commandBar.dispatchEvent(event); 
+        
+        ui.commandBar.setText(COMMAND_EDIT_PRIORITY);
+        ui.commandBar.dispatchEvent(event); 
 	    
         ui.commandBar.setText(COMMAND_VIEW);
         ui.commandBar.dispatchEvent(event); 
@@ -132,5 +139,31 @@ public class UITest {
         }
         assertEquals(tasks, ui.feedback);
         storage.getFileManager().cleanFile(todo);
+	}
+	
+	@Test
+	public void testUndoCommandAfterDeleteTask() throws Exception {
+		UI ui = new UI();
+		ui.commandBar.setText(COMMAND_ADD_EVENT);
+		KeyEvent event = new KeyEvent(ui.commandBar, 
+                KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, 
+                KeyEvent.VK_ENTER, KeyEvent.CHAR_UNDEFINED);
+        ui.commandBar.dispatchEvent(event); 
+        
+        ui.commandBar.setText(COMMAND_ADD_DEADLINE);
+        ui.commandBar.dispatchEvent(event); 
+        
+        ui.commandBar.setText(COMMAND_EDIT_PRIORITY);
+        ui.commandBar.dispatchEvent(event); 
+	    
+        ui.commandBar.setText(COMMAND_DELETE_DEADLINE);
+        ui.commandBar.dispatchEvent(event); 
+        
+        ui.commandBar.setText(COMMAND_UNDO);
+        ui.commandBar.dispatchEvent(event); 
+        
+        File todo = new File(PARAM_SET_LOCATION_DIRECTORY+FILENAME_TODO);      
+        assertEquals(FEEDBACK_DELETE_DEADLINE, ui.feedback);
+        new Storage().getFileManager().cleanFile(todo);
 	}
 }
