@@ -85,7 +85,7 @@ public class ParserSearch {
 		}
 
 	}
-	public boolean followStandardFormat(String dateTimeString,Logger logger){
+	private boolean followStandardFormat(String dateTimeString,Logger logger){
 		String[] dateTimeArr = dateTimeString.trim().split(" ");
 
 		if (dateTimeArr.length != 4) {
