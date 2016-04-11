@@ -16,6 +16,7 @@ public class ParserDelete {
 			if (isInteger(indexes[i],logger)){
 				handler.setIndex(indexes[i]);
 			}else{
+				logger.log(Level.WARNING,"the command entered is invalid");
 				handler.setHasError(true);
 				handler.setFeedBack(COMMAND_INVALID);
 				return handler;
