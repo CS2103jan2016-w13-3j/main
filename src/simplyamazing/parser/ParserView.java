@@ -1,6 +1,8 @@
 //@@author A0112659A
 package simplyamazing.parser;
 
+import java.util.logging.Logger;
+
 public class ParserView {
 	private final String STRING_EVENT = "events";
 	private final String STRING_DEADLINE = "deadlines";
@@ -10,7 +12,7 @@ public class ParserView {
 	private final String STRING_OVERDUE = "overdue";
 	private final String COMMAND_INVALID = "Error: Please input a valid keyword. Use the \"help view\" command to see all the valid keywords";
 
-	public Handler parserViewCommand(Handler handler, String taskInfo) throws Exception {
+	public Handler parserViewCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
 		switch (taskInfo.toLowerCase()) {
 		case STRING_EVENT:
 			handler.setKeyWord(STRING_EVENT);

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 import java.util.regex.PatternSyntaxException;
 
 import com.joestelmach.natty.DateGroup;
@@ -21,7 +22,7 @@ public class ParserSearch {
 	private static String outputYear = "";
 	private boolean checkValue;
 
-	public Handler parserSearchCommand(Handler handler, String taskInfo) throws Exception {
+	public Handler parserSearchCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
 		checkValue = isSearchingKeyWord(handler,taskInfo);
 		if (checkValue == true){
 			handler.setKeyWord(taskInfo);

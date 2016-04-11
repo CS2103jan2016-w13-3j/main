@@ -1,6 +1,8 @@
 //@@author A0112659A
 package simplyamazing.parser;
 
+import java.util.logging.Logger;
+
 public class ParserHelp {
 	private final String STRING_ADD = "add";
 	private final String STRING_DELETE = "delete";
@@ -17,7 +19,7 @@ public class ParserHelp {
 	
 	private final String COMMAND_INVALID = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
 
-	public Handler parserHelpCommand(Handler handler, String taskInfo) throws Exception {
+	public Handler parserHelpCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
 		switch (taskInfo.toLowerCase()) {
 		case STRING_ADD:
 			handler.setKeyWord(STRING_ADD);

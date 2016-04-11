@@ -94,12 +94,12 @@ public class ParserTest {
 	private static final String HELP_COMMAND_ADD_VALID = "help add";
 	private static final String HELP_COMMAND_ADD_VALID_ALT = "? add";
 	private static final String HELP_COMMAND_REDO_VALID_ALT = "? rEdO";
-	private static final String HELP_COMMAND_UNDONE_VALID_ALT = "? unDOnE";
+	private static final String HELP_COMMAND_UNDONE_VALID_ALT = "? unMArk";
 	private static final String HELP_COMMAND_ADD_VALID_CAP = "HELP add";
 	private static final String HELP_COMMAND_DELETE_VALID = "help delete";
 	private static final String HELP_COMMAND_EDIT_VALID = "help edit";
 	private static final String HELP_COMMAND_VIEW_VALID = "help view";
-	private static final String HELP_COMMAND_DONE_VALID = "help done";
+	private static final String HELP_COMMAND_MARK_VALID = "help MArk";
 	private static final String HELP_COMMAND_SEARCH_VALID = "help search";
 	private static final String HELP_COMMAND_UNDO_VALID = "help undo";
 	private static final String HELP_COMMAND_LOCATION_VALID = "help location";
@@ -311,7 +311,7 @@ public class ParserTest {
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_DELETE_VALID).getFeedBack());
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_VIEW_VALID).getFeedBack());
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_LOCATION_VALID).getFeedBack());
-		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_DONE_VALID).getFeedBack());
+		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_MARK_VALID).getFeedBack());
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_EXIT_VALID).getFeedBack());
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_SEARCH_VALID).getFeedBack());
 		assertEquals(HELP_COMMAND_VALID_FEEDBACK, parser.getHandler(HELP_COMMAND_EDIT_VALID).getFeedBack());

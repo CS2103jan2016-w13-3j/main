@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import com.joestelmach.natty.*;
 
@@ -23,7 +24,7 @@ public class ParserEdit {
 	private static Date startingDate = null;
 	private static Date endingDate = null;
 	private static int year;
-	public Handler parseEditCommand(Handler handler, String taskIndex, String taskInfoWithoutIndex) throws Exception {
+	public Handler parseEditCommand(Handler handler, String taskIndex, String taskInfoWithoutIndex, Logger logger) throws Exception {
 		//com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
 		if (isInteger(taskIndex)) {
 			handler.setIndex(taskIndex);

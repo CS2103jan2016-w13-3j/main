@@ -74,6 +74,7 @@ public class Parser {
 			SimpleFormatter formatter = new SimpleFormatter();  
 			fh.setFormatter(formatter);
 		} catch (Exception e){
+			logger.log(Level.WARNING, "the address fro file handler is invalid");
 			System.out.println("fail to set up the file handler");
 		};
 	}
@@ -89,45 +90,45 @@ public class Parser {
     
 	private Handler parserAddCommand(Handler handler, String taskInfo) throws Exception {
 	    ParserAdd parserAdd = new ParserAdd();
-	    return parserAdd.parseAddCommand(handler,taskInfo);
+	    return parserAdd.parseAddCommand(handler,taskInfo, logger);
 	    
 	}	
 	private Handler parserEditCommand(Handler handler, String taskInfo) throws Exception {
 		ParserEdit parserEdit = new ParserEdit();
-		//assert parserEdit !=  null;					//assert
+		assert parserEdit !=  null;					//assert
 		taskIndex =  getFirstWord(taskInfo);
 		taskInfoWithoutIndex = removeFirstWord(taskInfo);
 		
-		return parserEdit.parseEditCommand(handler, taskIndex, taskInfoWithoutIndex);
+		return parserEdit.parseEditCommand(handler, taskIndex, taskInfoWithoutIndex, logger);
 	}
 	private Handler parserDeleteCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserDelete parserDelete = new ParserDelete();
-		//assert parserDelete != null;					// assert
-		return parserDelete.parserDeleteCommand(handler,removeFirstWord);
+		assert parserDelete != null;					// assert
+		return parserDelete.parserDeleteCommand(handler,removeFirstWord,logger);
 	}
 	private Handler parserViewCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserView parserView = new ParserView();
-		//assert parserView != null;
-		return parserView.parserViewCommand(handler,removeFirstWord);
+		assert parserView != null;
+		return parserView.parserViewCommand(handler,removeFirstWord,logger);
 	}
 	private Handler parserLocationCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserLocation parseLocation = new ParserLocation();
-		//assert parseLocation != null;
-		return parseLocation.parseLocationCmd(handler,removeFirstWord);
+		assert parseLocation != null;
+		return parseLocation.parseLocationCmd(handler,removeFirstWord,logger);
 	}
 	private Handler parserDoneOrUndoneCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserDoneOrUndone parserDoneOrUndone = new ParserDoneOrUndone();
-		//assert parserDone != null;
-		return parserDoneOrUndone.parserDoneOrUndoneCommand(handler,removeFirstWord);
+		assert parserDoneOrUndone != null;
+		return parserDoneOrUndone.parserDoneOrUndoneCommand(handler,removeFirstWord,logger);
 	}
 	private Handler parserHelpCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserHelp parserHelp = new ParserHelp();
-		return parserHelp.parserHelpCommand(handler,removeFirstWord);
+		return parserHelp.parserHelpCommand(handler,removeFirstWord,logger);
 	}
 	
 	private Handler parserSearchCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserSearch parserSearch = new ParserSearch();
-		return parserSearch.parserSearchCommand(handler,removeFirstWord);
+		return parserSearch.parserSearchCommand(handler,removeFirstWord,logger);
 	}
 	
 	
@@ -197,3 +198,4 @@ public class Parser {
 		return handler;
 	}
 }
+

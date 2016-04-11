@@ -1,11 +1,13 @@
 //@@author A0112659A
 package simplyamazing.parser;
 
+import java.util.logging.Logger;
+
 public class ParserDelete {
 	private final String COMMAND_INVALID = "Error: Index provided is not an Integer.";
 	private final String SPACE = " ";
 	private int size;
-	public Handler parserDeleteCommand(Handler handler, String taskInfo) throws Exception{
+	public Handler parserDeleteCommand(Handler handler, String taskInfo, Logger logger) throws Exception{
 
 		String[] indexes = taskInfo.split(SPACE);
 		size = indexes.length;
