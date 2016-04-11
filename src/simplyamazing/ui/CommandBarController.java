@@ -14,12 +14,14 @@ public class CommandBarController {
 		commandBar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.isActionKey()) {
-					if (e.getKeyCode() == KeyEvent.VK_UP) { // "Up" key used to get previous command
+				if (e.isActionKey()) {				
+					// "Up" key used to get previous command
+					if (e.getKeyCode() == KeyEvent.VK_UP) { 
 						commandBar.setText(ui.getPreviousUserCommand());
 					}
-				} else {
-					if (e.getKeyCode() == KeyEvent.VK_ENTER) { // "Enter" key used to execute command
+				} else {				
+					// "Enter" key used to execute command
+					if (e.getKeyCode() == KeyEvent.VK_ENTER) { 
 						ui.executeUserCommand();
 					} 
 				}

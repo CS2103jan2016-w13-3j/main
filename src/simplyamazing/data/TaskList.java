@@ -2,6 +2,7 @@
 package simplyamazing.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import simplyamazing.data.Task;
@@ -13,7 +14,7 @@ public class TaskList {
 	private static final int SIZE_EMPTY = 0;
 
 	private ArrayList<Task> tasks, completedTasks;
-
+	
 	public TaskList() {
 		tasks = new ArrayList<Task>();
 		completedTasks = new ArrayList<Task>();

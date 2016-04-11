@@ -250,14 +250,14 @@ public class Storage {
 			task.setDescription(editedTask.getDescription());
 		}
 		
-		if (editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0) { 
+		if (editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) == 0) { 
 			task.setStartTime(Task.DEFAULT_DATE_VALUE);
 		} else if (task.getStartTime().compareTo(editedTask.getStartTime()) != 0 
 				&& editedTask.getStartTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
 			task.setStartTime(editedTask.getStartTime());
 		}
 		
-		if (editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)==0) { 
+		if (editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) == 0) { 
 			task.setEndTime(Task.DEFAULT_DATE_VALUE);
 		} else if (task.getEndTime().compareTo(editedTask.getEndTime()) != 0 
 				&& editedTask.getEndTime().compareTo(Task.DEFAULT_DATE_VALUE) != 0) {

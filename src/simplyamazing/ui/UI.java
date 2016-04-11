@@ -65,7 +65,8 @@ public class UI {
 	private static final String TEXT_TIP = "Type your command here.";
 	
 	private static final String MESSAGE_LOGGER_FILE_CREATION_FAILED = "Logger creation failed";
-	private static final String MESSAGE_WELCOME = "Please enter \"help\" to learn about available commands and their formats";
+	private static final String MESSAGE_WELCOME = "Please enter \"help\" to learn about available commands "
+			+ "and their formats";
 	private static final String MESSAGE_EMPTY_LIST = "List is empty";
 	private static final String MESSAGE_NO_TASKS_FOUND = "There are no tasks containing the given keyword";
 
@@ -80,7 +81,7 @@ public class UI {
 	private static final String MESSAGE_LOG_COMPONENTS_ADDED = "UI components are added to the frame";
 	private static final String MESSAGE_LOG_USER_COMMAND_EXECUTED = "User command is successfully executed.";
 	
-	public static String feedback = null;
+	public String feedback = null;
 
 	private JFrame frame;
 	private JSeparator separator, separator_1;
@@ -114,9 +115,6 @@ public class UI {
 		return e.getMessage();
 	}
 
-	/*
-	 * Create the application. 
-	 */
 	public UI() {
 		createLogger();
 		
@@ -252,14 +250,7 @@ public class UI {
 				String[] tasks = feedback.split(CHARACTER_NEW_LINE);
 
 				if (tasks[0].split(Task.FIELD_SEPARATOR).length == NUM_TASK_FIELDS) {
-					String[][] taskData = new String[tasks.length][NUM_TASK_FIELDS];
-					for (int i = 0; i < tasks.length; i++) {
-						taskData[i] = tasks[i].split(Task.FIELD_SEPARATOR);
-					}
-					scrollPane.setVisible(true);
-					setupTaskDataPanel(taskData); 
-					scrollPane.setViewportView(taskDataPanel.getTaskDataPanel());
-					scrollPane.getViewport().setBackground(Color.WHITE);
+					updateTaskDataTable(feedback);
 				} else {
 					setupInstructionPanel();
 					scrollPane.setVisible(true);
@@ -273,16 +264,16 @@ public class UI {
 				} else {
 					scrollPane.setVisible(false); // Hide table if no task
 				}
+				
 				if (feedback.contains(STRING_ERROR)) {
 					setFeedback(feedback, Color.RED);
 					logger.log(Level.WARNING, feedback);
-				} else {
-					if (feedback.matches(MESSAGE_EMPTY_LIST) || feedback.matches(MESSAGE_NO_TASKS_FOUND)) {
+				} else if (feedback.matches(MESSAGE_EMPTY_LIST) || feedback.matches(MESSAGE_NO_TASKS_FOUND)) {
 						scrollPane.setVisible(false); // Hide table if no task
-					}
-					setFeedback(feedback, COLOR_DARK_GREEN);
-					logger.log(Level.INFO, feedback);
 				}
+				
+				setFeedback(feedback, COLOR_DARK_GREEN);
+				logger.log(Level.INFO, feedback);
 			} 
 		} catch (Exception e1) {
 			feedback = getErrorMessage(e1);
@@ -294,7 +285,8 @@ public class UI {
 
 	private void setupInstructionPanel() {
 		instructionPanel = new InstructionPanel();
-		instructionPanel.getInstrctionPanel().setBounds(OFFSET, Y_POSITION_INSTRUCTION_PANEL, WIDTH_INSTRUCTION_PANEL, HEIGHT_INSTRUCTION_PANEL);
+		instructionPanel.getInstrctionPanel().setBounds(OFFSET, Y_POSITION_INSTRUCTION_PANEL, 
+				WIDTH_INSTRUCTION_PANEL, HEIGHT_INSTRUCTION_PANEL);
 	}
 
 	private void setupTaskDataPanel(Object[][] taskData) {

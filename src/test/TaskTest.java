@@ -10,8 +10,6 @@ import org.junit.Test;
 import simplyamazing.data.Task;
 
 public class TaskTest {
-    
-	
 	
 	@Test
 	public void testFloatingTaskCreation() {
@@ -71,9 +69,6 @@ public class TaskTest {
 		Date endTime = task.getEndTime();
 		task.setEndTime(endTime);
 		assertEquals("20:30 31 May 2016",Task.convertDateToString(task.getEndTime()));
-        
-		
-		
 	}
 	
 	@Test
@@ -98,5 +93,4 @@ public class TaskTest {
 		task.setDone(false);
 		assertEquals("go swimming, , , ,incomplete", task.toString());
 	}
-	
 }

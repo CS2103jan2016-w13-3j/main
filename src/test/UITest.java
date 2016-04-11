@@ -28,12 +28,15 @@ public class UITest {
 	private static final String COMMAND_VIEW = "view";
 	private static final String COMMAND_HELP = "help";
 	private static final String COMMAND_UNDO = "undo";
-	private static final String COMMAND_ADD_EVENT = COMMAND_ADD + CHARACTER_SPACE + "hackathon in SOC from 09:30 26 May 2017 to 10:00 27 May 2017";
-	private static final String COMMAND_ADD_DEADLINE = COMMAND_ADD + CHARACTER_SPACE + "cs2103 peer review by 23:59 25 May 2017";
+	private static final String COMMAND_ADD_EVENT = COMMAND_ADD + CHARACTER_SPACE 
+			+ "hackathon in SOC from 09:30 26 May 2017 to 10:00 27 May 2017";
+	private static final String COMMAND_ADD_DEADLINE = COMMAND_ADD + CHARACTER_SPACE 
+			+ "cs2103 peer review by 23:59 25 May 2017";
 	
 	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:\\Users\\Public\\Documents";
 	
-	private static final String FEEDBACK_COMMAND_EMPTY = "Error: Invalid command entered. Please enter \"help\" to view all commands and their format";
+	private static final String FEEDBACK_COMMAND_EMPTY = "Error: Invalid command entered."
+			+ " Please enter \"help\" to view all commands and their format";
 	private static final String FEEDBACK_NO_PREVIOUS_COMMAND = "Error: There is no previous command to undo";
 	private static final String FEEDBACK_EMPTY_LIST = "List is empty";
 	
