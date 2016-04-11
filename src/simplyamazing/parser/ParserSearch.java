@@ -16,7 +16,7 @@ public class ParserSearch {
 	private static final String SPACE = " ";
 	private static final String EMPTY_STRING = "";
 	private static Date endingDate = null;
-	private static int year;
+	private static int year; 
 	private static String outputYear = "";
 	private boolean checkValue;
 
