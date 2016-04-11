@@ -243,18 +243,6 @@ public class ParserAdd {
 				Date todayDate = null;
 				todayDate = (Date)sdf.parse(sdf.format(new Date()));
 
-				/*
-				try {
-					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT, Locale.ENGLISH);
-					sdf.setLenient(true);
-					//Date endingDate = null;
-					endingDate = (Date)sdf.parse(endTime);//
-					Date todayDate = null;
-					todayDate = (Date)sdf.parse(sdf.format(new Date()));
-					List<Date> date3 = dateGroup3.get(0).getDates();
-					endingDate = date3.get(0);
-				 */
-
 				if (!endingDate.after(todayDate)) {
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
@@ -293,8 +281,8 @@ public class ParserAdd {
 			if ((time.contains(":") && (time.length() == 4 || time.length()== 5))) {
 
 				int date;
+				logger.log(Level.INFO, "start to process the date");
 				try{
-					logger.log(Level.INFO, "start to process the date");
 					 date = Integer.parseInt(dateTimeArr[1], 10);
 				} catch (NumberFormatException e){
 					logger.log(Level.WARNING, "the format for the date is invalid");
@@ -309,8 +297,8 @@ public class ParserAdd {
 					// month given follows the required format
 					return false;
 				} else {
+					logger.log(Level.INFO, "start to process the year");
 					try {
-						logger.log(Level.INFO, "start to process the year");
 						year = Integer.parseInt(dateTimeArr[3], 10);
 					} catch (NumberFormatException e) {
 						logger.log(Level.WARNING, "the format for the year is invalid");
