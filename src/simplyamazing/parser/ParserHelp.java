@@ -1,6 +1,7 @@
 //@@author A0112659A
 package simplyamazing.parser;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ParserHelp {
@@ -20,6 +21,7 @@ public class ParserHelp {
 	private final String COMMAND_INVALID = "Error: Please input a valid keyword. Use the \"help\" command to view all valid keywords";
 
 	public Handler parserHelpCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
+		logger.log(Level.INFO,"start to parse the help command");
 		switch (taskInfo.toLowerCase()) {
 		case STRING_ADD:
 			handler.setKeyWord(STRING_ADD);
@@ -58,6 +60,7 @@ public class ParserHelp {
 			handler.setKeyWord(STRING_EMPTY);
 			break;
 		default:
+			logger.log(Level.WARNING, "the entered command is invalid");
 			handler.setHasError(true);
 			handler.setFeedBack(COMMAND_INVALID);
 		}
