@@ -35,6 +35,7 @@ public class ParserAdd {
 	public Handler parseAddCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
 		logger.log(Level.INFO, "going to start parse the Add Command");
 		checkValue = isAddingValid(handler,taskInfo,logger);
+		assert handler != null;
 		if (checkValue) {
 			if (isEvent) { // For events
 				handler.getTask().setDescription(description);
@@ -60,6 +61,7 @@ public class ParserAdd {
 		logger.log(Level.INFO, "start to analyze the type of the task we add");
 		if (taskInfo.contains(KEYWORD_SCHEDULE_FROM) && taskInfo.contains(KEYWORD_SCHEDULE_TO)) {
 			if (taskInfo.contains(SPECIAL_STRING)) {
+				assert taskInfo != null;
 				int specialStrIndex = taskInfo.lastIndexOf(SPECIAL_STRING);		
 				System.out.println(taskInfo.substring(specialStrIndex+1, specialStrIndex+5));
 				if(taskInfo.substring(specialStrIndex+1, specialStrIndex+5).matches(KEYWORD_SCHEDULE_FROM)){
@@ -68,6 +70,7 @@ public class ParserAdd {
 					startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
 				}
 			} else {
+				assert (startTimeIndex >= 0);
 				startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
 			}
 			String taskInfoFiltered = taskInfo;
@@ -98,6 +101,7 @@ public class ParserAdd {
 					boolean isEndFormatCorrect = followStandardFormat(endTime,logger);
 
 					SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
+					assert sdf != null;
 					sdf.setLenient(false);
 					if(isStartFormatCorrect == false && isEndFormatCorrect == false){
 						logger.log(Level.INFO,"Endtime and Startime both use Natty format");					
@@ -227,6 +231,7 @@ public class ParserAdd {
 					}
 					List<Date> date3 = dateGroup3.get(0).getDates();
 					endingDate = date3.get(0);
+					assert endingDate != null;
 				}else if (isEndFormatCorrect == true){
 					logger.log(Level.INFO,"Endtime use our time format");
 					try{

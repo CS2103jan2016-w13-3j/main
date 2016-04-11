@@ -37,6 +37,7 @@ public class ParserEdit {
 		}
 		String[] fieldValuePairs = taskInfoWithoutIndex.split(",");
 		SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
+		assert sdf != null;
 		sdf.setLenient(false);
 
 		for (int i = 0; i < fieldValuePairs.length; i++) {
@@ -83,6 +84,7 @@ public class ParserEdit {
 		startingDate = handler.getTask().getStartTime();
 		endingDate = handler.getTask().getEndTime();
 		Date todayDate = new Date();
+		assert todayDate != null;
 
 		if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0 && endingDate.compareTo(Task.DEFAULT_DATE_VALUE)!=0) { // if both start time and end time are modified
 			if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0 && endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL)!=0) { 
@@ -146,6 +148,7 @@ public class ParserEdit {
 			}
 			List<Date> date3 = dateGroup3.get(0).getDates();
 			startingDate = date3.get(0);
+			assert startingDate != null;
 		}
 		handler.getTask().setStartTime(startingDate);
 		return handler;

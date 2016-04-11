@@ -95,25 +95,22 @@ public class Parser {
 	}	
 	private Handler parserEditCommand(Handler handler, String taskInfo) throws Exception {
 		ParserEdit parserEdit = new ParserEdit();
-		assert parserEdit !=  null;					//assert
+		assert parserEdit !=  null;			
 		taskIndex =  getFirstWord(taskInfo);
 		taskInfoWithoutIndex = removeFirstWord(taskInfo);
 		
 		return parserEdit.parseEditCommand(handler, taskIndex, taskInfoWithoutIndex, logger);
 	}
 	private Handler parserDeleteCommand(Handler handler, String removeFirstWord) throws Exception {
-		ParserDelete parserDelete = new ParserDelete();
-		assert parserDelete != null;				// assert
+		ParserDelete parserDelete = new ParserDelete();		
 		return parserDelete.parserDeleteCommand(handler,removeFirstWord,logger);
 	}
 	private Handler parserViewCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserView parserView = new ParserView();
-		assert parserView != null;
 		return parserView.parserViewCommand(handler,removeFirstWord,logger);
 	}
 	private Handler parserLocationCommand(Handler handler, String removeFirstWord) throws Exception {
 		ParserLocation parseLocation = new ParserLocation();
-		assert parseLocation != null;
 		return parseLocation.parseLocationCmd(handler,removeFirstWord,logger);
 	}
 	private Handler parserDoneOrUndoneCommand(Handler handler, String removeFirstWord) throws Exception {

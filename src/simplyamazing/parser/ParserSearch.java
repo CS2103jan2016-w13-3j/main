@@ -23,6 +23,7 @@ public class ParserSearch {
 	public Handler parserSearchCommand(Handler handler, String taskInfo, Logger logger) throws Exception {
 		logger.log(Level.INFO,"start to parse the search command");
 		checkValue = isSearchingKeyWord(handler,taskInfo,logger);
+		assert handler != null;
 		if (checkValue == true){
 			handler.setKeyWord(taskInfo);
 		}
@@ -53,6 +54,7 @@ public class ParserSearch {
 			com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
 			boolean isEndFormatCorrect = followStandardFormat(taskInfo,logger);
 			SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
+			assert sdf != null;
 			sdf.setLenient(false);
             
 			
