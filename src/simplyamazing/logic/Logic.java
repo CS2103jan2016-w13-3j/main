@@ -34,6 +34,12 @@ public class Logic {
 	
 	private static final String STRING_EMPTY = "";
 	
+	private static final int EXIT_WITHOUT_ERROR = 0;
+	private static final int EMPTY_LIST_SIZE = 0;
+	private static final int ONE_ELEMENT_IN_LIST = 1;
+	private static final int FIRST_ELEMENT_INDEX = 0;
+	private static final int INVALID_INDEX = -1;
+	
 	//The following are error messages which will be displayed to the user
 	private static final String ERROR_INVALID_DIRECTORY = "Error: Not a valid directory";
 	private static final String ERROR_INVALID_INDEX = "Error: The Index entered is invalid";
@@ -42,10 +48,10 @@ public class Logic {
 	private static final String ERROR_PREVIOUS_COMMAND_INVALID_REDO = "Error: There is no previous command to redo";
 	private static final String ERROR_NO_END_TIME = "Error: Unable to allocate a start time when the task has no end time";
 	private static final String ERROR_INVALID_END_TIME = "Error: Unable to remove end time for an event";
-	private static final String ERROR_START_AFTER_END ="Error: New start time cannot be after the end time";
-	private static final String ERROR_START_SAME_AS_END ="Error: New start time cannot be the same as the end time";
+	private static final String ERROR_START_AFTER_END = "Error: New start time cannot be after the end time";
+	private static final String ERROR_START_SAME_AS_END = "Error: New start time cannot be the same as the end time";
 	private static final String ERROR_END_BEFORE_START = "Error: New end time cannot be before the start time";
-	private static final String ERROR_END_SAME_AS_START ="Error: New end time cannot be the same as the start time";
+	private static final String ERROR_END_SAME_AS_START = "Error: New end time cannot be the same as the start time";
 	private static final String ERROR_INVALID_COMMAND = "Error: Invalid command entered. Please enter \"help\""
 			+ " to view all commands and their format";
 
@@ -139,22 +145,22 @@ public class Logic {
 			return CommandType.ADD_TASK;
 		} else if (commandWord.equalsIgnoreCase("delete")) {
 			return CommandType.DELETE_TASK;
-		} else if (commandWord.equalsIgnoreCase("undo")) {
-			return CommandType.UNDO_LAST;
-		} else if (commandWord.equals("redo")) {
-			return CommandType.REDO;
 		} else if (commandWord.equalsIgnoreCase("view")) {
 			return CommandType.VIEW_LIST;
+		} else if (commandWord.equalsIgnoreCase("edit")) {
+			return CommandType.EDIT_TASK;
+		} else if (commandWord.equalsIgnoreCase("search")) {
+			return CommandType.SEARCH_KEYWORD;
+		} else if (commandWord.equalsIgnoreCase("undo")) {
+			return CommandType.UNDO_LAST;
+		} else if (commandWord.equalsIgnoreCase("redo")) {
+			return CommandType.REDO;
+		} else if (commandWord.equalsIgnoreCase("location")) {
+			return CommandType.SET_LOCATION;
 		} else if (commandWord.equalsIgnoreCase("done")) {
 			return CommandType.MARK_TASK;
 		} else if (commandWord.equalsIgnoreCase("undone")) {
 			return CommandType.UNMARK_TASK;
-		} else if (commandWord.equalsIgnoreCase("location")) {
-			return CommandType.SET_LOCATION;
-		} else if (commandWord.equalsIgnoreCase("search")) {
-			return CommandType.SEARCH_KEYWORD;
-		} else if (commandWord.equalsIgnoreCase("edit")) {
-			return CommandType.EDIT_TASK;
 		} else if (commandWord.equalsIgnoreCase("help")) {
 			return CommandType.HELP;
 		} else if (commandWord.equalsIgnoreCase("exit")) {
@@ -217,7 +223,7 @@ public class Logic {
 			feedback = executeHelpCommand(commandHandler);
 			break;
 		case EXIT :
-			System.exit(0);
+			System.exit(EXIT_WITHOUT_ERROR);
 		default:
 			return ERROR_INVALID_COMMAND;
 		}
@@ -249,10 +255,74 @@ public class Logic {
 			Task taskToAdd = commandHandler.getTask();
 			assert taskToAdd != null;
 			return storageObj.addTask(taskToAdd);
-
 		}
 	}
+	
+	
+	/*
+	 * This method executes the delete command. The status of the command, whether it is successful or
+	 * unsuccessful will be returned to the UI which will then display it to the user.
+	 */
+	private static String executeDeleteCommand(Handler commandHandler) throws Exception {
+		if (commandHandler.getHasError() == true) {
+			logger.log(Level.WARNING, "handler has reported an error in delete");
+			return commandHandler.getFeedBack();
 
+		} else {
+
+			ArrayList<Integer> listToDelete = commandHandler.getIndexList();
+			boolean isIndexValid = true;
+			int indexToDelete = INVALID_INDEX;
+			
+			if (listToDelete.size() == ONE_ELEMENT_IN_LIST) {
+				logger.log(Level.INFO, "list contains only one task to delete");
+				indexToDelete = listToDelete.get(FIRST_ELEMENT_INDEX);
+
+				isIndexValid = canRetrieveIndex(indexToDelete);
+				
+				if (isIndexValid == false) {
+					logger.log(Level.WARNING, "index given is invalid");
+					return ERROR_INVALID_INDEX;
+				}
+				
+				logger.log(Level.INFO, "index valid, interacting with storage now");
+				Task taskToDelete = taskList.get(indexToDelete - 1);
+				return storageObj.deleteTask(taskToDelete);
+				
+			} else {
+				
+				return deleteMultiple(listToDelete);
+			}
+		}
+	}
+	
+	
+	/*
+	 * This method facilitates the deletion of multiple indexes. It checks if all indexes are valid
+	 * before deleting.
+	 */
+	private static String deleteMultiple(ArrayList<Integer> listToDelete) throws Exception {
+		boolean isIndexValid = true;
+		int indexToDelete = INVALID_INDEX;
+		logger.log(Level.INFO, "list contains more than one task to delete");
+		ArrayList<Task> tasksToDelete = new ArrayList<Task>();
+		
+		for (int i = 0; i < listToDelete.size(); i++) {
+			indexToDelete = listToDelete.get(i);
+			isIndexValid = canRetrieveIndex(indexToDelete);
+			
+			if (isIndexValid == false) {
+				logger.log(Level.WARNING, "one of the indexes given is invalid");
+				return ERROR_INVALID_INDEX_MULTIPLE;
+			} else {
+				tasksToDelete.add(taskList.get(indexToDelete - 1));
+			}
+		}
+		logger.log(Level.INFO, "all indexes valid, interacting with storage now");
+		return storageObj.deleteMultipleTasks(tasksToDelete);
+	}
+	
+	
 	/*
 	 * This method is responsible for executing the view command. It returns a String containing
 	 * either all pending tasks, overdue tasks or completed task, to the UI.
@@ -277,7 +347,6 @@ public class Logic {
 	 * the command to the UI. 
 	 */
 	private static String executeEditCommand(Handler commandHandler) throws Exception {
-
 		if (commandHandler.getHasError() == true) {
 			logger.log(Level.WARNING, "handler has reported an error in edit");
 			return commandHandler.getFeedBack();
@@ -285,7 +354,8 @@ public class Logic {
 		} else { 
 			// only one task can be edited at a time, hence check the index of the first task
 			ArrayList<Integer> listToEdit = commandHandler.getIndexList();
-			boolean isIndexValid = canRetrieveIndex(listToEdit.get(0));
+			int indexToEdit = listToEdit.get(FIRST_ELEMENT_INDEX);
+			boolean isIndexValid = canRetrieveIndex(indexToEdit);
 
 			if (isIndexValid == false) {
 				logger.log(Level.WARNING, "index given is invalid");
@@ -293,7 +363,6 @@ public class Logic {
 
 			} else {
 				logger.log(Level.INFO, "index valid, editing now");
-				int indexToEdit = listToEdit.get(0);
 				Task fieldsToChange = commandHandler.getTask();
 				Task originalTask = taskList.get(indexToEdit - 1);
 				String dateErrorMessage = hasDateError(fieldsToChange, originalTask);
@@ -311,59 +380,6 @@ public class Logic {
 		}
 	}
 
-
-	/*
-	 * This method executes the delete command. The status of the command, whether it is successful or
-	 * unsuccessful will be returned to the UI which will then display it to the user.
-	 */
-	private static String executeDeleteCommand(Handler commandHandler) throws Exception {
-		if (commandHandler.getHasError() == true) {
-			logger.log(Level.WARNING, "handler has reported an error in delete");
-			return commandHandler.getFeedBack();
-
-		} else {
-
-			ArrayList<Integer> listToDelete = commandHandler.getIndexList();
-			boolean isIndexValid = true;
-			int indexToDelete = -1;
-			
-			if (listToDelete.size() == 1) {
-				logger.log(Level.INFO, "list contains only one task to delete");
-				indexToDelete = listToDelete.get(0);
-
-				isIndexValid = canRetrieveIndex(indexToDelete);
-				
-				if (isIndexValid == false) {
-					logger.log(Level.WARNING, "index given is invalid");
-					return ERROR_INVALID_INDEX;
-				}
-				
-				logger.log(Level.INFO, "index valid, interacting with storage now");
-				Task taskToDelete = taskList.get(indexToDelete - 1);
-				return storageObj.deleteTask(taskToDelete);
-				
-			} else {
-				
-				logger.log(Level.INFO, "list contains more than one task to delete");
-				ArrayList<Task> tasksToDelete = new ArrayList<Task>();
-				
-				for (int i = 0; i < listToDelete.size(); i++) {
-					indexToDelete = listToDelete.get(i);
-					isIndexValid = canRetrieveIndex(indexToDelete);
-					
-					if (isIndexValid == false) {
-						logger.log(Level.WARNING, "one of the indexes given is invalid");
-						return ERROR_INVALID_INDEX_MULTIPLE;
-					} else {
-						tasksToDelete.add(taskList.get(indexToDelete - 1));
-					}
-				}
-				logger.log(Level.INFO, "all indexes valid, interacting with storage now");
-				return storageObj.deleteMultipleTasks(tasksToDelete);
-			}
-		}
-	}
-
 	
 	/*
 	 * This method executes the search command which allows the user to search for tasks
@@ -372,7 +388,7 @@ public class Logic {
 	 */
 	private static String executeSearchCommand(Handler commandHandler) throws Exception {			
 		if (commandHandler.getHasError() == true) {
-			logger.log(Level.WARNING, "handler has reported an error in delete");
+			logger.log(Level.WARNING, "handler has reported an error in search");
 			return commandHandler.getFeedBack();
 		}
 
@@ -380,10 +396,11 @@ public class Logic {
 			Date endDate = commandHandler.getTask().getEndTime();
 			taskList = storageObj.searchTasksByDate(endDate);
 
-			if (taskList.size() == 0) {
-				logger.log(Level.INFO, "There are no tasks containing the keyword");
+			if (taskList.size() == EMPTY_LIST_SIZE) {
+				logger.log(Level.INFO, "There are no tasks containing the date");
 				return MESSAGE_NO_TASKS_FOUND;
 			} else {
+				logger.log(Level.INFO, "tasks have been retrieved, converting into a string now");
 				return convertListToString(taskList);
 			}
 		} else {
@@ -391,7 +408,7 @@ public class Logic {
 			String keyword = commandHandler.getKeyWord();
 			taskList = storageObj.searchTasks(keyword);
 
-			if (taskList.size() == 0) {
+			if (taskList.size() == EMPTY_LIST_SIZE) {
 				logger.log(Level.INFO, "There are no tasks containing the keyword");
 				return MESSAGE_NO_TASKS_FOUND;
 			} else {
@@ -442,7 +459,6 @@ public class Logic {
 	 * to save the user's data into the specified location
 	 */
 	private static String executeSetLocationCommand(Handler commandHandler) throws Exception {
-
 		if (commandHandler.getHasError() == true) {			
 			logger.log(Level.WARNING, "handler has reported an error in location");
 			return commandHandler.getFeedBack();
@@ -452,10 +468,10 @@ public class Logic {
 			assert directoryPath != null;
 			String feedback = STRING_EMPTY;
 
-			try{
+			try {
 				logger.log(Level.INFO, "setting the location");
 				feedback = storageObj.setLocation(directoryPath);
-			} catch (Exception e){
+			} catch (Exception e) {
 				logger.log(Level.WARNING, "storage has reported an error in location");
 				feedback = ERROR_INVALID_DIRECTORY;
 			}
@@ -469,20 +485,19 @@ public class Logic {
 	 * mark a task as completed.
 	 */
 	private static String executeMarkCommand(Handler commandHandler) throws Exception {
-
 		if (commandHandler.getHasError() == true) {
-			logger.log(Level.WARNING, "handler has reported an error in edit");
+			logger.log(Level.WARNING, "handler has reported an error in mark");
 			return commandHandler.getFeedBack();
 
 		} else {
 
 			ArrayList<Integer> listToMark = commandHandler.getIndexList();
 			boolean isIndexValid = true;
-			int indexToMark;
+			int indexToMark = INVALID_INDEX;
 
-			if (listToMark.size() == 1) {
-				logger.log(Level.INFO, "only one task to delete");
-				indexToMark = listToMark.get(0);
+			if (listToMark.size() == ONE_ELEMENT_IN_LIST) {
+				logger.log(Level.INFO, "only one task to mark as done");
+				indexToMark = listToMark.get(FIRST_ELEMENT_INDEX);
 
 				isIndexValid = canRetrieveIndex(indexToMark);
 				if (isIndexValid == false) {
@@ -495,23 +510,35 @@ public class Logic {
 				return storageObj.markTaskDone(taskToMark);
 				
 			} else {
-				ArrayList<Task> tasksToMark = new ArrayList<Task>();
-
-				for (int i = 0; i < listToMark.size(); i++) {
-					indexToMark = listToMark.get(i);
-					isIndexValid = canRetrieveIndex(indexToMark);
-					
-					if (isIndexValid == false) {
-						logger.log(Level.WARNING, "one of the indexes given is invalid");
-						return ERROR_INVALID_INDEX_MULTIPLE;
-					} else {
-						tasksToMark.add(taskList.get(indexToMark - 1 ));
-					}
-				}
-				logger.log(Level.INFO, "indexes valid, interacting with storage now");
-				return storageObj.markMultipleTasksDone(tasksToMark);
+				logger.log(Level.INFO, "more than one task to mark as done");
+				return markMultiple(listToMark);
 			}
 		}
+	}
+	
+	
+	/*
+	 * This method facilitates marking multiple indexes as done. It checks if all indexes are valid
+	 * before marking them.
+	 */
+	private static String markMultiple(ArrayList<Integer> listToMark) throws Exception {
+		boolean isIndexValid = true;
+		int indexToMark = INVALID_INDEX;
+		ArrayList<Task> tasksToMark = new ArrayList<Task>();
+
+		for (int i = 0; i < listToMark.size(); i++) {
+			indexToMark = listToMark.get(i);
+			isIndexValid = canRetrieveIndex(indexToMark);
+			
+			if (isIndexValid == false) {
+				logger.log(Level.WARNING, "one of the indexes given is invalid");
+				return ERROR_INVALID_INDEX_MULTIPLE;
+			} else {
+				tasksToMark.add(taskList.get(indexToMark - 1 ));
+			}
+		}
+		logger.log(Level.INFO, "indexes valid, interacting with storage now");
+		return storageObj.markMultipleTasksDone(tasksToMark);
 	}
 
 	
@@ -522,17 +549,17 @@ public class Logic {
 	 */
 	private static String executeUnmarkCommand(Handler commandHandler) throws Exception {
 		if (commandHandler.getHasError() == true) {
-			logger.log(Level.WARNING, "handler has reported an error in edit");
+			logger.log(Level.WARNING, "handler has reported an error in unmark");
 			return commandHandler.getFeedBack();	
 		}
 
 		ArrayList<Integer> listToUnmark = commandHandler.getIndexList();
 		boolean isIndexValid = true;
-		int indexToUnmark;
+		int indexToUnmark = INVALID_INDEX;
 
-		if (listToUnmark.size() == 1) {
+		if (listToUnmark.size() == ONE_ELEMENT_IN_LIST) {
 			logger.log(Level.INFO, "only 1 index to unmark");
-			indexToUnmark = listToUnmark.get(0);
+			indexToUnmark = listToUnmark.get(FIRST_ELEMENT_INDEX);
 
 			isIndexValid = canRetrieveIndex(indexToUnmark);
 			if (isIndexValid == false) {
@@ -544,22 +571,34 @@ public class Logic {
 			return storageObj.markTaskUndone(taskToUnmark);
 
 		} else {
-			ArrayList<Task> tasksToUnmark = new ArrayList<Task>();
-
-			for (int i = 0; i < listToUnmark.size(); i++) {
-				indexToUnmark = listToUnmark.get(i);
-				isIndexValid = canRetrieveIndex(indexToUnmark);
-				
-				if (isIndexValid == false) {
-					logger.log(Level.WARNING, "one of the indexes given is invalid");
-					return ERROR_INVALID_INDEX_MULTIPLE;
-				} else {
-					tasksToUnmark.add(taskList.get(indexToUnmark - 1 ));
-				}
-			}
-			logger.log(Level.INFO, "indexes valid, interacting with storage to unmark");
-			return storageObj.markMultipleTasksUndone(tasksToUnmark);
+			logger.log(Level.INFO, "more than 1 index to unmark");
+			return unmarkMultiple(listToUnmark);
 		}
+	}
+
+	
+	/*
+	 * This method facilitates unmarking multiple indexes. It checks if all indexes are valid
+	 * before unmarking them.
+	 */
+	private static String unmarkMultiple(ArrayList<Integer> listToUnmark) throws Exception {
+		boolean isIndexValid = true;
+		int indexToUnmark = INVALID_INDEX;
+		ArrayList<Task> tasksToUnmark = new ArrayList<Task>();
+
+		for (int i = 0; i < listToUnmark.size(); i++) {
+			indexToUnmark = listToUnmark.get(i);
+			isIndexValid = canRetrieveIndex(indexToUnmark);
+			
+			if (isIndexValid == false) {
+				logger.log(Level.WARNING, "one of the indexes given is invalid");
+				return ERROR_INVALID_INDEX_MULTIPLE;
+			} else {
+				tasksToUnmark.add(taskList.get(indexToUnmark - 1 ));
+			}
+		}
+		logger.log(Level.INFO, "indexes valid, interacting with storage to unmark");
+		return storageObj.markMultipleTasksUndone(tasksToUnmark);
 	}
 
 	
@@ -573,7 +612,7 @@ public class Logic {
 			return commandHandler.getFeedBack();
 
 		} else {
-			logger.log(Level.INFO, "no error, keyword is valid.");
+			logger.log(Level.INFO, "no error, help keyword is valid.");
 			
 			if(commandHandler.getKeyWord().equals(STRING_EMPTY)) {
 				return MESSAGE_HELP;
@@ -634,7 +673,7 @@ public class Logic {
 	 * index and would allow the program to act accordingly
 	 */
 	private static boolean canRetrieveIndex(int index) {
-		if (index <= 0 || index > taskList.size()) {
+		if (index <= EMPTY_LIST_SIZE || index > taskList.size()) {
 			return false;
 		} else {
 			return true;
@@ -723,7 +762,7 @@ public class Logic {
 	 */
 	private static String convertListToString(ArrayList<Task> listToConvert) {
 		assert listToConvert != null;
-		if (listToConvert.size() == 0) {
+		if (listToConvert.size() == EMPTY_LIST_SIZE) {
 			return MESSAGE_EMPTY_LIST;
 		}
 		String convertedList = STRING_EMPTY;

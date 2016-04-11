@@ -252,7 +252,6 @@ public class LogicTest {
 	
 	
 	
-	private static final String editTask3 ="edit 3 end 19:00 1 Jun 2016";
 	@BeforeClass
 	public static void setUpClass() throws Exception{
 		logicObj = new Logic();
