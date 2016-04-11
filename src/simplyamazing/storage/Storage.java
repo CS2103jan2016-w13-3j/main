@@ -90,7 +90,7 @@ public class Storage {
 		fileManager.createDirectory(DIRECTORY_SYSTEM); 
 		logger.log(Level.CONFIG, MESSAGE_LOG_DIRECTORY_CREATED);
 		
-		storage = fileManager.createFile((DIRECTORY_SYSTEM+FILENAME_STORAGE));
+		storage = fileManager.createFile((DIRECTORY_SYSTEM + FILENAME_STORAGE));
 		logger.log(Level.CONFIG, MESSAGE_LOG_STORAGE_FILE_CREATED);
 		
 		taskList = new TaskList();
@@ -145,8 +145,8 @@ public class Storage {
 		if (isLocationSet()) { 
 			setupFiles();
 
-			todo = fileManager.createTempFile(todo, location+FILENAME_TODO);
-			done = fileManager.createTempFile(done, location+FILENAME_DONE);
+			todo = fileManager.createTempFile(todo, location + FILENAME_TODO);
+			done = fileManager.createTempFile(done, location + FILENAME_DONE);
 
 			fileManager.cleanFile(storage);
 		}
@@ -193,25 +193,25 @@ public class Storage {
 	}
 
 	private void setupFiles() throws Exception {
-		todo = fileManager.createFile(getLocation()+FILENAME_TODO);	
+		todo = fileManager.createFile(getLocation() + FILENAME_TODO);	
 		if (!fileManager.isFileExisting(todo)) {
 			fileManager.createNewFile(todo);
 		}
 		logger.log(Level.CONFIG, MESSAGE_LOG_TASK_DATA_FILE_SETUP);
 
-		todoBackup = fileManager.createFile(DIRECTORY_SYSTEM+FILENAME_TODO_BACKUP);
+		todoBackup = fileManager.createFile(DIRECTORY_SYSTEM + FILENAME_TODO_BACKUP);
 		if (!fileManager.isFileExisting(todoBackup)) {
 			fileManager.createNewFile(todoBackup);
 		}
 		logger.log(Level.CONFIG, MESSAGE_LOG_TASK_DATA_BACKUP_FILE_SETUP);
 
-		done = fileManager.createFile(getLocation()+FILENAME_DONE);
+		done = fileManager.createFile(getLocation() + FILENAME_DONE);
 		if (!fileManager.isFileExisting(done)) {
 			fileManager.createNewFile(done);
 		}
 		logger.log(Level.CONFIG, MESSAGE_LOG_DONE_TASKS_FILE_SETUP);
 
-		doneBackup = fileManager.createFile(DIRECTORY_SYSTEM+FILENAME_DONE_BACKUP);
+		doneBackup = fileManager.createFile(DIRECTORY_SYSTEM + FILENAME_DONE_BACKUP);
 		if (!fileManager.isFileExisting(doneBackup)) {
 			fileManager.createNewFile(doneBackup);
 		}

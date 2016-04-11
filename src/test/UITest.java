@@ -35,7 +35,6 @@ public class UITest {
 	private static final String COMMAND_EDIT_PRIORITY = "edit 1 priority high";
 	private static final String COMMAND_DELETE_DEADLINE = "delete 1";
 	
-	
 	private static final String PARAM_SET_LOCATION_DIRECTORY = "C:\\Users\\Public\\Documents";
 	
 	private static final String FEEDBACK_COMMAND_EMPTY = "Error: Invalid command entered."
