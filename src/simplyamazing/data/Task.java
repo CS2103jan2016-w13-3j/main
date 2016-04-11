@@ -274,11 +274,11 @@ public class Task implements Comparable<Task>{
 		Date endTime = this.getEndTime();
 		if (endTime.before(now) && endTime != Task.DEFAULT_DATE_VALUE) {
 			status = STRING_STATUS_OVERDUE;
-			assert(!status.matches(STRING_STATUS_INCOMPLETE));
+			assert (!status.matches(STRING_STATUS_INCOMPLETE));
 		}
 		if (this.isDone()) {
 			status = STRING_STATUS_DONE;
-			assert(!status.matches(STRING_STATUS_INCOMPLETE));
+			assert (!status.matches(STRING_STATUS_INCOMPLETE));
 		}
 		return this.description.trim() + FIELD_SEPARATOR + startTimeString + FIELD_SEPARATOR + endTimeString + FIELD_SEPARATOR + priorityLevel + FIELD_SEPARATOR + status;
 	}
