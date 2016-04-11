@@ -14,6 +14,10 @@ import com.joestelmach.natty.*;
 import simplyamazing.data.Task;
 
 public class ParserEdit {
+	private static final String PRIORITY = "priority";
+	private static final String END = "end";
+	private static final String START = "start";
+	private static final String DESCRIPTION = "description";
 	private static final String ERROR_MESSAGE_INVALID_INDEX = "Error: Index provided is not an Integer.";
 	private static final String ERROR_MESSAGE_INVALID_FIELD = "Error: Please input a valid field. Use the \"help edit\" command to see all the valid fields";
 	private static final String ERROR_MESSAGE_START_AFTER_END = "Error: Start date and time cannot be after the End date and time";
@@ -52,10 +56,10 @@ public class ParserEdit {
 			String value = Parser.removeFirstWord(fieldValuePairs[i]);
 
 			switch (field.toLowerCase()) {
-			case "description" :
+			case DESCRIPTION:
 				handler.getTask().setDescription(value);
 				break;
-			case "start" :
+			case START:
 				if (value.toLowerCase().equals("none")) {
 					handler.getTask().setStartTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 				} else {
@@ -63,7 +67,7 @@ public class ParserEdit {
 					handler = editStartTime(sdf, isStartFormatCorrect, handler, value, logger);
 				}
 				break;
-			case "end" :
+			case END:
 				if (value.toLowerCase().equals("none")) {
 					handler.getTask().setEndTime(Task.DEFAULT_DATE_VALUE_FOR_NULL);
 				} else {
@@ -71,7 +75,7 @@ public class ParserEdit {
 					handler = editEndTime(sdf, isEndFormatCorrect, handler, value, logger);
 				}
 				break;
-			case "priority" :
+			case PRIORITY:
 				logger.log(Level.INFO, "start to parse the priority");
 				try {
 					handler.getTask().setPriority(value);
@@ -81,7 +85,7 @@ public class ParserEdit {
 					handler.setFeedBack(ERROR_MESSAGE_PRIORITY_LEVEL);
 				}
 				break;
-			default :
+			default:
 				logger.log(Level.WARNING, "the field of command is invalid");
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_INVALID_FIELD);
@@ -111,26 +115,17 @@ public class ParserEdit {
 					handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 				}
 			} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) != 0
-					&& endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) == 0) { // end
-																						// time
-																						// is
-																						// modified
+					&& endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) == 0) {
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_NO_END_TIME);
 			}
-		} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // start
-																			// time
-																			// is
-																			// modified
+		} else if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
 			if (startingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) != 0 && !startingDate.after(todayDate)) {
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
 			}
 
-		} else if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0) { // end
-																			// time
-																			// is
-																			// modified
+		} else if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE) != 0) {
 			if (endingDate.compareTo(Task.DEFAULT_DATE_VALUE_FOR_NULL) != 0 && !endingDate.after(todayDate)) {
 				handler.setHasError(true);
 				handler.setFeedBack(ERROR_MESSAGE_DATE_BEFORE_CURRENT);
@@ -198,6 +193,9 @@ public class ParserEdit {
 		return handler;
 	}
 
+	/*
+	 * This method is used to test the validity of the index.
+	 */
 	public static boolean isInteger(String taskInfo, Logger logger) {
 		logger.log(Level.INFO, "start to analyze the index");
 		try {
@@ -206,7 +204,6 @@ public class ParserEdit {
 			logger.log(Level.WARNING, "the index is not an Integer");
 			return false;
 		}
-		// only got here if we didn't return false
 		return true;
 	}
 
