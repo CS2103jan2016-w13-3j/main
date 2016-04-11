@@ -76,7 +76,6 @@ public class ParserAdd {
 			if (taskInfo.contains(SPECIAL_STRING)) {
 				assert taskInfo != null;
 				int specialStrIndex = taskInfo.lastIndexOf(SPECIAL_STRING);
-				System.out.println(taskInfo.substring(specialStrIndex + 1, specialStrIndex + 5));
 				if (taskInfo.substring(specialStrIndex + 1, specialStrIndex + 5).matches(KEYWORD_SCHEDULE_FROM)) {
 					startTimeIndex = specialStrIndex + 1;
 				} else {
@@ -101,8 +100,6 @@ public class ParserAdd {
 				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());
 				description = taskInfo.substring(0, startTimeIndex);
 				description = description.replace(SPECIAL_STRING, EMPTY_STRING);
-				System.out.println("StartTime:" + startTime);
-				System.out.println("EndTime:" + endTime);
 
 				if (description.equals(EMPTY_STRING) || startTime.equals(EMPTY_STRING)
 						|| endTime.equals(EMPTY_STRING)) {
@@ -206,8 +203,6 @@ public class ParserAdd {
 			} else if (taskInfo.contains(KEYWORD_DEADLINE)) {
 				endTimeIndex = taskInfo.lastIndexOf(KEYWORD_DEADLINE);
 				startTimeIndex = taskInfo.lastIndexOf(KEYWORD_SCHEDULE_FROM);
-				System.out.println(startTimeIndex);
-				System.out.println(endTimeIndex);
 				if (endTimeIndex < startTimeIndex) {
 					logger.log(Level.INFO, "This is not an event but floating task");
 					isFloatingTask = true;

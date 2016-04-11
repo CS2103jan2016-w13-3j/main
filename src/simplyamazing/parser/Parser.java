@@ -62,7 +62,6 @@ public class Parser {
 			fh.setFormatter(formatter);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "the address fro file handler is invalid");
-			System.out.println("fail to set up the file handler");
 		}
 		;
 	}
