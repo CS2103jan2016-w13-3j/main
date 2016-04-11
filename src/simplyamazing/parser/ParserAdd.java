@@ -87,14 +87,20 @@ public class ParserAdd {
 			}
 			String taskInfoFiltered = taskInfo;
 			endTimeIndex = taskInfoFiltered.lastIndexOf(KEYWORD_SCHEDULE_TO);
-
+			
+			if (taskInfoFiltered.substring(endTimeIndex).trim().matches(KEYWORD_SCHEDULE_TO)) {
+				handler.setHasError(true);
+				handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);	
+				return false;
+			}
+			
 			while (!taskInfoFiltered.substring((endTimeIndex + 2), (endTimeIndex + 3)).trim().equals(EMPTY_STRING)) {
 				taskInfoFiltered = taskInfoFiltered.substring(0, endTimeIndex);
 				endTimeIndex = taskInfoFiltered.lastIndexOf(KEYWORD_SCHEDULE_TO);
 			}
 
 			logger.log(Level.INFO, "Start to compare the index of \"from and \"to");
-			if (startTimeIndex < endTimeIndex) {
+			if (startTimeIndex < endTimeIndex && !taskInfo.contains(KEYWORD_DEADLINE)) {
 
 				startTime = Parser.removeFirstWord(taskInfo.substring(startTimeIndex, endTimeIndex).trim());
 				endTime = Parser.removeFirstWord(taskInfo.substring(endTimeIndex).trim());

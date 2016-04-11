@@ -226,7 +226,7 @@ public class ParserEdit {
 					return false;
 				}
 				// reach here means that it time given follows format and date
-				// given is an int
+				// given is an integer
 
 				String givenMonth = dateTimeArr[2].toLowerCase();
 				if (!(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar")
