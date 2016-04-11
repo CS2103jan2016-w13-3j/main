@@ -24,56 +24,56 @@ public class ParserSearch {
 		logger.log(Level.INFO,"start to parse the search command");
 		checkValue = isSearchingKeyWord(handler,taskInfo,logger);
 		assert handler != null;
-		if (checkValue == true){
+		if (checkValue == true) {
 			handler.setKeyWord(taskInfo);
 		}
 		return handler;
 	}
 	public boolean isSearchingKeyWord(Handler handler,String taskInfo, Logger logger) throws Exception {
 		logger.log(Level.INFO,"start to parse the searching keyword");
-		if(taskInfo.equals(EMPTY_STRING)){
-          handler.setKeyWord(taskInfo);
-          return false;
-		}else{
+		if (taskInfo.equals(EMPTY_STRING)) {
+			handler.setKeyWord(taskInfo);
+			return false;
+		} else {
 			String givenMonth = taskInfo.substring(0, 3).toLowerCase();
 			String[] monthAndYear = taskInfo.split(SPACE);
 			if (monthAndYear.length == 2) {
 				outputYear = ""+ taskInfo.split(SPACE)[1];
-				if(givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
+				if (givenMonth.contains("jan") || givenMonth.contains("feb") || givenMonth.contains("mar") ||givenMonth.contains("apr")
 						|| givenMonth.contains("may") || givenMonth.contains("jun") || givenMonth.contains("jul") || givenMonth.contains("aug")
 						|| givenMonth.contains("sep") || givenMonth.contains("oct") || givenMonth.contains("nov") || givenMonth.contains("dec")){
-					
+
 					handler.setKeyWord(givenMonth + SPACE + outputYear);
 					return false;
-				}else{
+				} else {
 					return true;
 				}
 			}
-			
+
 
 			com.joestelmach.natty.Parser dateParser = new com.joestelmach.natty.Parser();
 			boolean isEndFormatCorrect = followStandardFormat(taskInfo,logger);
 			SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT,Locale.ENGLISH);
 			assert sdf != null;
 			sdf.setLenient(false);
-            
-			
-			if (isEndFormatCorrect == true){
+
+
+			if (isEndFormatCorrect == true) {
 				logger.log(Level.INFO,"Endtime use our time format");
-				try{
+				try {
 					endingDate = (Date)sdf.parse(taskInfo);
 					handler.setHasEndDate(true);
 					handler.getTask().setEndTime(endingDate);
-				}catch (ParseException e) {
+				} catch (ParseException e) {
 					logger.log(Level.WARNING,"EndTime is invalid in our time format");
 					handler.setHasError(true);
 					handler.setFeedBack(ERROR_MESSAGE_TIME_FORMAT_INVALID);
 					return false;
 				}
-			}else{
+			} else {
 				List<DateGroup> dateGroup2 = dateParser.parse(taskInfo);
 				logger.log(Level.INFO,"Endtime use Natty");
-				if(dateGroup2.isEmpty()){
+				if (dateGroup2.isEmpty()) {
 					return true;
 				}						
 				List<Date> date2 = dateGroup2.get(0).getDates();
@@ -97,9 +97,9 @@ public class ParserSearch {
 
 				int date;
 				logger.log(Level.INFO, "start to process the date");
-				try{
+				try {
 					date = Integer.parseInt(dateTimeArr[1], 10);
-				} catch (NumberFormatException e){
+				} catch (NumberFormatException e) {
 					logger.log(Level.WARNING, "the format for the date is invalid");
 					return false;
 				}	
