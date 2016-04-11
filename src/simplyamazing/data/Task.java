@@ -174,20 +174,20 @@ public class Task implements Comparable<Task>{
 	 */
 	public void setPriority(String priorityLevel) throws Exception {
 		switch (priorityLevel.trim().toLowerCase()) {
-			case STRING_HIGH_PRIORITY :
-				this.priority = DEFAULT_PRIORITY_LEVEL_HIGH;
-				break;
-			case STRING_MEDIUM_PRIORITY :
-				this.priority = DEFAULT_PRIORITY_LEVEL_MEDIUM;
-				break;
-			case STRING_LOW_PRIORITY :
-				this.priority = DEFAULT_PRIORITY_LEVEL_LOW;
-				break;
-			case STRING_NO_PRIORITY :
-				this.priority = DEFAULT_PRIORITY_LEVEL;
-				break;
-			default :
-				throw new Exception(MESSAGE_INVALID_PRIORITY_LEVEL);
+		case STRING_HIGH_PRIORITY : 
+			this.priority = DEFAULT_PRIORITY_LEVEL_HIGH;
+			break;
+		case STRING_MEDIUM_PRIORITY : 
+			this.priority = DEFAULT_PRIORITY_LEVEL_MEDIUM;
+			break;
+		case STRING_LOW_PRIORITY : 
+			this.priority = DEFAULT_PRIORITY_LEVEL_LOW;
+			break;
+		case STRING_NO_PRIORITY : 
+			this.priority = DEFAULT_PRIORITY_LEVEL;
+			break;
+		default : 
+			throw new Exception(MESSAGE_INVALID_PRIORITY_LEVEL);
 		}
 	}
 
@@ -257,18 +257,18 @@ public class Task implements Comparable<Task>{
 			assert(!endTimeString.matches(CHARACTER_SPACE));
 		}
 		switch (this.priority) {
-			case DEFAULT_PRIORITY_LEVEL_HIGH :
-				priorityLevel = STRING_HIGH_PRIORITY;
-				break;
-			case DEFAULT_PRIORITY_LEVEL_MEDIUM :
-				priorityLevel = STRING_MEDIUM_PRIORITY;
-				break;
-			case DEFAULT_PRIORITY_LEVEL_LOW : 
-				priorityLevel = STRING_LOW_PRIORITY;
-				break;
-			default :
-				priorityLevel = CHARACTER_SPACE;
-				break;
+		case DEFAULT_PRIORITY_LEVEL_HIGH : 
+			priorityLevel = STRING_HIGH_PRIORITY;
+			break;
+		case DEFAULT_PRIORITY_LEVEL_MEDIUM : 
+			priorityLevel = STRING_MEDIUM_PRIORITY;
+			break;
+		case DEFAULT_PRIORITY_LEVEL_LOW : 
+			priorityLevel = STRING_LOW_PRIORITY;
+			break;
+		default : 
+			priorityLevel = CHARACTER_SPACE;
+			break;
 		}
 		Date now = new Date();
 		Date endTime = this.getEndTime();
@@ -302,10 +302,8 @@ public class Task implements Comparable<Task>{
 					filteredString += KEYWORD_END_TIME;
 				}
 			} else {
-				if (!fields[ARRAY_POSITION_FOR_END_TIME].matches(CHARACTER_SPACE)) {
-					if (i == ARRAY_POSITION_FOR_END_TIME) {
-						filteredString += KEYWORD_DEADLINE;
-					}
+				if (!fields[ARRAY_POSITION_FOR_END_TIME].matches(CHARACTER_SPACE) && i == ARRAY_POSITION_FOR_END_TIME) {
+					filteredString += KEYWORD_DEADLINE;
 				} 
 			}
 			if (i == ARRAY_POSITION_FOR_PRIORITY && !fields[i].matches(CHARACTER_SPACE)) {
